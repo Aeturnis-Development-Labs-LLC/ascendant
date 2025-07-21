@@ -40,20 +40,34 @@ python -m ascendant
 
 This project follows the CAFE (Contract-First, AI-Assisted, Facilitated Engineering) methodology.
 
+### Quick Start for Developers
+
+```bash
+make dev-setup      # Set up complete development environment
+```
+
+This installs dependencies and configures pre-commit hooks for code quality.
+
 ### Testing
 
 ```bash
-pytest
-pytest --cov=src  # With coverage
+make test           # Run all tests
+make test-cov       # Run with coverage report
 ```
 
 ### Code Quality
 
 ```bash
-black src tests      # Format code
-flake8 src tests    # Lint code
-mypy src            # Type checking
+make pre-commit     # Run all code quality checks
+make format         # Format code with black and isort
+make lint           # Lint code with flake8
+make typecheck      # Type checking with mypy
+make security       # Security scan with bandit
 ```
+
+Pre-commit hooks automatically run on `git commit` to ensure code quality.
+
+See [Development Guide](docs/DEVELOPMENT.md) for detailed information.
 
 ## License
 
