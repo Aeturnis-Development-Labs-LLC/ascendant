@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-07-21
+
+### Added
+- Floor generation system with 20x20 grid in `src/models/floor.py`
+- Room class with overlap detection and minimum distance support
+- Seed-based reproducible floor generation
+- Generation of 5-10 rectangular rooms (3x3 to 8x8 tiles)
+- Edge buffer of 1 tile from floor boundaries
+- Four visualization scripts for debugging floor layouts
+- Comprehensive test suite for floor generation (18 new tests)
+
+### Fixed
+- Room adjacency issue where rooms appeared connected
+- Import sorting in scripts to satisfy CI/CD checks
+
+### Contract Coverage
+- GAME-MAP-001: Floor Generation System ✅
+- GAME-MAP-002: Room Generation Algorithm ✅
+
 ## [0.2.0] - 2025-07-21
 
 ### Added
@@ -40,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/releases/tag/v0.1.0
