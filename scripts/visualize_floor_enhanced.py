@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Enhanced floor visualization with statistics."""
 
-from src.models.floor import Floor
 from src.enums import TileType
+from src.models.floor import Floor
 
 
 def visualize_floor_with_room_numbers(floor: Floor) -> str:

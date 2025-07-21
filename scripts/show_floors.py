@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Simple floor visualization."""
 
-from src.models.floor import Floor
 from src.enums import TileType
+from src.models.floor import Floor
 
 
 def show_floor(seed: int):

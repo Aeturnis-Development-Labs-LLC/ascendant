@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Debug floor generation to show room boundaries clearly."""
 
-from src.models.floor import Floor
 from src.enums import TileType
+from src.models.floor import Floor
 
 
 def show_floor_with_boundaries(seed: int):

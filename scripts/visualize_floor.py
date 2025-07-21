@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Visualize generated floors for debugging."""
 
-from src.models.floor import Floor
 from src.enums import TileType
+from src.models.floor import Floor
 
 
 def visualize_floor(floor: Floor) -> str:
