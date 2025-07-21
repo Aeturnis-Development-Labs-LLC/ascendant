@@ -1,0 +1,34 @@
+contract_id: GAME-CORE-001
+name: Project Initialization
+purpose: Ensure project structure is valid and runnable
+phase: 0
+section: 0.1
+
+inputs:
+  - name: project_directory
+    type: path
+    description: Root directory for the project
+
+expected_behavior:
+  - Virtual environment exists and can be activated
+  - All required directories exist (src, tests, docs, assets, contracts)
+  - Requirements.txt is valid and contains required packages
+  - Git repository is initialized
+  - Main module prints "Ascendant: The Eternal Spire" and exits cleanly
+  - Project can be run with "python -m ascendant" (or "python -m src" during development)
+
+validation:
+  - test: Directory structure exists
+    command: pytest tests/test_initialization.py::test_directory_structure_exists
+  - test: Git repository initialized
+    command: pytest tests/test_initialization.py::test_git_repository_initialized
+  - test: Requirements file valid
+    command: pytest tests/test_initialization.py::test_requirements_file_exists
+  - test: Main module works
+    command: pytest tests/test_initialization.py::test_main_prints_game_title
+  - test: No runtime errors
+    command: python -m src
+
+status: implemented
+implementation_date: 2025-07-21
+implemented_by: AI (Claude 3.5) with Human (Lab Director) oversight
