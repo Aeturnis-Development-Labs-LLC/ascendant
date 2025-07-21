@@ -1,13 +1,18 @@
 """Setup configuration for Ascendant: The Eternal Spire"""
 
 from setuptools import setup, find_packages
+import os
+
+# Read version from VERSION file
+with open("VERSION", "r", encoding="utf-8") as f:
+    version = f.read().strip()
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
     name="ascendant",
-    version="0.1.0",
+    version=version,
     author="Aeturnis Development Labs LLC",
     author_email="projects@aeturnis.dev",
     description="A roguelike tower climbing game",
