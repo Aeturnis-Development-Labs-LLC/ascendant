@@ -8,7 +8,9 @@ except ImportError:
     from pathlib import Path
 
     sys.path.insert(0, str(Path(__file__).parent))
-    from __init__ import __version__
+    from __init__ import __version__ as version
+
+    __version__ = version
 
 
 def main():

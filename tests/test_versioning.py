@@ -1,18 +1,18 @@
-"""Tests for semantic versioning implementation"""
+"""Tests for semantic versioning implementation."""
 
-from pathlib import Path
 import re
+from pathlib import Path
 
 
 def test_version_file_exists():
-    """Test that VERSION file exists"""
+    """Test that VERSION file exists."""
     base_path = Path(__file__).parent.parent
     version_file = base_path / "VERSION"
     assert version_file.exists(), "VERSION file does not exist"
 
 
 def test_version_format():
-    """Test that version follows semantic versioning format"""
+    """Test that version follows semantic versioning format."""
     base_path = Path(__file__).parent.parent
     version_file = base_path / "VERSION"
 
@@ -25,7 +25,7 @@ def test_version_format():
 
 
 def test_version_consistency():
-    """Test that version is consistent across all files"""
+    """Test that version is consistent across all files."""
     base_path = Path(__file__).parent.parent
 
     # Read version from VERSION file
@@ -37,9 +37,12 @@ def test_version_consistency():
 
     init_file = base_path / "src" / "__init__.py"
     spec = importlib.util.spec_from_file_location("src", init_file)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    init_version = module.__version__
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        init_version = module.__version__
+    else:
+        raise ImportError("Could not load module")
 
     # Read version from setup.py (by checking the VERSION file is used)
     setup_file = base_path / "setup.py"
@@ -54,7 +57,7 @@ def test_version_consistency():
 
 
 def test_changelog_exists():
-    """Test that CHANGELOG.md exists"""
+    """Test that CHANGELOG.md exists."""
     base_path = Path(__file__).parent.parent
     changelog = base_path / "CHANGELOG.md"
     assert changelog.exists(), "CHANGELOG.md does not exist"
@@ -71,7 +74,7 @@ def test_changelog_exists():
 
 
 def test_versioning_documentation():
-    """Test that versioning strategy is documented"""
+    """Test that versioning strategy is documented."""
     base_path = Path(__file__).parent.parent
     versioning_doc = base_path / "docs" / "VERSIONING.md"
     assert versioning_doc.exists(), "docs/VERSIONING.md does not exist"

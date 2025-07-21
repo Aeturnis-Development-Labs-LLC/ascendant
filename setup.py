@@ -1,7 +1,6 @@
-"""Setup configuration for Ascendant: The Eternal Spire"""
+"""Setup configuration for Ascendant: The Eternal Spire."""
 
-from setuptools import setup, find_packages
-import os
+from setuptools import find_packages, setup
 
 # Read version from VERSION file
 with open("VERSION", "r", encoding="utf-8") as f:

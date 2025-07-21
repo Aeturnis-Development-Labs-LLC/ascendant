@@ -1,12 +1,12 @@
-"""Tests for project initialization - UTF Contract GAME-CORE-001"""
+"""Tests for project initialization - UTF Contract GAME-CORE-001."""
 
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 
 def test_directory_structure_exists():
-    """Test that all required directories exist"""
+    """Test that all required directories exist."""
     base_path = Path(__file__).parent.parent
     required_dirs = ["src", "tests", "docs", "assets", "contracts"]
 
@@ -17,7 +17,7 @@ def test_directory_structure_exists():
 
 
 def test_git_repository_initialized():
-    """Test that git repository is initialized"""
+    """Test that git repository is initialized."""
     base_path = Path(__file__).parent.parent
     git_dir = base_path / ".git"
     assert git_dir.exists(), ".git directory does not exist"
@@ -25,7 +25,7 @@ def test_git_repository_initialized():
 
 
 def test_virtual_environment_can_be_created():
-    """Test that virtual environment exists or can be created"""
+    """Test that virtual environment exists or can be created."""
     # Just check that we can import venv module
     import venv
 
@@ -33,7 +33,7 @@ def test_virtual_environment_can_be_created():
 
 
 def test_requirements_file_exists():
-    """Test that requirements.txt exists with required dependencies"""
+    """Test that requirements.txt exists with required dependencies."""
     base_path = Path(__file__).parent.parent
     req_file = base_path / "requirements.txt"
     assert req_file.exists(), "requirements.txt does not exist"
@@ -46,7 +46,7 @@ def test_requirements_file_exists():
 
 
 def test_main_module_exists():
-    """Test that __main__.py exists and can be imported"""
+    """Test that __main__.py exists and can be imported."""
     base_path = Path(__file__).parent.parent
     main_file = base_path / "src" / "__main__.py"
     assert main_file.exists(), "__main__.py does not exist"
@@ -55,15 +55,17 @@ def test_main_module_exists():
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("test_main", main_file)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    assert hasattr(module, "main"), "main function not found"
-    assert callable(module.main), "main is not callable"
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        assert hasattr(module, "main"), "main function not found"
+        assert callable(module.main), "main is not callable"
+    else:
+        raise ImportError("Could not load module")
 
 
 def test_main_prints_game_title():
-    """Test that running main prints the game title"""
+    """Test that running main prints the game title."""
     base_path = Path(__file__).parent.parent
 
     # Run the module and capture output
@@ -80,7 +82,7 @@ def test_main_prints_game_title():
 
 
 def test_project_runs_without_errors():
-    """Test that 'python -m ascendant' would run without errors"""
+    """Test that 'python -m ascendant' would run without errors."""
     base_path = Path(__file__).parent.parent
     main_file = base_path / "src" / "__main__.py"
 
@@ -88,8 +90,10 @@ def test_project_runs_without_errors():
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("test_main", main_file)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    exit_code = module.main()
-    assert exit_code == 0, f"main() returned non-zero exit code: {exit_code}"
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        exit_code = module.main()
+        assert exit_code == 0, f"main() returned non-zero exit code: {exit_code}"
+    else:
+        raise ImportError("Could not load module")
