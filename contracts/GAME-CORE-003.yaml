@@ -1,0 +1,36 @@
+contract_id: GAME-CORE-003
+name: Tile Data Structure
+category: core
+priority: high
+description: Implement the Tile class representing a single map position
+
+expected_behavior:
+  - Tile has immutable position (x, y) set at creation
+  - Has tile_type property using TileType enum
+  - Can hold optional occupant (Entity)
+  - Can hold optional item (Item)
+  - Provides is_walkable property based on tile type
+  - Validates single occupancy (prevents multiple entities)
+  - FLOOR and STAIRS_UP tiles are walkable
+  - WALL, TRAP, and CHEST tiles are not walkable by default
+
+success_criteria:
+  - Tile class defined in src/models/tile.py
+  - Position is immutable after creation
+  - Proper validation prevents multiple occupants
+  - is_walkable property works correctly
+  - Type hints for all attributes
+  - Proper error handling for invalid operations
+
+dependencies:
+  - GAME-CORE-002 (for TileType enum)
+
+validation:
+  - Tests verify position immutability
+  - Tests confirm occupancy validation
+  - Tests verify walkability logic
+  - Tests confirm item placement
+
+status: implemented
+implementation_date: 2025-07-21
+implemented_by: AI (Claude 3.5) with Human (Lab Director) oversight
