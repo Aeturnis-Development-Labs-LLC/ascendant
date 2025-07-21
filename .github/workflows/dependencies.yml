@@ -1,0 +1,183 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Run at 2 AM UTC every Monday
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dependencies:
+    name: Update Python Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pip-tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-tools
+
+      - name: Update dependencies
+        run: |
+          # Create requirements.in if it doesn't exist
+          if [ ! -f requirements.in ]; then
+            # Extract base package names from requirements.txt
+            grep -v '^#' requirements.txt | sed 's/[<>=!].*//' > requirements.in
+          fi
+
+          # Compile updated requirements
+          pip-compile --upgrade --resolver=backtracking requirements.in
+
+      - name: Test with updated dependencies
+        run: |
+          # Create virtual environment for testing
+          python -m venv test_env
+          source test_env/bin/activate || source test_env/Scripts/activate
+
+          # Install updated dependencies
+          pip install -r requirements.txt
+
+          # Run tests
+          pytest tests/ -v
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: update dependencies"
+          title: "chore: automated dependency updates"
+          body: |
+            ## Automated Dependency Updates
+
+            This PR contains automated dependency updates.
+
+            ### What's Changed
+            - Updated Python dependencies to their latest compatible versions
+            - All tests have been run with the updated dependencies
+
+            ### Review Checklist
+            - [ ] Review dependency changes for breaking updates
+            - [ ] Check security advisories for updated packages
+            - [ ] Verify tests pass with new dependencies
+            - [ ] Update CHANGELOG.md if significant updates
+          branch: deps/update-${{ github.run_number }}
+          delete-branch: true
+          labels: |
+            dependencies
+            automated
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install safety pip-audit
+
+      - name: Run safety check
+        continue-on-error: true
+        run: |
+          safety check --json --output safety-report.json
+
+      - name: Run pip-audit
+        continue-on-error: true
+        run: |
+          pip-audit --desc --format json --output pip-audit-report.json
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            safety-report.json
+            pip-audit-report.json
+
+      - name: Create issue if vulnerabilities found
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let hasVulnerabilities = false;
+            let vulnerabilityDetails = [];
+
+            // Check safety report
+            try {
+              const safetyReport = JSON.parse(fs.readFileSync('safety-report.json', 'utf8'));
+              if (safetyReport.vulnerabilities && safetyReport.vulnerabilities.length > 0) {
+                hasVulnerabilities = true;
+                vulnerabilityDetails.push('### Safety Check Vulnerabilities:');
+                safetyReport.vulnerabilities.forEach(vuln => {
+                  vulnerabilityDetails.push(`- **${vuln.package_name}**: ${vuln.vulnerability}`);
+                });
+              }
+            } catch (e) {
+              console.log('Could not parse safety report');
+            }
+
+            // Check pip-audit report
+            try {
+              const pipAuditReport = JSON.parse(fs.readFileSync('pip-audit-report.json', 'utf8'));
+              if (pipAuditReport.vulnerabilities && pipAuditReport.vulnerabilities.length > 0) {
+                hasVulnerabilities = true;
+                vulnerabilityDetails.push('\n### Pip-Audit Vulnerabilities:');
+                pipAuditReport.vulnerabilities.forEach(vuln => {
+                  vulnerabilityDetails.push(`- **${vuln.name}**: ${vuln.description}`);
+                });
+              }
+            } catch (e) {
+              console.log('Could not parse pip-audit report');
+            }
+
+            if (hasVulnerabilities) {
+              const issueBody = `## Security Vulnerabilities Detected
+
+              The automated security audit has detected vulnerabilities in the project dependencies.
+
+              ${vulnerabilityDetails.join('\n')}
+
+              ### Recommended Actions
+              1. Review the vulnerability details
+              2. Update affected packages to secure versions
+              3. If updates are not available, consider alternative packages
+              4. Document any accepted risks
+
+              ---
+              *This issue was automatically created by the dependency security audit workflow.*
+              `;
+
+              // Check if issue already exists
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'security,automated',
+                state: 'open'
+              });
+
+              if (issues.length === 0) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: '🔒 Security vulnerabilities detected in dependencies',
+                  body: issueBody,
+                  labels: ['security', 'automated', 'high-priority']
+                });
+              }
+            }

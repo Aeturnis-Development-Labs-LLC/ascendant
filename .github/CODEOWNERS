@@ -1,0 +1,27 @@
+# CODEOWNERS for Ascendant: The Eternal Spire
+# This file defines who is responsible for code reviews in different parts of the project
+
+# Default owners for everything in the repo
+* @Aeturnis-Development-Labs-LLC/maintainers
+
+# Game source code
+/src/ @Aeturnis-Development-Labs-LLC/game-developers
+
+# Tests and quality assurance
+/tests/ @Aeturnis-Development-Labs-LLC/qa-team
+
+# Documentation
+/docs/ @Aeturnis-Development-Labs-LLC/documentation
+*.md @Aeturnis-Development-Labs-LLC/documentation
+
+# UTF Contracts (CAFE methodology)
+/contracts/ @Aeturnis-Development-Labs-LLC/architects
+
+# CI/CD and GitHub configuration
+/.github/ @Aeturnis-Development-Labs-LLC/devops
+.pre-commit-config.yaml @Aeturnis-Development-Labs-LLC/devops
+
+# Dependencies and configuration
+requirements.txt @Aeturnis-Development-Labs-LLC/maintainers
+pyproject.toml @Aeturnis-Development-Labs-LLC/maintainers
+VERSION @Aeturnis-Development-Labs-LLC/maintainers

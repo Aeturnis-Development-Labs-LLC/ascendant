@@ -1,0 +1,128 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  validate-version:
+    name: Validate Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=${GITHUB_REF#refs/tags/v}
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          # Validate semantic versioning
+          if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Version $VERSION does not follow semantic versioning!"
+            exit 1
+          fi
+
+          # Check VERSION file matches
+          FILE_VERSION=$(cat VERSION)
+          if [ "$FILE_VERSION" != "$VERSION" ]; then
+            echo "Error: VERSION file ($FILE_VERSION) does not match tag ($VERSION)!"
+            exit 1
+          fi
+
+  build-and-test:
+    name: Build and Test
+    needs: validate-version
+    uses: ./.github/workflows/ci.yml
+
+  create-release:
+    name: Create Release
+    needs: [validate-version, build-and-test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.validate-version.outputs.version }}"
+
+          # Extract the changelog for this version
+          awk -v ver="## [$VERSION]" '
+            $0 ~ ver {p=1; next}
+            /^## \[/ && p {exit}
+            p
+          ' CHANGELOG.md > release_notes.md
+
+          # If no specific version found, use unreleased
+          if [ ! -s release_notes.md ]; then
+            awk '/^## \[Unreleased\]/{p=1; next} /^## \[/ && p {exit} p' CHANGELOG.md > release_notes.md
+          fi
+
+          echo "Release notes:"
+          cat release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.validate-version.outputs.version }}
+          name: Release v${{ needs.validate-version.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+  publish-docs:
+    name: Update Documentation
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update version badge
+        run: |
+          VERSION="${{ needs.validate-version.outputs.version }}"
+
+          # Update README.md version badge
+          sed -i "s/version-[0-9]*\.[0-9]*\.[0-9]*/version-$VERSION/g" README.md || true
+
+      - name: Create PR for documentation updates
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "docs: update version to ${{ needs.validate-version.outputs.version }}"
+          title: "docs: post-release updates for v${{ needs.validate-version.outputs.version }}"
+          body: |
+            This PR contains automated documentation updates following the release of v${{ needs.validate-version.outputs.version }}.
+
+            Changes:
+            - Updated version badges
+            - Updated documentation references
+          branch: docs/release-${{ needs.validate-version.outputs.version }}
+          delete-branch: true
