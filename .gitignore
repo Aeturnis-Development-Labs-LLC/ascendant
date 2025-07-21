@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# Audit and temporary scripts
+audit_*.py
+*_audit.py
+temp_*.py
+*_report.md
+reports/
+
 # Distribution / packaging
 .Python
 build/
