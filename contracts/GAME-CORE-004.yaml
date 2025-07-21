@@ -1,0 +1,35 @@
+contract_id: GAME-CORE-004
+name: Entity Base Class
+category: core
+priority: high
+description: Implement the Entity abstract base class for all game entities
+
+expected_behavior:
+  - Entity has immutable position tuple (x, y)
+  - Has unique entity_id (UUID string)
+  - Has entity_type using EntityType enum
+  - Defines abstract update() method
+  - Defines abstract render() method
+  - Position cannot be changed after creation
+  - Entity ID is automatically generated if not provided
+
+success_criteria:
+  - Entity class defined in src/models/entity.py
+  - Class is abstract (cannot be instantiated directly)
+  - Position is immutable
+  - UUID generation works correctly
+  - Abstract methods are properly defined
+  - Type hints for all attributes and methods
+
+dependencies:
+  - GAME-CORE-002 (for EntityType enum)
+
+validation:
+  - Tests verify Entity cannot be instantiated directly
+  - Tests confirm position immutability
+  - Tests verify UUID uniqueness
+  - Tests confirm subclasses must implement abstract methods
+
+status: implemented
+implementation_date: 2025-07-21
+implemented_by: AI (Claude 3.5) with Human (Lab Director) oversight

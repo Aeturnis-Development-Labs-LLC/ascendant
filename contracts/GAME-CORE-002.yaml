@@ -1,0 +1,31 @@
+contract_id: GAME-CORE-002
+name: Core Enumerations
+category: core
+priority: high
+description: Define core enumeration types for game entities, tiles, and objects
+
+expected_behavior:
+  - Define TileType enum with values: FLOOR, WALL, STAIRS_UP, TRAP, CHEST
+  - Define Direction enum with values: NORTH, SOUTH, EAST, WEST
+  - Define ItemType enum with values: WEAPON, ARMOR, CONSUMABLE, MISC
+  - Define EntityType enum with values: PLAYER, MONSTER, NPC
+  - All enums should be immutable
+  - Enums should support string representation
+
+success_criteria:
+  - All enum types are defined in src/enums.py
+  - Each enum has all specified values
+  - Enums are properly typed and immutable
+  - Can import and use enums throughout the codebase
+  - String representation returns meaningful names
+
+dependencies: []
+
+validation:
+  - Unit tests verify all enum values exist
+  - Tests confirm enums are immutable
+  - Import tests verify accessibility
+
+status: implemented
+implementation_date: 2025-07-21
+implemented_by: AI (Claude 3.5) with Human (Lab Director) oversight

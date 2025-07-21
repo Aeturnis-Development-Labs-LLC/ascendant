@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-07-21
+
+### Added
+- Core enumerations (TileType, Direction, ItemType, EntityType) in `src/enums.py`
+- Direction enum with movement vectors (dx, dy)
+- Tile data structure with immutable position and occupancy validation
+- Entity abstract base class with immutable position and UUID generation
+- Item base class with name validation and UUID generation
+- Comprehensive test suite for all data structures (39 new tests)
+- Type hints throughout all new code
+
+### Contract Coverage
+- GAME-CORE-002: Core Enumerations ✅
+- GAME-CORE-003: Tile Data Structure ✅
+- GAME-CORE-004: Entity Base Class ✅
+- GAME-CORE-005: Item Base Class ✅
+
 ## [0.1.0] - 2025-07-21
 
 ### Added
@@ -23,5 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/releases/tag/v0.1.0
