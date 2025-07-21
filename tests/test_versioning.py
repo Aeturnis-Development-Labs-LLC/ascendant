@@ -21,9 +21,7 @@ def test_version_format():
 
     # Semantic versioning regex pattern
     pattern = r"^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?(?:\+[a-zA-Z0-9.-]+)?$"
-    assert re.match(
-        pattern, version
-    ), f"Version '{version}' does not follow semantic versioning"
+    assert re.match(pattern, version), f"Version '{version}' does not follow semantic versioning"
 
 
 def test_version_consistency():
@@ -47,9 +45,7 @@ def test_version_consistency():
     setup_file = base_path / "setup.py"
     with open(setup_file, "r") as f:
         setup_content = f.read()
-        assert (
-            'with open("VERSION"' in setup_content
-        ), "setup.py doesn't read from VERSION file"
+        assert 'with open("VERSION"' in setup_content, "setup.py doesn't read from VERSION file"
 
     # Compare versions
     assert (
