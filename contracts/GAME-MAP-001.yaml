@@ -1,0 +1,33 @@
+contract_id: GAME-MAP-001
+name: Floor Generation System
+category: map-generation
+priority: high
+description: Implement the Floor class for procedural dungeon generation
+
+expected_behavior:
+  - Floor class in src/models/floor.py
+  - 20x20 grid of Tile objects
+  - Seed parameter for reproducible generation
+  - generate() method that creates rooms
+  - Random seed produces identical layouts
+  - Grid stored as 2D list or dict
+
+success_criteria:
+  - Floor class can be instantiated with seed
+  - generate() method creates valid floor layout
+  - Same seed always produces same layout
+  - All tiles in grid are properly initialized
+  - Floor boundaries are walls
+
+dependencies:
+  - GAME-CORE-003 (Tile data structure)
+
+validation:
+  - Tests verify floor generation
+  - Tests confirm seed reproducibility
+  - Tests check grid dimensions
+  - Tests verify all tiles are valid
+
+status: implemented
+implementation_date: 2025-07-21
+implemented_by: AI (Claude 3.5) with Human (Lab Director) oversight
