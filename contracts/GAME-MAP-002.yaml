@@ -1,0 +1,36 @@
+contract_id: GAME-MAP-002
+name: Room Generation Algorithm
+category: map-generation
+priority: high
+description: Implement basic rectangular room generation within floors
+
+expected_behavior:
+  - Generate 5-10 rectangular rooms per floor
+  - Room size between 3x3 and 8x8 tiles
+  - Rooms cannot overlap
+  - Rooms must be at least 1 tile from edges
+  - Non-room tiles are walls
+  - Rooms have floor tiles
+
+success_criteria:
+  - Algorithm generates correct number of rooms
+  - All rooms within size constraints
+  - No room overlaps detected
+  - Edge clearance maintained
+  - Room interiors are FLOOR tiles
+  - Room count varies with different seeds
+
+dependencies:
+  - GAME-MAP-001 (Floor generation system)
+  - GAME-CORE-003 (Tile data structure)
+
+validation:
+  - Tests verify room count range
+  - Tests check room dimensions
+  - Tests ensure no overlaps
+  - Tests verify edge clearance
+  - Tests confirm room tile types
+
+status: implemented
+implementation_date: 2025-07-21
+implemented_by: AI (Claude 3.5) with Human (Lab Director) oversight
