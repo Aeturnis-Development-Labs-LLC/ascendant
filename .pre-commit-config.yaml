@@ -61,12 +61,6 @@ repos:
         args: ['-r', 'src', '-ll']
         exclude: tests/
 
-  # YAML formatting
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.3
-    hooks:
-      - id: prettier
-        types: [yaml]
 
 # Configuration
 default_language_version:
