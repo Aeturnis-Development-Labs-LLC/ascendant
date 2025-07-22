@@ -1,7 +1,5 @@
 """Tests for movement system - UTF Contracts GAME-MOVE-001, GAME-MOVE-002, GAME-MOVE-005."""
 
-from typing import Tuple
-
 import pytest
 
 from src.enums import Direction, EntityType, TileType
@@ -325,7 +323,7 @@ class TestMovementIntegration:
         floor.generate()
 
         # Make entire floor walkable for testing
-        for pos, tile in floor.tiles.items():
+        for pos, _tile in floor.tiles.items():
             floor.tiles[pos] = Tile(pos[0], pos[1], TileType.FLOOR)
 
         char = Character("Hero", 10, 10)
