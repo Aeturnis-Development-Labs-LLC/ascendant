@@ -15,8 +15,21 @@ except ImportError:
 
 def main():
     """Run the main entry point for the game."""
-    print(f"Ascendant: The Eternal Spire (Client) v{__version__}")
-    return 0
+    import sys
+    
+    # Check if running in GUI mode
+    if "--gui" in sys.argv or len(sys.argv) == 1:
+        # Import here to avoid requiring PyQt6 for non-GUI usage
+        try:
+            from client.app import main as gui_main
+            return gui_main()
+        except ImportError:
+            print("PyQt6 not installed. Please install with: pip install PyQt6")
+            return 1
+    else:
+        # Console mode
+        print(f"Ascendant: The Eternal Spire (Client) v{__version__}")
+        return 0
 
 
 if __name__ == "__main__":

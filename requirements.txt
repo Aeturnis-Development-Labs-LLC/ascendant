@@ -19,4 +19,5 @@ flake8-bugbear==23.7.10
 flake8-comprehensions==3.14.0
 flake8-simplify==0.20.0
 
-# Game dependencies will be added here as needed
+# Game dependencies
+PyQt6==6.6.1

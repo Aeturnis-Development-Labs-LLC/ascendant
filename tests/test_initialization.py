@@ -68,9 +68,9 @@ def test_main_prints_game_title():
     """Test that running main prints the game title."""
     base_path = Path(__file__).parent.parent
 
-    # Run the module and capture output
+    # Run the module in console mode and capture output
     result = subprocess.run(
-        [sys.executable, "-m", "src"],
+        [sys.executable, "-m", "src", "--console"],
         cwd=str(base_path),
         capture_output=True,
         text=True,
