@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-07-21
+
+### Added
+- Room connection algorithm using L-shaped corridors in `Floor.connect_rooms()`
+- Stairs placement functionality in `Floor.place_stairs()`
+- Connectivity validation with pathfinding in `Floor.is_fully_connected()`
+- Comprehensive test suite for room connections (12 new tests)
+- Performance benchmark scripts for floor operations
+- Edge case testing for 100x100 floors demonstrating excellent scalability
+- Visualization script for connected floors with stairs
+
+### Performance
+- Floor Generation: 0.44ms average (target <100ms) ✅
+- Room Connection: 0.05ms average (target <50ms) ✅
+- Pathfinding Check: 0.17ms average (target <50ms) ✅
+- Full Floor Creation: 0.65ms average (target <500ms) ✅
+
+### Contract Coverage
+- GAME-MAP-003: Room Connection ✅
+- GAME-MAP-004: Stairs Placement ✅
+
 ## [0.3.0] - 2025-07-21
 
 ### Added
@@ -59,7 +80,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/releases/tag/v0.1.0

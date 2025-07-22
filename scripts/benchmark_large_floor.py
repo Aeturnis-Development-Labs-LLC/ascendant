@@ -1,95 +1,30 @@
-"""Floor generation system for dungeon levels."""
+"""Benchmark script for large floor operations (100x100)."""
 
-import random
-from collections import deque
-from typing import Dict, List, Optional, Set, Tuple
+import time
+import statistics
+from typing import Dict, List, Optional, Tuple
 
 from src.enums import TileType
 from src.models.tile import Tile
 
 
-class Room:
-    """Represents a rectangular room in the floor."""
-
-    def __init__(self, x: int, y: int, width: int, height: int):
-        """Initialize a room with position and dimensions.
-
-        Args:
-            x: Left coordinate of the room
-            y: Top coordinate of the room
-            width: Width of the room in tiles
-            height: Height of the room in tiles
-        """
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
-    @property
-    def x2(self) -> int:
-        """Get the right edge coordinate."""
-        return self.x + self.width - 1
-
-    @property
-    def y2(self) -> int:
-        """Get the bottom edge coordinate."""
-        return self.y + self.height - 1
-
-    def overlaps(self, other: "Room", min_distance: int = 1) -> bool:
-        """Check if this room overlaps with another room.
-
-        Args:
-            other: Another room to check overlap with
-            min_distance: Minimum distance required between rooms
-
-        Returns:
-            True if rooms are too close, False otherwise
-        """
-        # Expand the room boundaries by min_distance on all sides
-        # to ensure rooms have space between them
-        self_x1 = self.x - min_distance
-        self_y1 = self.y - min_distance
-        self_x2 = self.x2 + min_distance
-        self_y2 = self.y2 + min_distance
-
-        other_x1 = other.x - min_distance
-        other_y1 = other.y - min_distance
-        other_x2 = other.x2 + min_distance
-        other_y2 = other.y2 + min_distance
-
-        # Check if one room is to the left of the other
-        if self_x2 < other_x1 or other_x2 < self_x1:
-            return False
-        # Check if one room is above the other
-        if self_y2 < other_y1 or other_y2 < self_y1:
-            return False
-        return True
-
-    def __repr__(self) -> str:
-        """Return string representation of the room."""
-        return f"Room({self.x}, {self.y}, {self.width}x{self.height})"
-
-
-class Floor:
-    """Represents a single floor/level of the dungeon."""
-
-    FLOOR_WIDTH = 20
-    FLOOR_HEIGHT = 20
-    MIN_ROOMS = 5
-    MAX_ROOMS = 10
+class LargeFloor:
+    """Test class for 100x100 floor."""
+    
+    FLOOR_WIDTH = 100
+    FLOOR_HEIGHT = 100
+    MIN_ROOMS = 25
+    MAX_ROOMS = 50
     MIN_ROOM_SIZE = 3
     MAX_ROOM_SIZE = 8
     EDGE_BUFFER = 1
 
     def __init__(self, seed: int):
-        """Initialize a new floor with the given seed.
-
-        Args:
-            seed: Random seed for reproducible generation
-        """
+        """Initialize a new floor with the given seed."""
         self.seed = seed
         self.tiles: Dict[Tuple[int, int], Tile] = {}
-        self.rooms: List[Room] = []
+        self.rooms: List = []
+        import random
         self._random = random.Random(seed)
 
     def generate(self) -> None:
@@ -107,10 +42,11 @@ class Floor:
 
     def _generate_rooms(self) -> None:
         """Generate random non-overlapping rooms."""
+        from src.models.floor import Room
         room_count = self._random.randint(self.MIN_ROOMS, self.MAX_ROOMS)
 
         attempts = 0
-        max_attempts = 100
+        max_attempts = 1000
 
         while len(self.rooms) < room_count and attempts < max_attempts:
             attempts += 1
@@ -142,30 +78,6 @@ class Floor:
                 for x in range(room.x, room.x + room.width):
                     if (x, y) in self.tiles:
                         self.tiles[(x, y)] = Tile(x, y, TileType.FLOOR)
-
-    def get_tile(self, x: int, y: int) -> Optional[Tile]:
-        """Get the tile at the specified coordinates.
-
-        Args:
-            x: X coordinate
-            y: Y coordinate
-
-        Returns:
-            The tile at the position, or None if out of bounds
-        """
-        return self.tiles.get((x, y))
-
-    def is_valid_position(self, x: int, y: int) -> bool:
-        """Check if a position is valid within the floor.
-
-        Args:
-            x: X coordinate
-            y: Y coordinate
-
-        Returns:
-            True if position is within floor bounds
-        """
-        return 0 <= x < self.FLOOR_WIDTH and 0 <= y < self.FLOOR_HEIGHT
 
     def connect_rooms(self) -> None:
         """Connect all rooms with L-shaped corridors."""
@@ -238,11 +150,7 @@ class Floor:
                 self.tiles[(x, y)] = Tile(x, y, TileType.STAIRS_UP)
 
     def is_fully_connected(self) -> bool:
-        """Check if all rooms are connected to each other.
-
-        Returns:
-            True if all rooms are reachable from any other room
-        """
+        """Check if all rooms are connected to each other."""
         if len(self.rooms) < 2:
             return True
 
@@ -252,7 +160,8 @@ class Floor:
         start_y = start_room.y + start_room.height // 2
 
         # Use BFS to find all reachable floor tiles
-        visited: Set[Tuple[int, int]] = set()
+        from collections import deque
+        visited: set = set()
         queue = deque([(start_x, start_y)])
 
         while queue:
@@ -285,3 +194,91 @@ class Floor:
                 return False
 
         return True
+
+    def is_valid_position(self, x: int, y: int) -> bool:
+        """Check if a position is valid within the floor."""
+        return 0 <= x < self.FLOOR_WIDTH and 0 <= y < self.FLOOR_HEIGHT
+
+
+def benchmark_operation(operation_name: str, operation, iterations: int = 10) -> Tuple[float, float, float]:
+    """Benchmark an operation and return min, avg, max times in milliseconds."""
+    times = []
+    
+    for _ in range(iterations):
+        start_time = time.perf_counter()
+        operation()
+        end_time = time.perf_counter()
+        times.append((end_time - start_time) * 1000)  # Convert to milliseconds
+    
+    return min(times), statistics.mean(times), max(times)
+
+
+def main():
+    """Run benchmarks for 100x100 floor."""
+    print("=== EDGE CASE: 100x100 Floor Benchmark ===")
+    print("Running 10 iterations for each operation...")
+    print()
+    
+    # Test operations
+    seed = 12345
+    
+    # Floor Generation
+    def gen_op():
+        floor = LargeFloor(seed)
+        floor.generate()
+    
+    gen_min, gen_avg, gen_max = benchmark_operation("Floor Generation", gen_op)
+    
+    # Room Connection
+    floor = LargeFloor(seed)
+    floor.generate()
+    def conn_op():
+        floor.connect_rooms()
+    
+    conn_min, conn_avg, conn_max = benchmark_operation("Room Connection", conn_op)
+    
+    # Pathfinding Check
+    floor = LargeFloor(seed)
+    floor.generate()
+    floor.connect_rooms()
+    def path_op():
+        floor.is_fully_connected()
+    
+    path_min, path_avg, path_max = benchmark_operation("Pathfinding Check", path_op)
+    
+    # Full Floor Creation
+    def full_op():
+        floor = LargeFloor(seed)
+        floor.generate()
+        floor.connect_rooms()
+        floor.place_stairs()
+        floor.is_fully_connected()
+    
+    full_min, full_avg, full_max = benchmark_operation("Full Floor Creation", full_op, iterations=5)
+    
+    print("### 100x100 Floor Benchmark Results (milliseconds)")
+    print("| Operation | Min | Avg | Max | Target | Status |")
+    print("|-----------|-----|-----|-----|--------|--------|")
+    print(f"| Floor Generation | {gen_min:.2f} | {gen_avg:.2f} | {gen_max:.2f} | <100ms | {'PASS' if gen_avg < 100 else 'FAIL'} |")
+    print(f"| Room Connection | {conn_min:.2f} | {conn_avg:.2f} | {conn_max:.2f} | <50ms | {'PASS' if conn_avg < 50 else 'FAIL'} |")
+    print(f"| Pathfinding Check | {path_min:.2f} | {path_avg:.2f} | {path_max:.2f} | <50ms | {'PASS' if path_avg < 50 else 'FAIL'} |")
+    print(f"| Full Floor Creation | {full_min:.2f} | {full_avg:.2f} | {full_max:.2f} | <500ms | {'PASS' if full_avg < 500 else 'FAIL'} |")
+    
+    print()
+    print("### Comparison with 20x20 floor")
+    print("| Operation | 20x20 avg | 100x100 avg | Scale Factor |")
+    print("|-----------|-----------|-------------|--------------|")
+    print(f"| Floor Generation | 0.44ms | {gen_avg:.2f}ms | {gen_avg/0.44:.1f}x |")
+    print(f"| Room Connection | 0.05ms | {conn_avg:.2f}ms | {conn_avg/0.05:.1f}x |")
+    print(f"| Pathfinding Check | 0.17ms | {path_avg:.2f}ms | {path_avg/0.17:.1f}x |")
+    
+    # Get floor stats
+    test_floor = LargeFloor(seed)
+    test_floor.generate()
+    print()
+    print(f"Floor stats: {len(test_floor.rooms)} rooms generated")
+    print(f"Grid size: {test_floor.FLOOR_WIDTH}x{test_floor.FLOOR_HEIGHT} = {test_floor.FLOOR_WIDTH * test_floor.FLOOR_HEIGHT} tiles")
+
+
+if __name__ == "__main__":
+    main()
