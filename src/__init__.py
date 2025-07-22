@@ -1,7 +1,7 @@
 # Ascendant: The Eternal Spire
 # Main package initialization
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 __author__ = "Aeturnis Development Labs LLC"
 __email__ = "projects@aeturnis.dev"
 

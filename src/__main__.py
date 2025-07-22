@@ -1,4 +1,4 @@
-"""Ascendant: The Eternal Spire - Main entry point for the game."""
+"""Ascendant: The Eternal Spire - Game Client entry point."""
 
 try:
     from . import __version__
@@ -15,7 +15,7 @@ except ImportError:
 
 def main():
     """Main entry point for the game."""
-    print(f"Ascendant: The Eternal Spire v{__version__}")
+    print(f"Ascendant: The Eternal Spire (Client) v{__version__}")
     return 0
 
 

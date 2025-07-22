@@ -1,7 +1,7 @@
 """World map system for overworld navigation."""
 
 import random
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 from src.enums import TerrainType
 
@@ -41,6 +41,16 @@ class WorldMap:
     CENTER_X = 37
     CENTER_Y = 37
 
+    # Vision radius by terrain type (per GAME-WORLD-014)
+    VISION_RADIUS_BY_TERRAIN: Dict[TerrainType, int] = {
+        TerrainType.ROADS: 5,
+        TerrainType.PLAINS: 4,
+        TerrainType.FOREST: 2,
+        TerrainType.MOUNTAINS: 3,
+        TerrainType.SHADOWLANDS: 2,
+        TerrainType.WATER: 4,
+    }
+
     def __init__(self, seed: Optional[int] = None):
         """Initialize the world map.
 
@@ -51,6 +61,7 @@ class WorldMap:
         self.rng = random.Random(self.seed)
         self.tiles: List[List[WorldTile]] = []
         self.safe_haven_position = (self.CENTER_X, self.CENTER_Y)
+        self.discovered_tiles: Set[Tuple[int, int]] = set()
 
         # Initialize empty grid
         for y in range(self.HEIGHT):
@@ -214,3 +225,27 @@ class WorldMap:
                     distance = (dx * dx + dy * dy) ** 0.5
                     if distance <= radius:
                         self.tiles[y][x].discovered = True
+                        self.discovered_tiles.add((x, y))
+
+    def is_discovered(self, x: int, y: int) -> bool:
+        """Check if a tile has been discovered.
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            True if tile has been discovered
+        """
+        return (x, y) in self.discovered_tiles
+
+    def get_vision_radius(self, terrain: TerrainType) -> int:
+        """Get vision radius for terrain type.
+
+        Args:
+            terrain: Current terrain type
+
+        Returns:
+            Vision radius in tiles
+        """
+        return self.VISION_RADIUS_BY_TERRAIN.get(terrain, 3)
