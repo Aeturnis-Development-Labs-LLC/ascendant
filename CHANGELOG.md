@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2025-01-22
+
+### Added
+- Color System Implementation (Phase 2.6)
+  - ColorScheme class for managing RGB/ANSI color mappings
+  - Color effects (fog of war, status effects, damage flash animations)
+  - Accessibility features (colorblind modes, high contrast, symbol-only mode)
+  - Extended ASCII renderer with color support
+  - JSON-loadable custom color schemes
+  - 70 new tests following TDD methodology
+  
+### Changed
+- ASCII renderer now supports both colored and non-colored output
+- Backward compatibility maintained with static render method
+
+### Contract Coverage
+- GAME-COLOR-001: Color scheme management ✅
+- GAME-COLOR-002: Visual effects system ✅
+- GAME-COLOR-003: Accessibility features ✅
+
 ## [0.9.0] - 2025-07-22
 
 ### Added

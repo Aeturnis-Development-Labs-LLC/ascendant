@@ -18,7 +18,7 @@ class TestASCIIRenderer:
         player_pos = (room.x + room.width // 2, room.y + room.height // 2)
 
         # Render with large vision radius (no fog)
-        result = ASCIIRenderer.render(floor, player_pos, vision_radius=50)
+        result = ASCIIRenderer.render_static(floor, player_pos, vision_radius=50)
 
         # Check basic properties
         lines = result.split("\n")
@@ -41,7 +41,7 @@ class TestASCIIRenderer:
         player_pos = (1, 1)
 
         # Render with small vision radius
-        result = ASCIIRenderer.render(floor, player_pos, vision_radius=3)
+        result = ASCIIRenderer.render_static(floor, player_pos, vision_radius=3)
 
         # Should have fog characters
         assert "?" in result
@@ -62,7 +62,7 @@ class TestASCIIRenderer:
         player_pos = (10, 10)
 
         # Render with radius 5
-        result = ASCIIRenderer.render(floor, player_pos, vision_radius=5)
+        result = ASCIIRenderer.render_static(floor, player_pos, vision_radius=5)
         lines = result.split("\n")
 
         # Check that tiles within radius 5 are not fog
@@ -97,7 +97,7 @@ class TestASCIIRenderer:
 
         # Render with player near stairs (not on them)
         player_pos = (stairs_up_pos[0] + 1, stairs_up_pos[1])
-        result = ASCIIRenderer.render(floor, player_pos, vision_radius=10)
+        result = ASCIIRenderer.render_static(floor, player_pos, vision_radius=10)
 
         # Stairs should be visible
         assert "^" in result  # Stairs up
@@ -112,13 +112,13 @@ class TestASCIIRenderer:
         floor.monsters = {(5, 5): {"type": "goblin"}}
 
         # Render with player at different position
-        result = ASCIIRenderer.render(floor, (3, 3), vision_radius=10)
+        result = ASCIIRenderer.render_static(floor, (3, 3), vision_radius=10)
 
         # Monster should be visible
         assert "M" in result
 
         # Player should override any tile
-        result2 = ASCIIRenderer.render(floor, (5, 5), vision_radius=10)
+        result2 = ASCIIRenderer.render_static(floor, (5, 5), vision_radius=10)
         assert "@" in result2
         # Monster shouldn't be visible at player position
         lines = result2.split("\n")
@@ -233,7 +233,7 @@ class TestTrapPlacement:
         trap_pos = list(floor.traps.keys())[0]
 
         # Render with trap hidden
-        result = ASCIIRenderer.render(floor, trap_pos, vision_radius=10)
+        result = ASCIIRenderer.render_static(floor, trap_pos, vision_radius=10)
         lines = result.split("\n")
         # Hidden trap should show as floor
         assert lines[trap_pos[1]][trap_pos[0]] == "@"  # Player is on trap
@@ -243,7 +243,7 @@ class TestTrapPlacement:
 
         # Render from nearby position
         nearby_pos = (trap_pos[0] + 1, trap_pos[1])
-        result = ASCIIRenderer.render(floor, nearby_pos, vision_radius=10)
+        result = ASCIIRenderer.render_static(floor, nearby_pos, vision_radius=10)
         lines = result.split("\n")
         # Revealed trap should show as 'T'
         assert lines[trap_pos[1]][trap_pos[0]] == "T"
@@ -340,7 +340,7 @@ class TestChestGeneration:
 
         # Render from nearby position
         nearby_pos = (chest_pos[0] + 1, chest_pos[1])
-        result = ASCIIRenderer.render(floor, nearby_pos, vision_radius=10)
+        result = ASCIIRenderer.render_static(floor, nearby_pos, vision_radius=10)
 
         # Chest should be visible
         assert "C" in result
@@ -364,7 +364,7 @@ class TestIntegratedVisualization:
         floor.monsters = {(5, 5): {"type": "goblin"}, (15, 15): {"type": "orc"}}
 
         # Render from center
-        result = ASCIIRenderer.render(floor, (10, 10), vision_radius=20)
+        result = ASCIIRenderer.render_static(floor, (10, 10), vision_radius=20)
 
         # Should have all elements
         assert "@" in result  # Player
@@ -389,7 +389,7 @@ class TestIntegratedVisualization:
         # Time 100 renders
         start_time = time.time()
         for _ in range(100):
-            ASCIIRenderer.render(floor, (10, 10), vision_radius=5)
+            ASCIIRenderer.render_static(floor, (10, 10), vision_radius=5)
         elapsed = time.time() - start_time
 
         # Should be fast (less than 100ms for 100 renders)
@@ -401,15 +401,17 @@ class TestIntegratedVisualization:
         floor.generate()
 
         # Player at corner
-        result = ASCIIRenderer.render(floor, (0, 0), vision_radius=3)
+        result = ASCIIRenderer.render_static(floor, (0, 0), vision_radius=3)
         assert "@" in result
 
         # Player at edge
-        result = ASCIIRenderer.render(floor, (floor.width - 1, floor.height - 1), vision_radius=3)
+        result = ASCIIRenderer.render_static(
+            floor, (floor.width - 1, floor.height - 1), vision_radius=3
+        )
         assert "@" in result
 
         # Zero vision radius
-        result = ASCIIRenderer.render(floor, (10, 10), vision_radius=0)
+        result = ASCIIRenderer.render_static(floor, (10, 10), vision_radius=0)
         # Should only see player
         assert result.count("@") == 1
         assert result.count("?") == (floor.width * floor.height) - 1
