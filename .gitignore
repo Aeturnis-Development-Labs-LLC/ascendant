@@ -13,6 +13,9 @@ temp_*.py
 *_report.md
 reports/
 
+# Debug and visualization scripts (not needed for production)
+scripts/
+
 # Distribution / packaging
 .Python
 build/
