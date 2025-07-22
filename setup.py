@@ -10,11 +10,11 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="ascendant",
+    name="ascendant-client",
     version=version,
     author="Aeturnis Development Labs LLC",
     author_email="projects@aeturnis.dev",
-    description="A roguelike tower climbing game",
+    description="Ascendant: The Eternal Spire - Game Client",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Aeturnis-Development-Labs-LLC/ascendant",
@@ -43,7 +43,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "ascendant=src.__main__:main",
+            "ascendant-client=src.__main__:main",
         ],
     },
 )

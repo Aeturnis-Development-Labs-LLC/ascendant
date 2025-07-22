@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2025-07-22
+
+### Added
+- World Map Features (Phase 2.4)
+  - Fog of war system with terrain-based vision radius
+  - Fast travel system (walking free, carriage 50g/10 tiles)
+  - Random encounters with terrain-specific distributions
+  - Environmental hazards (weather system + terrain hazards)
+  - Location entry/exit mechanics
+  - World map ASCII renderer with weather display
+- 45 new tests for world map features
+
+### Changed
+- Package renamed from `ascendant` to `ascendant-client` to clarify this is the game client
+- Console entry point renamed to `ascendant-client`
+
+### Contract Coverage
+- GAME-WORLD-004: Fog of war system ✅
+- GAME-WORLD-005: Fast travel system ✅
+- GAME-WORLD-006: Random encounters ✅
+- GAME-WORLD-007: Environmental hazards ✅
+
 ## [0.7.0] - 2025-07-22
 
 ### Added
