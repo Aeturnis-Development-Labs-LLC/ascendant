@@ -12,6 +12,7 @@ class MockEntity:
     """Simple mock entity for testing."""
 
     def __init__(self, x, y):
+        """Initialize mock entity at position."""
         self.x = x
         self.y = y
         self.position = (x, y)

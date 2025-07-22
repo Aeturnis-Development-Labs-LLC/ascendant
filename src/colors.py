@@ -107,20 +107,15 @@ def apply_status_tint(color: Tuple[int, int, int], status: str) -> Tuple[int, in
     """
     r, g, b = color
 
-    if status == "poison":
-        # Green tint
-        return (int(r * 0.7), min(255, int(g * 1.5)), int(b * 0.7))
-    elif status == "burning":
-        # Red tint
-        return (min(255, int(r * 1.6)), int(g * 0.8), int(b * 0.5))
-    elif status == "frozen":
-        # Blue tint
-        return (int(r * 0.8), int(g * 0.9), min(255, int(b * 1.5)))
-    elif status == "blessed":
-        # Golden tint
-        return (min(255, int(r * 1.4)), min(255, int(g * 1.3)), int(b * 0.8))
+    # Status effect color transformations
+    status_tints = {
+        "poison": (int(r * 0.7), min(255, int(g * 1.5)), int(b * 0.7)),
+        "burning": (min(255, int(r * 1.6)), int(g * 0.8), int(b * 0.5)),
+        "frozen": (int(r * 0.8), int(g * 0.9), min(255, int(b * 1.5))),
+        "blessed": (min(255, int(r * 1.4)), min(255, int(g * 1.3)), int(b * 0.8)),
+    }
 
-    return color
+    return status_tints.get(status, color)
 
 
 # Simple colorblind filters (30 lines instead of 174)
