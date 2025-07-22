@@ -73,3 +73,31 @@ class ActionType(Enum):
     def __str__(self) -> str:
         """Return a readable string representation."""
         return self.name
+
+
+class TerrainType(Enum):
+    """Types of terrain that can exist on the world map."""
+
+    PLAINS = auto()
+    FOREST = auto()
+    MOUNTAINS = auto()
+    WATER = auto()
+    ROADS = auto()
+    SHADOWLANDS = auto()
+
+    def __str__(self) -> str:
+        """Return a readable string representation."""
+        return self.name
+
+
+class LocationType(Enum):
+    """Types of locations on the world map."""
+
+    SAFE_HAVEN = auto()
+    DUNGEON_ENTRANCE = auto()
+    TOWER_ENTRANCE = auto()
+    VILLAGE = auto()  # For future use
+
+    def __str__(self) -> str:
+        """Return a readable string representation."""
+        return self.name
