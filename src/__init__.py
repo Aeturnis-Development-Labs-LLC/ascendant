@@ -1,7 +1,7 @@
 # Ascendant: The Eternal Spire
 # Main package initialization
 
-__version__ = "0.10.0"
+__version__ = "0.11.0"
 __author__ = "Aeturnis Development Labs LLC"
 __email__ = "projects@aeturnis.dev"
 
@@ -16,3 +16,4 @@ __email__ = "projects@aeturnis.dev"
 # 0.8.0 - World map features (fog of war, fast travel, encounters, hazards)
 # 0.9.0 - Safe Haven & special locations (interior, Lost Souls, escape mechanics)
 # 0.10.0 - Color system implementation (ColorScheme, effects, accessibility features)
+# 0.11.0 - KISS refactor (removed Entity inheritance, converted static classes to functions)
