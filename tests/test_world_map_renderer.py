@@ -3,7 +3,7 @@
 from src.enums import TerrainType
 from src.game.environmental_hazards import Weather
 from src.models.world_map import WorldMap
-from src.renderers.world_map_renderer import WorldMapRenderer
+from src.renderers.world_map_renderer import render_area
 
 
 class TestWorldMapRenderer:
@@ -19,7 +19,7 @@ class TestWorldMapRenderer:
 
         # Test each weather type
         for weather in Weather:
-            output = WorldMapRenderer.render_area(
+            output = render_area(
                 world, (37, 37), radius=3, current_weather=weather
             )
             assert "Weather:" in output
@@ -40,7 +40,7 @@ class TestWorldMapRenderer:
         center = (37, 37)
         world.reveal_area(*center, 5)
 
-        output = WorldMapRenderer.render_area(world, center, radius=3)
+        output = render_area(world, center, radius=3)
 
         # Should have 7 lines (radius 3 = 7x7 grid)
         lines = output.strip().split("\n")
@@ -56,7 +56,7 @@ class TestWorldMapRenderer:
         world.generate_world()
 
         # Don't reveal anything
-        output = WorldMapRenderer.render_area(world, (37, 37), radius=2)
+        output = render_area(world, (37, 37), radius=2)
 
         # Should be mostly blank except center @
         for line in output.split("\n"):
@@ -75,7 +75,7 @@ class TestWorldMapRenderer:
         # Reveal the area
         world.reveal_area(11, 10, 3)
 
-        output = WorldMapRenderer.render_area(world, (11, 10), radius=2)
+        output = render_area(world, (11, 10), radius=2)
 
         # Check terrain chars appear
         assert "~" in output  # Water

@@ -1,24 +1,16 @@
-"""ASCII renderer for displaying floors with fog of war and color support."""
+"""Simplified ASCII renderer using KISS color system."""
 
 from typing import List, Optional, Tuple
 
+from src.colors import (
+    get_tile_color, get_entity_color, to_ansi,
+    apply_status_tint, apply_deuteranopia, apply_protanopia,
+    apply_tritanopia, apply_high_contrast
+)
 from src.enums import EntityType, TileType
 from src.models.character import Character
-from src.models.entity import Entity
+# Entity base class removed - checking type directly
 from src.models.floor import Floor
-from src.rendering.accessibility import (
-    AccessibilityConfig,
-    ColorblindMode,
-    apply_colorblind_filter,
-    apply_high_contrast,
-)
-from src.rendering.color_effects import (
-    DamageType,
-    apply_fog_of_war,
-    apply_status_effect,
-    flash_damage,
-)
-from src.rendering.color_scheme import ColorMode, ColorScheme
 
 
 class ASCIIRenderer:
@@ -36,363 +28,185 @@ class ASCIIRenderer:
         "chest": "C",
         "fog": "?",
     }
+    
+    @classmethod
+    def render_static(cls, floor: 'Floor', player_pos: Tuple[int, int], vision_radius: int = 5) -> str:
+        """Static method for backward compatibility with tests.
+        
+        Args:
+            floor: The floor to render
+            player_pos: Player position for fog of war
+            vision_radius: Radius of visibility
+            
+        Returns:
+            ASCII representation of the floor
+        """
+        renderer = cls(color_enabled=False, fog_radius=vision_radius)
+        return renderer.render(floor, player_pos)
 
     def __init__(
         self,
         color_enabled: bool = False,
-        color_scheme: Optional[ColorScheme] = None,
-        color_mode: ColorMode = ColorMode.ANSI,
-        accessibility_config: Optional[AccessibilityConfig] = None,
         fog_radius: int = 5,
+        colorblind_mode: Optional[str] = None,
+        high_contrast: bool = False,
     ) -> None:
         """Initialize the ASCII renderer.
 
         Args:
             color_enabled: Whether to enable color output
-            color_scheme: Custom color scheme (uses default if None)
-            color_mode: RGB or ANSI color mode
-            accessibility_config: Accessibility settings
-            fog_radius: Default fog of war radius
+            fog_radius: Radius of fog of war visibility
+            colorblind_mode: Optional colorblind filter ('deuteranopia', 'protanopia', 'tritanopia')
+            high_contrast: Whether to enable high contrast mode
         """
         self.color_enabled = color_enabled
-        self.color_scheme = color_scheme or ColorScheme()
-        self.color_mode = color_mode
-        self.accessibility_config = accessibility_config or AccessibilityConfig()
         self.fog_radius = fog_radius
+        self.colorblind_mode = colorblind_mode
+        self.high_contrast = high_contrast
 
-    def render(self, floor: Floor, character: Character) -> str:
-        """Render a floor with fog of war and optional colors.
+    def render(
+        self, floor: Floor, player_pos: Optional[Tuple[int, int]] = None
+    ) -> str:
+        """Render the floor as an ASCII string with fog of war.
 
         Args:
             floor: The floor to render
-            character: The player character
+            player_pos: Optional player position for fog of war
 
         Returns:
-            Multi-line string representation of the floor
+            ASCII representation of the floor
         """
-        # Override color if in symbol-only mode
-        use_color = self.color_enabled and not self.accessibility_config.symbol_only_mode
-
         lines = []
-        player_x, player_y = character.position
-
+        
         for y in range(floor.height):
             line = []
             for x in range(floor.width):
-                # Check visibility
-                visibility = self._calculate_visibility((x, y), character.position)
-
-                if visibility == 0.0:
-                    # Fog of war
-                    char = self.CHAR_MAP["fog"]
-                    if use_color:
-                        color = self._get_fog_color()
-                        line.append(self._apply_color(char, color))
-                    else:
-                        line.append(char)
+                char, color = self._get_tile_display(floor, x, y, player_pos)
+                
+                if self.color_enabled and color:
+                    # Apply colorblind and contrast filters
+                    color = self._apply_accessibility_filters(color)
+                    line.append(f"{to_ansi(color)}{char}\033[0m")
                 else:
-                    # Visible tile
-                    tile = floor.get_tile(x, y)
-                    if tile is None:
-                        line.append("?")
-                        continue
-
-                    # Check for entities first
-                    if (x, y) == character.position:
-                        char = self.CHAR_MAP["player"]
-                        if use_color:
-                            color = self._get_entity_color(character, visibility)
-                            line.append(self._apply_color(char, color))
-                        else:
-                            line.append(char)
-                    elif tile.occupant:
-                        char = self._get_entity_char(tile.occupant)
-                        if use_color:
-                            color = self._get_entity_color(tile.occupant, visibility)
-                            line.append(self._apply_color(char, color))
-                        else:
-                            line.append(char)
-                    else:
-                        # Show tile
-                        char = self._get_tile_char(tile)
-                        if use_color:
-                            color = self._get_tile_color(tile, visibility)
-                            line.append(self._apply_color(char, color))
-                        else:
-                            line.append(char)
-
+                    line.append(char)
+                    
             lines.append("".join(line))
-
+            
         return "\n".join(lines)
 
-    def render_damage_flash(
-        self, floor: Floor, character: Character, damage_type: DamageType
-    ) -> List[str]:
-        """Render damage flash animation frames.
+    def _get_tile_display(
+        self, floor: Floor, x: int, y: int, player_pos: Optional[Tuple[int, int]]
+    ) -> Tuple[str, Optional[Tuple[int, int, int]]]:
+        """Get the character and color for a tile position.
 
         Args:
-            floor: The floor to render
-            character: The player character
-            damage_type: Type of damage for flash effect
+            floor: The floor being rendered
+            x, y: Tile coordinates
+            player_pos: Optional player position for fog of war
 
         Returns:
-            List of rendered frames for animation
+            Tuple of (character, color)
         """
-        # Get base color for character
-        base_color = self.color_scheme.get_entity_color(EntityType.PLAYER, ColorMode.RGB)
-        if isinstance(base_color, str):
-            # If ANSI mode, use default RGB color
-            base_color = (0, 255, 0)  # Green for player
-        flash_colors = flash_damage(base_color, damage_type)
-
-        frames = []
-        for _ in flash_colors:
-            # This is a simplified version - in real implementation would need proper override
-            frames.append(self.render(floor, character))
-
-        return frames
-
-    def generate_color_legend(self) -> str:
-        """Generate a legend showing color mappings.
-
-        Returns:
-            Formatted color legend
-        """
-        if not self.color_enabled:
-            return "Colors disabled"
-
-        lines = ["=== Color Legend ==="]
-
-        # Tiles
-        lines.append("\nTiles:")
-        for tile_type in TileType:
-            char = self._get_tile_char_for_type(tile_type)
-            color = self.color_scheme.get_color(tile_type, ColorMode.RGB)
-            if isinstance(color, str):
-                color_str = color
-            else:
-                color_str = (
-                    self._apply_color(char, color)
-                    if self.color_mode == ColorMode.ANSI
-                    else f"RGB{color}"
-                )
-            lines.append(f"  {char} {tile_type.name}: {color_str}")
-
-        # Entities
-        lines.append("\nEntities:")
-        player_color = self.color_scheme.get_entity_color(EntityType.PLAYER, ColorMode.RGB)
-        monster_color = self.color_scheme.get_entity_color(EntityType.MONSTER, ColorMode.RGB)
-        if isinstance(player_color, tuple):
-            lines.append(f"  @ PLAYER: {self._apply_color('@', player_color)}")
+        # Check if tile is visible (fog of war)
+        if player_pos:
+            dist_squared = (x - player_pos[0]) ** 2 + (y - player_pos[1]) ** 2
+            if dist_squared > self.fog_radius ** 2:
+                return self.CHAR_MAP["fog"], (64, 64, 64)  # Dark gray for fog
+        
+        # Check if player is at this position
+        if player_pos and (x, y) == player_pos:
+            return self.CHAR_MAP["player"], (255, 255, 255) if self.color_enabled else None
+        
+        # Check for monsters
+        if hasattr(floor, 'monsters') and (x, y) in floor.monsters:
+            return self.CHAR_MAP["monster"], (255, 0, 0) if self.color_enabled else None
+        
+        # Check for chests
+        if hasattr(floor, 'chests') and (x, y) in floor.chests:
+            return self.CHAR_MAP["chest"], (255, 215, 0) if self.color_enabled else None
+        
+        # Check for traps (only show if revealed)
+        if hasattr(floor, 'traps') and (x, y) in floor.traps:
+            trap_data = floor.traps[(x, y)]
+            if trap_data.get("revealed", False):
+                return self.CHAR_MAP["trap"], (255, 0, 255) if self.color_enabled else None
+        
+        # Check for entities
+        if hasattr(floor, 'entities'):
+            for entity in floor.entities:
+                if entity.x == x and entity.y == y:
+                    char = self._get_entity_char(entity)
+                    color = None
+                    if self.color_enabled:
+                        color = get_entity_color(entity.entity_type)
+                        # Apply status effects if present
+                        if hasattr(entity, 'status') and entity.status:
+                            color = apply_status_tint(color, entity.status)
+                    return char, color
+        
+        # Get tile from floor.tiles
+        if (x, y) in floor.tiles:
+            tile = floor.tiles[(x, y)]
+            tile_type = tile.tile_type
+            char = self.CHAR_MAP.get(tile_type, "?")
+            color = None
+            if self.color_enabled:
+                # Apply fog of war dimming
+                visibility = 1.0
+                if player_pos:
+                    dist_squared = (x - player_pos[0]) ** 2 + (y - player_pos[1]) ** 2
+                    max_dist_squared = self.fog_radius ** 2
+                    visibility = max(0.3, 1.0 - (dist_squared / max_dist_squared))
+                color = get_tile_color(tile_type, visibility)
+            return char, color
         else:
-            lines.append(f"  @ PLAYER: {player_color}")
-        if isinstance(monster_color, tuple):
-            lines.append(f"  M MONSTER: {self._apply_color('M', monster_color)}")
-        else:
-            lines.append(f"  M MONSTER: {monster_color}")
+            # Empty space
+            return " ", None
 
-        return "\n".join(lines)
-
-    def get_entity_color(self, entity: Entity) -> Tuple[int, int, int]:
-        """Get color for an entity (for testing).
-
-        Args:
-            entity: The entity
-
-        Returns:
-            RGB color tuple
-        """
-        base_color = self.color_scheme.get_entity_color(entity.entity_type, ColorMode.RGB)
-        if isinstance(base_color, str):
-            # Return default RGB if string
-            return (128, 128, 128)
-
-        # Apply status effects if present
-        if hasattr(entity, "status_effects") and entity.status_effects:
-            for effect in entity.status_effects:
-                base_color = apply_status_effect(base_color, effect)
-
-        return base_color
-
-    def get_tile_color_rgb(self, tile) -> Tuple[int, int, int]:
-        """Get RGB color for a tile (for GUI mode).
-
-        Args:
-            tile: The tile
-
-        Returns:
-            RGB color tuple
-        """
-        color = self.color_scheme.get_color(tile.tile_type, ColorMode.RGB)
-        if isinstance(color, str):
-            return (128, 128, 128)  # Default gray
-        return color
-
-    def _calculate_visibility(self, pos: Tuple[int, int], player_pos: Tuple[int, int]) -> float:
-        """Calculate visibility of a position from player position.
-
-        Args:
-            pos: Position to check
-            player_pos: Player position
-
-        Returns:
-            Visibility level (0.0 to 1.0)
-        """
-        x, y = pos
-        px, py = player_pos
-
-        dx = abs(x - px)
-        dy = abs(y - py)
-        distance_squared = dx * dx + dy * dy
-        radius_squared = self.fog_radius * self.fog_radius
-
-        if distance_squared > radius_squared:
-            return 0.0
-        elif distance_squared == 0:
-            return 1.0
-        else:
-            # Gradual falloff
-            distance = float(distance_squared**0.5)
-            return 1.0 - (distance / float(self.fog_radius))
-
-    def _get_tile_char(self, tile) -> str:
-        """Get character for a tile."""
-        # For now, just return the tile type character
-        # TODO: Add trap and chest support when available
-        return self.CHAR_MAP.get(tile.tile_type, "?")
-
-    def _get_tile_char_for_type(self, tile_type: TileType) -> str:
-        """Get character for a tile type."""
-        return self.CHAR_MAP.get(tile_type, "?")
-
-    def _get_entity_char(self, entity: Entity) -> str:
-        """Get character for an entity."""
-        if entity.entity_type == EntityType.PLAYER:
+    def _get_entity_char(self, entity) -> str:
+        """Get the display character for an entity."""
+        if isinstance(entity, Character):
             return self.CHAR_MAP["player"]
-        elif entity.entity_type == EntityType.MONSTER:
+        elif hasattr(entity, 'entity_type') and entity.entity_type == EntityType.MONSTER:
             return self.CHAR_MAP["monster"]
         else:
             return "?"
 
-    def _get_tile_color(self, tile, visibility: float) -> Tuple[int, int, int]:
-        """Get color for a tile with visibility applied."""
-        base_color = self.color_scheme.get_color(tile.tile_type, ColorMode.RGB)
-        if isinstance(base_color, str):
-            # Return default gray if string
-            base_color = (128, 128, 128)
-
-        # Apply fog of war
-        color = apply_fog_of_war(base_color, visibility)
-
-        # Apply accessibility filters
-        if self.accessibility_config.colorblind_mode != ColorblindMode.NORMAL:
-            color = apply_colorblind_filter(color, self.accessibility_config.colorblind_mode)
-        if self.accessibility_config.high_contrast_mode:
+    def _apply_accessibility_filters(
+        self, color: Tuple[int, int, int]
+    ) -> Tuple[int, int, int]:
+        """Apply colorblind and contrast filters to a color."""
+        # Apply colorblind filter
+        if self.colorblind_mode == 'deuteranopia':
+            color = apply_deuteranopia(color)
+        elif self.colorblind_mode == 'protanopia':
+            color = apply_protanopia(color)
+        elif self.colorblind_mode == 'tritanopia':
+            color = apply_tritanopia(color)
+        
+        # Apply high contrast
+        if self.high_contrast:
             color = apply_high_contrast(color)
-
+        
         return color
 
-    def _get_entity_color(self, entity: Entity, visibility: float) -> Tuple[int, int, int]:
-        """Get color for an entity with visibility applied."""
-        base_color = self.get_entity_color(entity)
-
-        # Apply fog of war
-        color = apply_fog_of_war(base_color, visibility)
-
-        # Apply accessibility filters
-        if self.accessibility_config.colorblind_mode != ColorblindMode.NORMAL:
-            color = apply_colorblind_filter(color, self.accessibility_config.colorblind_mode)
-        if self.accessibility_config.high_contrast_mode:
-            color = apply_high_contrast(color)
-
-        return color
-
-    def _get_fog_color(self) -> Tuple[int, int, int]:
-        """Get color for fog of war."""
-        return (64, 64, 64)  # Dark gray
-
-    def _apply_color(self, char: str, color: Tuple[int, int, int]) -> str:
-        """Apply color to a character.
-
-        Args:
-            char: Character to color
-            color: RGB color tuple
-
-        Returns:
-            Colored string (ANSI) or plain char (RGB mode)
-        """
-        if self.color_mode == ColorMode.ANSI:
-            # Convert RGB to ANSI
-            r, g, b = color
-            # Use 24-bit color ANSI codes
-            return f"\033[38;2;{r};{g};{b}m{char}\033[0m"
-        else:
-            # In RGB mode, just return the char (color handled externally)
-            return char
-
-    @staticmethod
-    def render_static(floor: Floor, player_pos: Tuple[int, int], vision_radius: int = 5) -> str:
-        """Legacy static render method for backward compatibility.
-
-        Args:
-            floor: The floor to render
-            player_pos: Current player position (x, y)
-            vision_radius: How far the player can see
-
-        Returns:
-            Multi-line string representation of the floor
-        """
-        # Legacy rendering that checks floor attributes
-        lines = []
-        player_x, player_y = player_pos
-
-        for y in range(floor.height):
-            line = []
-            for x in range(floor.width):
-                # Check if this position is within vision radius
-                dx = abs(x - player_x)
-                dy = abs(y - player_y)
-                distance_squared = dx * dx + dy * dy
-                vision_radius_squared = vision_radius * vision_radius
-
-                if distance_squared > vision_radius_squared:
-                    # Outside vision - fog of war
-                    line.append("?")
-                else:
-                    # Within vision
-                    tile = floor.get_tile(x, y)
-                    if tile is None:
-                        line.append("?")
-                        continue
-
-                    # Check for player first
-                    if (x, y) == player_pos:
-                        line.append("@")
-                    # Check for monsters (legacy attribute)
-                    elif hasattr(floor, "monsters") and (x, y) in floor.monsters:
-                        line.append("M")
-                    # Check for revealed traps (legacy attribute)
-                    elif (
-                        hasattr(floor, "traps")
-                        and (x, y) in floor.traps
-                        and floor.traps[(x, y)].get("revealed", False)
-                    ):
-                        line.append("T")
-                    # Check for chests (legacy attribute)
-                    elif hasattr(floor, "chests") and (x, y) in floor.chests:
-                        line.append("C")
-                    # Check stairs
-                    elif tile.tile_type == TileType.STAIRS_UP:
-                        line.append("^")
-                    elif tile.tile_type == TileType.STAIRS_DOWN:
-                        line.append("v")
-                    elif tile.tile_type == TileType.WALL:
-                        line.append("#")
-                    elif tile.tile_type == TileType.FLOOR:
-                        line.append(".")
-                    else:
-                        line.append("?")
-
-            lines.append("".join(line))
-
-        return "\n".join(lines)
+    def render_with_info(
+        self, floor: Floor, player_pos: Optional[Tuple[int, int]] = None
+    ) -> str:
+        """Render the floor with additional information."""
+        floor_display = self.render(floor, player_pos)
+        
+        info_lines = [
+            f"Floor {getattr(floor, 'level', 1)}",
+            f"Size: {floor.width}x{floor.height}",
+            f"Rooms: {len(floor.rooms)}",
+        ]
+        
+        if self.color_enabled:
+            info_lines.append("Colors: Enabled")
+            if self.colorblind_mode:
+                info_lines.append(f"Colorblind Mode: {self.colorblind_mode}")
+            if self.high_contrast:
+                info_lines.append("High Contrast: On")
+        
+        return floor_display + "\n\n" + "\n".join(info_lines)

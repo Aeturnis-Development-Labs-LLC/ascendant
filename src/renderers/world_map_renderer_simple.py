@@ -60,26 +60,33 @@ def render_area(
                 line.append("@")
                 continue
 
-            # Check bounds
-            if 0 <= x < world.WIDTH and 0 <= y < world.HEIGHT:
-                tile = world.tiles[y][x]
-                
-                # Only show discovered tiles
-                if tile.discovered or (x, y) in world.discovered_tiles:
-                    if tile.location:
-                        # Show location with special marker
-                        line.append("*")
-                    else:
-                        # Show terrain
-                        terrain = tile.terrain_type
-                        char = TERRAIN_CHARS.get(terrain, ".")
-                        line.append(char)
+            # Check if position has a location
+            location = None
+            for loc in world.locations:
+                if loc.x == x and loc.y == y:
+                    location = loc
+                    break
+
+            if location:
+                # Show location with special marker
+                if location.discovered:
+                    line.append("*")
                 else:
-                    # Undiscovered area
-                    line.append(" ")
+                    line.append("?")
             else:
-                line.append(" ")
+                # Show terrain
+                if 0 <= x < world.width and 0 <= y < world.height:
+                    terrain = world.get_terrain(x, y)
+                    char = TERRAIN_CHARS.get(terrain, ".")
+                    line.append(char)
+                else:
+                    line.append(" ")
 
         lines.append("".join(line))
+
+    # Add legend at bottom
+    lines.append("")
+    lines.append("Legend: @ You, * Location, ? Unknown, . Plains, F Forest")
+    lines.append("        ^ Mountains, ~ Water, = Roads, # Shadowlands")
 
     return "\n".join(lines)

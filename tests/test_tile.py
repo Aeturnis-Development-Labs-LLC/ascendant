@@ -3,22 +3,19 @@
 import pytest
 
 from src.enums import EntityType, ItemType, TileType
-from src.models.entity import Entity
 from src.models.item import Item
 from src.models.tile import Tile
 
 
-# Create a concrete Entity subclass for testing
-class MockEntity(Entity):
-    """Concrete entity implementation for testing."""
-
-    def update(self) -> None:
-        """Update implementation."""
-        pass
-
-    def render(self) -> str:
-        """Render implementation."""
-        return "E"
+# Create a simple mock entity for testing
+class MockEntity:
+    """Simple mock entity for testing."""
+    
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.position = (x, y)
+        self.entity_type = EntityType.MONSTER
 
 
 class TestTile:
@@ -79,7 +76,7 @@ class TestTile:
     def test_occupant_placement(self):
         """Test that entities can be placed on tiles."""
         tile = Tile(0, 0, TileType.FLOOR)
-        entity = MockEntity((0, 0), EntityType.PLAYER)
+        entity = MockEntity(0, 0)
 
         tile.occupant = entity
         assert tile.occupant == entity
@@ -100,7 +97,7 @@ class TestTile:
     def test_occupant_clearing(self):
         """Test that occupants can be cleared."""
         tile = Tile(0, 0, TileType.FLOOR)
-        entity = MockEntity((0, 0), EntityType.PLAYER)
+        entity = MockEntity(0, 0)
 
         tile.occupant = entity
         assert tile.occupant == entity
