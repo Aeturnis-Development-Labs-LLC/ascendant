@@ -63,7 +63,7 @@ def render_area(
             # Check bounds
             if 0 <= x < world.WIDTH and 0 <= y < world.HEIGHT:
                 tile = world.tiles[y][x]
-                
+
                 # Only show discovered tiles
                 if tile.discovered or (x, y) in world.discovered_tiles:
                     if tile.location:

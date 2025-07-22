@@ -10,7 +10,7 @@ from src.models.tile import Tile
 # Create a simple mock entity for testing
 class MockEntity:
     """Simple mock entity for testing."""
-    
+
     def __init__(self, x, y):
         self.x = x
         self.y = y

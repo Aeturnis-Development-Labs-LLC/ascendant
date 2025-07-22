@@ -19,9 +19,7 @@ class TestWorldMapRenderer:
 
         # Test each weather type
         for weather in Weather:
-            output = render_area(
-                world, (37, 37), radius=3, current_weather=weather
-            )
+            output = render_area(world, (37, 37), radius=3, current_weather=weather)
             assert "Weather:" in output
 
             if weather == Weather.FOG:

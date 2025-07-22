@@ -13,11 +13,11 @@ ACTION_COSTS = {
 
 def use_stamina(character, amount):
     """Use stamina if available.
-    
+
     Args:
         character: Character object with stamina attribute
         amount: Amount of stamina to use
-        
+
     Returns:
         True if stamina was used, False if insufficient
     """
@@ -29,7 +29,7 @@ def use_stamina(character, amount):
 
 def regenerate_stamina(character, amount=5):
     """Regenerate stamina up to maximum.
-    
+
     Args:
         character: Character object with stamina attribute
         amount: Amount to regenerate (default 5)
@@ -39,10 +39,10 @@ def regenerate_stamina(character, amount=5):
 
 def get_action_cost(action_type):
     """Get stamina cost for an action type.
-    
+
     Args:
         action_type: ActionType enum value
-        
+
     Returns:
         Stamina cost (positive uses stamina, negative regenerates)
     """
@@ -51,11 +51,11 @@ def get_action_cost(action_type):
 
 def can_perform_action(character, action_type):
     """Check if character has enough stamina for action.
-    
+
     Args:
         character: Character to check
         action_type: Action to perform
-        
+
     Returns:
         True if action can be performed
     """

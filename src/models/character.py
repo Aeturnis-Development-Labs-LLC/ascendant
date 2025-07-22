@@ -28,7 +28,7 @@ class Character:
     def stamina(self) -> int:
         """Get current stamina."""
         return max(0, min(self._stamina, self.stamina_max))
-    
+
     @stamina.setter
     def stamina(self, value: int) -> None:
         """Set stamina, clamped between 0 and stamina_max."""

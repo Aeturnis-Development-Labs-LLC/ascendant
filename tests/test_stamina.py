@@ -2,7 +2,10 @@
 
 from src.enums import ActionType
 from src.game.stamina_system import (
-    get_action_cost, can_perform_action, use_stamina, regenerate_stamina
+    get_action_cost,
+    can_perform_action,
+    use_stamina,
+    regenerate_stamina,
 )
 from src.models.character import Character
 
@@ -135,7 +138,7 @@ class TestStaminaSystem:
             action_taken = True
         else:
             action_taken = False
-        
+
         assert action_taken is True
         assert char.stamina == 25  # 5 + 20 from wait
 
@@ -145,7 +148,7 @@ class TestStaminaSystem:
             action_taken = True
         else:
             action_taken = False
-            
+
         assert action_taken is False
         assert char.stamina == 25  # Unchanged
 
@@ -239,7 +242,7 @@ class TestStaminaIntegration:
             force_wait_triggered = True
         else:
             force_wait_triggered = False
-            
+
         assert force_wait_triggered is True
         assert char.stamina > old_stamina
 
@@ -295,7 +298,7 @@ class TestStaminaIntegration:
         # Helper to get stamina percentage
         def get_stamina_percentage(character):
             return int((character.stamina / character.stamina_max) * 100)
-            
+
         # Helper to get stamina state
         def get_stamina_state(character):
             percentage = (character.stamina / character.stamina_max) * 100
