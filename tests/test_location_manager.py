@@ -50,7 +50,7 @@ class TestLocationManager:
     def test_dungeon_placement_distances(self, location_manager):
         """Test dungeons are placed at correct distances."""
         location_manager.place_all_locations()
-        
+
         center_x, center_y = location_manager.world_map.safe_haven_position
         dungeons = location_manager.get_dungeons()
 
@@ -115,10 +115,10 @@ class TestLocationManager:
     def test_get_all_locations(self, location_manager):
         """Test getting all locations."""
         location_manager.place_all_locations()
-        
+
         locations = location_manager.get_all_locations()
         assert len(locations) == 7
-        
+
         # Should be a copy, not the original list
         locations.append(None)
         assert len(location_manager.locations) == 7
@@ -126,10 +126,10 @@ class TestLocationManager:
     def test_get_dungeons(self, location_manager):
         """Test getting only dungeon entrances."""
         location_manager.place_all_locations()
-        
+
         dungeons = location_manager.get_dungeons()
         assert len(dungeons) == 5
-        
+
         for dungeon in dungeons:
             assert isinstance(dungeon, DungeonEntrance)
 

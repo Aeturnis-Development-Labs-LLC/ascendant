@@ -61,8 +61,7 @@ class Location(ABC):
             return "[D]"
         elif self.location_type == LocationType.VILLAGE:
             return "[v]"
-        else:
-            return "[?]"
+        return "[?]"  # type: ignore[unreachable]
 
 
 class SafeHaven(Location):
@@ -150,7 +149,7 @@ class DungeonEntrance(Location):
         if char_level > self.max_level:
             return (
                 False,
-                f"You are too high level ({char_level}) for this dungeon (max {self.max_level})."
+                f"You are too high level ({char_level}) for this dungeon (max {self.max_level}).",
             )
 
         if char_level < self.min_level:

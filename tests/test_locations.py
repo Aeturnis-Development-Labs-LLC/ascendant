@@ -48,7 +48,7 @@ class TestSafeHaven:
         center_start = (20 - 5) // 2  # 7
         center_end = center_start + 5  # 12
         floor_count = 0
-        
+
         for y in range(center_start, center_end):
             for x in range(center_start, center_end):
                 if interior.tiles[(x, y)].tile_type == TileType.FLOOR:
@@ -63,11 +63,7 @@ class TestDungeonEntrance:
     def test_dungeon_entrance_creation(self):
         """Test creating a dungeon entrance."""
         dungeon = DungeonEntrance(
-            position=(10, 20),
-            name="Test Dungeon",
-            min_level=10,
-            max_level=19,
-            floor_count=4
+            position=(10, 20), name="Test Dungeon", min_level=10, max_level=19, floor_count=4
         )
 
         assert dungeon.position == (10, 20)
@@ -82,7 +78,7 @@ class TestDungeonEntrance:
     def test_dungeon_level_restrictions(self):
         """Test dungeon entry level restrictions."""
         dungeon = DungeonEntrance((10, 10), "Level 10-19", 10, 19, 4)
-        
+
         # Character with no level defaults to 1
         char_low = Character("LowLevel", 0, 0)
         can_enter, reason = dungeon.can_enter(char_low)
@@ -182,7 +178,7 @@ class TestTowerEntrance:
     def test_tower_display_symbol(self):
         """Test Tower display symbol."""
         tower = TowerEntrance()
-        
+
         # Undiscovered
         assert tower.get_display_symbol() == "?"
 
@@ -197,9 +193,9 @@ class TestLocationBase:
     def test_location_discovery(self):
         """Test location discovery mechanism."""
         dungeon = DungeonEntrance((10, 10), "Test", 1, 9, 3)
-        
+
         assert dungeon.discovered is False
-        
+
         dungeon.discover()
         assert dungeon.discovered is True
 

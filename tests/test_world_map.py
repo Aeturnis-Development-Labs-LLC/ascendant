@@ -26,7 +26,13 @@ class TestWorldTile:
     def test_tile_passability(self):
         """Test terrain passability."""
         # Most terrains are passable
-        for terrain in [TerrainType.PLAINS, TerrainType.FOREST, TerrainType.MOUNTAINS, TerrainType.ROADS, TerrainType.SHADOWLANDS]:
+        for terrain in [
+            TerrainType.PLAINS,
+            TerrainType.FOREST,
+            TerrainType.MOUNTAINS,
+            TerrainType.ROADS,
+            TerrainType.SHADOWLANDS,
+        ]:
             tile = WorldTile(0, 0, terrain)
             assert tile.is_passable() is True
 
@@ -92,8 +98,14 @@ class TestWorldMap:
 
         # Check corners and edges have shadowlands
         edge_positions = [
-            (0, 0), (74, 0), (0, 74), (74, 74),  # Corners
-            (0, 37), (74, 37), (37, 0), (37, 74),  # Edge midpoints
+            (0, 0),
+            (74, 0),
+            (0, 74),
+            (74, 74),  # Corners
+            (0, 37),
+            (74, 37),
+            (37, 0),
+            (37, 74),  # Edge midpoints
         ]
 
         shadowland_count = 0

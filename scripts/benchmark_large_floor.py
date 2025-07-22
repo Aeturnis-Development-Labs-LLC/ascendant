@@ -1,7 +1,7 @@
 """Benchmark script for large floor operations (100x100)."""
 
-import time
 import statistics
+import time
 from typing import Dict, List, Optional, Tuple
 
 from src.enums import TileType
