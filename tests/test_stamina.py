@@ -181,7 +181,7 @@ class TestStaminaIntegration:
         # Cast spell - try to cast, it may succeed or fail based on random cost
         initial_stamina = char.stamina
         result = StaminaSystem.execute_action(char, ActionType.CAST_SPELL)
-        
+
         # If it succeeded, stamina should have decreased
         if result:
             assert char.stamina < initial_stamina
