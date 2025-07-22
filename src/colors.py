@@ -156,4 +156,8 @@ def apply_high_contrast(color: Tuple[int, int, int]) -> Tuple[int, int, int]:
     else:
         factor = (luminance - 128) / 128 * 0.5
         r, g, b = color
-        return (int(r + (255 - r) * factor), int(g + (255 - g) * factor), int(b + (255 - b) * factor))
+        return (
+            int(r + (255 - r) * factor),
+            int(g + (255 - g) * factor),
+            int(b + (255 - b) * factor),
+        )
