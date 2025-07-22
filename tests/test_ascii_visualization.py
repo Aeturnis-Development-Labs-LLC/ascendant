@@ -1,7 +1,5 @@
 """Tests for ASCII visualization and map features - UTF Contracts GAME-MAP-005, 006, 007."""
 
-import pytest
-
 from src.enums import TileType
 from src.models.floor import Floor
 from src.renderers.ascii_renderer import ASCIIRenderer
@@ -74,10 +72,9 @@ class TestASCIIRenderer:
                 dy = abs(y - player_pos[1])
                 distance_squared = dx * dx + dy * dy
 
-                if distance_squared <= 25:  # radius 5 squared
+                if distance_squared <= 25 and (x, y) != player_pos:  # radius 5 squared
                     # Should not be fog (unless it's the player)
-                    if (x, y) != player_pos:
-                        assert lines[y][x] != "?" or lines[y][x] == "@"
+                    assert lines[y][x] != "?" or lines[y][x] == "@"
 
     def test_stairs_rendering(self):
         """Test that stairs are rendered correctly."""
