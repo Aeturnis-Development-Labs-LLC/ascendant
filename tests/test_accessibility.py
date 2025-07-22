@@ -2,14 +2,14 @@
 
 from typing import Tuple
 
+from src.enums import EntityType, TerrainType, TileType
 from src.rendering.accessibility import (
+    AccessibilityConfig,
     ColorblindMode,
     apply_colorblind_filter,
     apply_high_contrast,
     get_enhanced_symbol,
-    AccessibilityConfig,
 )
-from src.enums import TileType, EntityType, TerrainType
 
 
 class TestAccessibility:

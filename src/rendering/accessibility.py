@@ -63,6 +63,7 @@ def apply_colorblind_filter(
         new_r = int(0.625 * r + 0.375 * g)
         new_g = int(0.7 * g + 0.3 * r)
         new_b = b
+        return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))
 
     elif mode == ColorblindMode.PROTANOPIA:
         # Simulate red-green colorblindness (red weakness)
@@ -70,6 +71,7 @@ def apply_colorblind_filter(
         new_r = int(0.567 * r + 0.433 * g)
         new_g = int(0.558 * r + 0.442 * g)
         new_b = b
+        return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))
 
     elif mode == ColorblindMode.TRITANOPIA:
         # Simulate blue-yellow colorblindness
@@ -77,8 +79,8 @@ def apply_colorblind_filter(
         new_r = int(0.95 * r + 0.05 * b)
         new_g = g
         new_b = int(0.433 * b + 0.567 * g)
-        # Ensure values are in valid range
         return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))
+    
     else:
         return color
 

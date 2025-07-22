@@ -3,7 +3,7 @@
 import json
 from enum import Enum
 from pathlib import Path
-from typing import Dict, Tuple, Union, cast
+from typing import Dict, Tuple, Union
 
 from src.enums import EntityType, TerrainType, TileType
 
@@ -114,9 +114,9 @@ class ColorScheme:
         if "tiles" in self._colors and key in self._colors["tiles"]:
             color_dict = self._colors["tiles"][key]
             mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-            return cast(Union[Tuple[int, int, int], str], color_dict[mode_key])
+            return color_dict[mode_key]
         mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-        return cast(Union[Tuple[int, int, int], str], self._default_color[mode_key])
+        return self._default_color[mode_key]
 
     def get_terrain_color(
         self, terrain_type: TerrainType, mode: ColorMode
@@ -134,9 +134,9 @@ class ColorScheme:
         if "terrain" in self._colors and key in self._colors["terrain"]:
             color_dict = self._colors["terrain"][key]
             mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-            return cast(Union[Tuple[int, int, int], str], color_dict[mode_key])
+            return color_dict[mode_key]
         mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-        return cast(Union[Tuple[int, int, int], str], self._default_color[mode_key])
+        return self._default_color[mode_key]
 
     def get_entity_color(
         self, entity_type: EntityType, mode: ColorMode
@@ -154,6 +154,6 @@ class ColorScheme:
         if "entities" in self._colors and key in self._colors["entities"]:
             color_dict = self._colors["entities"][key]
             mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-            return cast(Union[Tuple[int, int, int], str], color_dict[mode_key])
+            return color_dict[mode_key]
         mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-        return cast(Union[Tuple[int, int, int], str], self._default_color[mode_key])
+        return self._default_color[mode_key]
