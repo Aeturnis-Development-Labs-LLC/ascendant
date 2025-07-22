@@ -109,9 +109,8 @@ class TestFogOfWar:
                 y = test_y + dy
                 if world.is_valid_position(x, y):
                     distance = (dx * dx + dy * dy) ** 0.5
-                    if distance <= vision_radius:
-                        if world.is_discovered(x, y):
-                            revealed_count += 1
+                    if distance <= vision_radius and world.is_discovered(x, y):
+                        revealed_count += 1
 
         assert revealed_count > 0
 

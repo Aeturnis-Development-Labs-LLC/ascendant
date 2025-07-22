@@ -70,7 +70,8 @@ class WorldMapRenderer:
                     if tile and tile.discovered:
                         # Show location symbols if present
                         if tile.location:
-                            line.append(tile.location.get_display_symbol()[1])  # Middle char
+                            symbol = tile.location.get_display_symbol()[1]  # type: ignore
+                            line.append(symbol)
                         else:
                             char = WorldMapRenderer.TERRAIN_CHARS.get(tile.terrain_type, "?")
                             line.append(char)

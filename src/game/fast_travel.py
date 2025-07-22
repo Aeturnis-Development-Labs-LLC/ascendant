@@ -77,10 +77,12 @@ class FastTravel:
             # 5% per tile, compounded
             no_encounter_chance = (1.0 - self.WALK_ENCOUNTER_CHANCE_PER_TILE) ** distance
             encounter_chance = 1.0 - no_encounter_chance
-            return bool(rng_value < encounter_chance)
+            result: bool = rng_value < encounter_chance
+            return result
         else:  # TravelMethod.CARRIAGE
             # Flat 20% for entire trip
-            return bool(rng_value < self.CARRIAGE_ENCOUNTER_CHANCE_TOTAL)
+            result = rng_value < self.CARRIAGE_ENCOUNTER_CHANCE_TOTAL
+            return result
 
     def can_afford_travel(self, player_gold: int, distance: float, method: TravelMethod) -> bool:
         """Check if player can afford the travel cost.
