@@ -73,16 +73,13 @@ def apply_colorblind_filter(
         new_b = b
         return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))
 
-    elif mode == ColorblindMode.TRITANOPIA:
+    else:  # mode == ColorblindMode.TRITANOPIA
         # Simulate blue-yellow colorblindness
         # Reduce blue-yellow distinction
         new_r = int(0.95 * r + 0.05 * b)
         new_g = g
         new_b = int(0.433 * b + 0.567 * g)
         return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))
-    
-    else:
-        return color
 
 
 def apply_high_contrast(color: Tuple[int, int, int]) -> Tuple[int, int, int]:
