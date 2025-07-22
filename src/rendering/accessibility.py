@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Tuple, Union
 
-from src.enums import TileType, EntityType, TerrainType
+from src.enums import EntityType, TerrainType, TileType
 
 
 class ColorblindMode(Enum):
@@ -77,12 +77,10 @@ def apply_colorblind_filter(
         new_r = int(0.95 * r + 0.05 * b)
         new_g = g
         new_b = int(0.433 * b + 0.567 * g)
-
+        # Ensure values are in valid range
+        return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))
     else:
         return color
-
-    # Ensure values are in valid range (only reached for colorblind modes)
-    return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))
 
 
 def apply_high_contrast(color: Tuple[int, int, int]) -> Tuple[int, int, int]:
@@ -175,5 +173,3 @@ def get_enhanced_symbol(element: Union[TileType, EntityType, TerrainType]) -> st
             TerrainType.SHADOWLANDS: "░",
         }
         return terrain_symbols.get(element, "?")
-
-    return "?"

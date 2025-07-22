@@ -1,7 +1,7 @@
 """Color effects for dynamic rendering - UTF Contract GAME-COLOR-002."""
 
 from enum import Enum
-from typing import Tuple, List
+from typing import List, Tuple
 
 
 class StatusEffect(Enum):

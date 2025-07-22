@@ -3,9 +3,9 @@
 import json
 from enum import Enum
 from pathlib import Path
-from typing import Dict, Tuple, Union
+from typing import Dict, Tuple, Union, cast
 
-from src.enums import TileType, EntityType, TerrainType
+from src.enums import EntityType, TerrainType, TileType
 
 
 class ColorMode(Enum):
@@ -56,7 +56,10 @@ class ColorScheme:
         }
 
         # Default color for unknown types
-        self._default_color = {"rgb": (128, 128, 128), "ansi": "\033[90m"}
+        self._default_color: Dict[str, Union[Tuple[int, int, int], str]] = {
+            "rgb": (128, 128, 128),
+            "ansi": "\033[90m",
+        }
 
     def load_scheme(self, file_path: str) -> None:
         """Load color scheme from JSON file.
@@ -111,9 +114,9 @@ class ColorScheme:
         if "tiles" in self._colors and key in self._colors["tiles"]:
             color_dict = self._colors["tiles"][key]
             mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-            return color_dict[mode_key]
+            return cast(Union[Tuple[int, int, int], str], color_dict[mode_key])
         mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-        return self._default_color[mode_key]
+        return cast(Union[Tuple[int, int, int], str], self._default_color[mode_key])
 
     def get_terrain_color(
         self, terrain_type: TerrainType, mode: ColorMode
@@ -131,9 +134,9 @@ class ColorScheme:
         if "terrain" in self._colors and key in self._colors["terrain"]:
             color_dict = self._colors["terrain"][key]
             mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-            return color_dict[mode_key]
+            return cast(Union[Tuple[int, int, int], str], color_dict[mode_key])
         mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-        return self._default_color[mode_key]
+        return cast(Union[Tuple[int, int, int], str], self._default_color[mode_key])
 
     def get_entity_color(
         self, entity_type: EntityType, mode: ColorMode
@@ -151,6 +154,6 @@ class ColorScheme:
         if "entities" in self._colors and key in self._colors["entities"]:
             color_dict = self._colors["entities"][key]
             mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-            return color_dict[mode_key]
+            return cast(Union[Tuple[int, int, int], str], color_dict[mode_key])
         mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
-        return self._default_color[mode_key]
+        return cast(Union[Tuple[int, int, int], str], self._default_color[mode_key])

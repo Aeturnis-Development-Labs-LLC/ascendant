@@ -2,12 +2,12 @@
 
 from unittest.mock import patch
 
-from src.renderers.ascii_renderer import ASCIIRenderer
-from src.models.floor import Floor
-from src.models.character import Character
 from src.enums import EntityType
-from src.rendering.color_scheme import ColorScheme, ColorMode
+from src.models.character import Character
+from src.models.floor import Floor
+from src.renderers.ascii_renderer import ASCIIRenderer
 from src.rendering.accessibility import AccessibilityConfig, ColorblindMode
+from src.rendering.color_scheme import ColorMode, ColorScheme
 
 
 class TestASCIIRendererColor:

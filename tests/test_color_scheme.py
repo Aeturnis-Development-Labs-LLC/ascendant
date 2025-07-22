@@ -1,10 +1,11 @@
 """Tests for color scheme system - UTF Contract GAME-COLOR-001."""
 
 import json
+
 import pytest
 
-from src.enums import TileType, EntityType, TerrainType
-from src.rendering.color_scheme import ColorScheme, ColorMode
+from src.enums import EntityType, TerrainType, TileType
+from src.rendering.color_scheme import ColorMode, ColorScheme
 
 
 class TestColorScheme:

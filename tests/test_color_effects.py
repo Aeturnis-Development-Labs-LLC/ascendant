@@ -1,12 +1,12 @@
 """Tests for color effects system - UTF Contract GAME-COLOR-002."""
 
 from src.rendering.color_effects import (
+    DamageType,
+    StatusEffect,
     apply_fog_of_war,
     apply_status_effect,
-    flash_damage,
     brightness_adjust,
-    StatusEffect,
-    DamageType,
+    flash_damage,
 )
 
 
