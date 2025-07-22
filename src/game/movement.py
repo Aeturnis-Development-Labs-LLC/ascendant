@@ -25,9 +25,7 @@ class MovementSystem:
         return floor.is_valid_position(x, y)
 
     @staticmethod
-    def calculate_new_position(
-        current: Tuple[int, int], direction: Direction
-    ) -> Tuple[int, int]:
+    def calculate_new_position(current: Tuple[int, int], direction: Direction) -> Tuple[int, int]:
         """Calculate new position based on current position and direction.
 
         Args:

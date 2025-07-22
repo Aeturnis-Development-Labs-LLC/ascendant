@@ -13,14 +13,14 @@ class KeyboardHandler:
         self.command_queue: List[Direction] = []
         self.key_map: Dict[str, Direction] = {
             # WASD keys
-            'w': Direction.NORTH,
-            'W': Direction.NORTH,
-            'a': Direction.WEST,
-            'A': Direction.WEST,
-            's': Direction.SOUTH,
-            'S': Direction.SOUTH,
-            'd': Direction.EAST,
-            'D': Direction.EAST,
+            "w": Direction.NORTH,
+            "W": Direction.NORTH,
+            "a": Direction.WEST,
+            "A": Direction.WEST,
+            "s": Direction.SOUTH,
+            "S": Direction.SOUTH,
+            "d": Direction.EAST,
+            "D": Direction.EAST,
             # Arrow keys could be added here with proper key codes
             # For now, focusing on WASD as specified in UTF contract
         }

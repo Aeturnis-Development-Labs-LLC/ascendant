@@ -33,16 +33,16 @@ class TestCharacter:
         """Test character move validation."""
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Place character on a floor tile
         char = Character("Hero", 5, 5)
         floor.tiles[(5, 5)] = Tile(5, 5, TileType.FLOOR)
         floor.tiles[(6, 5)] = Tile(6, 5, TileType.FLOOR)
         floor.tiles[(4, 5)] = Tile(4, 5, TileType.WALL)
-        
+
         # Valid move to floor
         assert char.validate_move(Direction.EAST, floor) is True
-        
+
         # Invalid move to wall
         assert char.validate_move(Direction.WEST, floor) is False
 
@@ -50,15 +50,15 @@ class TestCharacter:
         """Test stamina properties."""
         char = Character("Hero", 0, 0)
         assert char.stamina == 100
-        
+
         # Reduce stamina
         char.stamina = 50
         assert char.stamina == 50
-        
+
         # Cannot exceed max
         char.stamina = 150
         assert char.stamina == 100
-        
+
         # Cannot go below 0
         char.stamina = -10
         assert char.stamina == 0
@@ -71,12 +71,12 @@ class TestMovementSystem:
         """Test position validation."""
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Valid positions
         assert MovementSystem.validate_position((5, 5), floor) is True
         assert MovementSystem.validate_position((0, 0), floor) is True
         assert MovementSystem.validate_position((19, 19), floor) is True
-        
+
         # Invalid positions (out of bounds)
         assert MovementSystem.validate_position((-1, 5), floor) is False
         assert MovementSystem.validate_position((5, -1), floor) is False
@@ -98,13 +98,13 @@ class TestMovementSystem:
         """Test executing valid moves."""
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Setup floor tiles
         floor.tiles[(5, 5)] = Tile(5, 5, TileType.FLOOR)
         floor.tiles[(6, 5)] = Tile(6, 5, TileType.FLOOR)
-        
+
         char = Character("Hero", 5, 5)
-        
+
         # Execute valid move
         result = MovementSystem.execute_move(char, Direction.EAST, floor)
         assert result is True
@@ -114,13 +114,13 @@ class TestMovementSystem:
         """Test that moves into walls are rejected."""
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Setup tiles
         floor.tiles[(5, 5)] = Tile(5, 5, TileType.FLOOR)
         floor.tiles[(5, 4)] = Tile(5, 4, TileType.WALL)
-        
+
         char = Character("Hero", 5, 5)
-        
+
         # Try to move into wall
         result = MovementSystem.execute_move(char, Direction.NORTH, floor)
         assert result is False
@@ -130,16 +130,16 @@ class TestMovementSystem:
         """Test that moves out of bounds are rejected."""
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Place character at edge
         floor.tiles[(0, 0)] = Tile(0, 0, TileType.FLOOR)
         char = Character("Hero", 0, 0)
-        
+
         # Try to move out of bounds
         result = MovementSystem.execute_move(char, Direction.NORTH, floor)
         assert result is False
         assert char.position == (0, 0)  # Position unchanged
-        
+
         result = MovementSystem.execute_move(char, Direction.WEST, floor)
         assert result is False
         assert char.position == (0, 0)  # Position unchanged
@@ -148,24 +148,24 @@ class TestMovementSystem:
         """Test movement in all four directions."""
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Create open area
         for y in range(4, 8):
             for x in range(4, 8):
                 floor.tiles[(x, y)] = Tile(x, y, TileType.FLOOR)
-        
+
         char = Character("Hero", 5, 5)
-        
+
         # Move in all directions
         assert MovementSystem.execute_move(char, Direction.NORTH, floor) is True
         assert char.position == (5, 4)
-        
+
         assert MovementSystem.execute_move(char, Direction.EAST, floor) is True
         assert char.position == (6, 4)
-        
+
         assert MovementSystem.execute_move(char, Direction.SOUTH, floor) is True
         assert char.position == (6, 5)
-        
+
         assert MovementSystem.execute_move(char, Direction.WEST, floor) is True
         assert char.position == (5, 5)
 
@@ -173,14 +173,14 @@ class TestMovementSystem:
         """Test diagonal movement for Phase 2.1."""
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Create open area
         for y in range(4, 8):
             for x in range(4, 8):
                 floor.tiles[(x, y)] = Tile(x, y, TileType.FLOOR)
-        
+
         char = Character("Hero", 5, 5)
-        
+
         # Test diagonal moves (if implemented)
         # This test documents expected behavior for future diagonal support
         # Currently expecting False as diagonals not in Direction enum
@@ -200,42 +200,42 @@ class TestKeyboardHandler:
     def test_key_mapping(self):
         """Test key to direction mapping."""
         handler = KeyboardHandler()
-        
+
         # WASD keys
-        assert handler.map_key_to_direction('w') == Direction.NORTH
-        assert handler.map_key_to_direction('W') == Direction.NORTH
-        assert handler.map_key_to_direction('s') == Direction.SOUTH
-        assert handler.map_key_to_direction('S') == Direction.SOUTH
-        assert handler.map_key_to_direction('d') == Direction.EAST
-        assert handler.map_key_to_direction('D') == Direction.EAST
-        assert handler.map_key_to_direction('a') == Direction.WEST
-        assert handler.map_key_to_direction('A') == Direction.WEST
-        
+        assert handler.map_key_to_direction("w") == Direction.NORTH
+        assert handler.map_key_to_direction("W") == Direction.NORTH
+        assert handler.map_key_to_direction("s") == Direction.SOUTH
+        assert handler.map_key_to_direction("S") == Direction.SOUTH
+        assert handler.map_key_to_direction("d") == Direction.EAST
+        assert handler.map_key_to_direction("D") == Direction.EAST
+        assert handler.map_key_to_direction("a") == Direction.WEST
+        assert handler.map_key_to_direction("A") == Direction.WEST
+
         # Arrow keys (if supported)
         # These might be special key codes depending on implementation
 
     def test_invalid_key_mapping(self):
         """Test invalid keys return None."""
         handler = KeyboardHandler()
-        
-        assert handler.map_key_to_direction('x') is None
-        assert handler.map_key_to_direction('1') is None
-        assert handler.map_key_to_direction(' ') is None
-        assert handler.map_key_to_direction('') is None
+
+        assert handler.map_key_to_direction("x") is None
+        assert handler.map_key_to_direction("1") is None
+        assert handler.map_key_to_direction(" ") is None
+        assert handler.map_key_to_direction("") is None
 
     def test_queue_command(self):
         """Test queuing valid commands."""
         handler = KeyboardHandler()
-        
+
         # Queue valid movement
-        handler.queue_command('w')
+        handler.queue_command("w")
         assert len(handler.command_queue) == 1
         assert handler.command_queue[0] == Direction.NORTH
-        
+
         # Queue multiple commands
-        handler.queue_command('a')
-        handler.queue_command('s')
-        handler.queue_command('d')
+        handler.queue_command("a")
+        handler.queue_command("s")
+        handler.queue_command("d")
         assert len(handler.command_queue) == 4
         assert handler.command_queue[1] == Direction.WEST
         assert handler.command_queue[2] == Direction.SOUTH
@@ -244,22 +244,22 @@ class TestKeyboardHandler:
     def test_ignore_invalid_commands(self):
         """Test that invalid keys are ignored."""
         handler = KeyboardHandler()
-        
+
         # Try to queue invalid commands
-        handler.queue_command('x')
-        handler.queue_command('1')
-        handler.queue_command('')
-        
+        handler.queue_command("x")
+        handler.queue_command("1")
+        handler.queue_command("")
+
         assert len(handler.command_queue) == 0  # Nothing queued
 
     def test_get_next_command(self):
         """Test getting next command from queue."""
         handler = KeyboardHandler()
-        
+
         # Queue some commands
-        handler.queue_command('w')
-        handler.queue_command('d')
-        
+        handler.queue_command("w")
+        handler.queue_command("d")
+
         # Get commands in order
         assert handler.get_next_command() == Direction.NORTH
         assert handler.get_next_command() == Direction.EAST
@@ -268,12 +268,12 @@ class TestKeyboardHandler:
     def test_clear_queue(self):
         """Test clearing command queue."""
         handler = KeyboardHandler()
-        
+
         # Queue commands
-        handler.queue_command('w')
-        handler.queue_command('a')
-        handler.queue_command('s')
-        
+        handler.queue_command("w")
+        handler.queue_command("a")
+        handler.queue_command("s")
+
         # Clear queue
         handler.clear_queue()
         assert len(handler.command_queue) == 0
@@ -288,30 +288,30 @@ class TestMovementIntegration:
         # Setup
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Create clear path
         for i in range(5, 10):
             floor.tiles[(i, 5)] = Tile(i, 5, TileType.FLOOR)
-        
+
         char = Character("Hero", 5, 5)
         handler = KeyboardHandler()
-        
+
         # Simulate keyboard input
-        handler.queue_command('d')  # East
-        handler.queue_command('d')  # East
-        handler.queue_command('w')  # North (wall above)
-        handler.queue_command('d')  # East
-        
+        handler.queue_command("d")  # East
+        handler.queue_command("d")  # East
+        handler.queue_command("w")  # North (wall above)
+        handler.queue_command("d")  # East
+
         # Process commands
         moves_executed = 0
         while True:
             direction = handler.get_next_command()
             if direction is None:
                 break
-                
+
             if MovementSystem.execute_move(char, direction, floor):
                 moves_executed += 1
-        
+
         # Should have moved east 3 times (north was blocked)
         assert char.position == (8, 5)
         assert moves_executed == 3
@@ -319,23 +319,22 @@ class TestMovementIntegration:
     def test_movement_performance(self):
         """Test movement system performance."""
         import time
-        
+
         floor = Floor(seed=12345)
         floor.generate()
-        
+
         # Make entire floor walkable for testing
         for pos, tile in floor.tiles.items():
             floor.tiles[pos] = Tile(pos[0], pos[1], TileType.FLOOR)
-        
+
         char = Character("Hero", 10, 10)
-        
+
         # Time 1000 moves
         start = time.time()
         for _ in range(1000):
-            for direction in [Direction.NORTH, Direction.EAST, 
-                            Direction.SOUTH, Direction.WEST]:
+            for direction in [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]:
                 MovementSystem.execute_move(char, direction, floor)
         elapsed = time.time() - start
-        
+
         # Should complete 4000 moves in under 100ms
         assert elapsed < 0.1
