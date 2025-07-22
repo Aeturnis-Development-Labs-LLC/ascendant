@@ -10,7 +10,7 @@ from src.models.tile import Tile
 
 class LargeFloor:
     """Test class for 100x100 floor."""
-    
+
     FLOOR_WIDTH = 100
     FLOOR_HEIGHT = 100
     MIN_ROOMS = 25
@@ -25,6 +25,7 @@ class LargeFloor:
         self.tiles: Dict[Tuple[int, int], Tile] = {}
         self.rooms: List = []
         import random
+
         self._random = random.Random(seed)
 
     def generate(self) -> None:
@@ -43,6 +44,7 @@ class LargeFloor:
     def _generate_rooms(self) -> None:
         """Generate random non-overlapping rooms."""
         from src.models.floor import Room
+
         room_count = self._random.randint(self.MIN_ROOMS, self.MAX_ROOMS)
 
         attempts = 0
@@ -161,6 +163,7 @@ class LargeFloor:
 
         # Use BFS to find all reachable floor tiles
         from collections import deque
+
         visited: set = set()
         queue = deque([(start_x, start_y)])
 
@@ -200,16 +203,18 @@ class LargeFloor:
         return 0 <= x < self.FLOOR_WIDTH and 0 <= y < self.FLOOR_HEIGHT
 
 
-def benchmark_operation(operation_name: str, operation, iterations: int = 10) -> Tuple[float, float, float]:
+def benchmark_operation(
+    operation_name: str, operation, iterations: int = 10
+) -> Tuple[float, float, float]:
     """Benchmark an operation and return min, avg, max times in milliseconds."""
     times = []
-    
+
     for _ in range(iterations):
         start_time = time.perf_counter()
         operation()
         end_time = time.perf_counter()
         times.append((end_time - start_time) * 1000)  # Convert to milliseconds
-    
+
     return min(times), statistics.mean(times), max(times)
 
 
@@ -218,34 +223,36 @@ def main():
     print("=== EDGE CASE: 100x100 Floor Benchmark ===")
     print("Running 10 iterations for each operation...")
     print()
-    
+
     # Test operations
     seed = 12345
-    
+
     # Floor Generation
     def gen_op():
         floor = LargeFloor(seed)
         floor.generate()
-    
+
     gen_min, gen_avg, gen_max = benchmark_operation("Floor Generation", gen_op)
-    
+
     # Room Connection
     floor = LargeFloor(seed)
     floor.generate()
+
     def conn_op():
         floor.connect_rooms()
-    
+
     conn_min, conn_avg, conn_max = benchmark_operation("Room Connection", conn_op)
-    
+
     # Pathfinding Check
     floor = LargeFloor(seed)
     floor.generate()
     floor.connect_rooms()
+
     def path_op():
         floor.is_fully_connected()
-    
+
     path_min, path_avg, path_max = benchmark_operation("Pathfinding Check", path_op)
-    
+
     # Full Floor Creation
     def full_op():
         floor = LargeFloor(seed)
@@ -253,17 +260,25 @@ def main():
         floor.connect_rooms()
         floor.place_stairs()
         floor.is_fully_connected()
-    
+
     full_min, full_avg, full_max = benchmark_operation("Full Floor Creation", full_op, iterations=5)
-    
+
     print("### 100x100 Floor Benchmark Results (milliseconds)")
     print("| Operation | Min | Avg | Max | Target | Status |")
     print("|-----------|-----|-----|-----|--------|--------|")
-    print(f"| Floor Generation | {gen_min:.2f} | {gen_avg:.2f} | {gen_max:.2f} | <100ms | {'PASS' if gen_avg < 100 else 'FAIL'} |")
-    print(f"| Room Connection | {conn_min:.2f} | {conn_avg:.2f} | {conn_max:.2f} | <50ms | {'PASS' if conn_avg < 50 else 'FAIL'} |")
-    print(f"| Pathfinding Check | {path_min:.2f} | {path_avg:.2f} | {path_max:.2f} | <50ms | {'PASS' if path_avg < 50 else 'FAIL'} |")
-    print(f"| Full Floor Creation | {full_min:.2f} | {full_avg:.2f} | {full_max:.2f} | <500ms | {'PASS' if full_avg < 500 else 'FAIL'} |")
-    
+    print(
+        f"| Floor Generation | {gen_min:.2f} | {gen_avg:.2f} | {gen_max:.2f} | <100ms | {'PASS' if gen_avg < 100 else 'FAIL'} |"
+    )
+    print(
+        f"| Room Connection | {conn_min:.2f} | {conn_avg:.2f} | {conn_max:.2f} | <50ms | {'PASS' if conn_avg < 50 else 'FAIL'} |"
+    )
+    print(
+        f"| Pathfinding Check | {path_min:.2f} | {path_avg:.2f} | {path_max:.2f} | <50ms | {'PASS' if path_avg < 50 else 'FAIL'} |"
+    )
+    print(
+        f"| Full Floor Creation | {full_min:.2f} | {full_avg:.2f} | {full_max:.2f} | <500ms | {'PASS' if full_avg < 500 else 'FAIL'} |"
+    )
+
     print()
     print("### Comparison with 20x20 floor")
     print("| Operation | 20x20 avg | 100x100 avg | Scale Factor |")
@@ -271,13 +286,15 @@ def main():
     print(f"| Floor Generation | 0.44ms | {gen_avg:.2f}ms | {gen_avg/0.44:.1f}x |")
     print(f"| Room Connection | 0.05ms | {conn_avg:.2f}ms | {conn_avg/0.05:.1f}x |")
     print(f"| Pathfinding Check | 0.17ms | {path_avg:.2f}ms | {path_avg/0.17:.1f}x |")
-    
+
     # Get floor stats
     test_floor = LargeFloor(seed)
     test_floor.generate()
     print()
     print(f"Floor stats: {len(test_floor.rooms)} rooms generated")
-    print(f"Grid size: {test_floor.FLOOR_WIDTH}x{test_floor.FLOOR_HEIGHT} = {test_floor.FLOOR_WIDTH * test_floor.FLOOR_HEIGHT} tiles")
+    print(
+        f"Grid size: {test_floor.FLOOR_WIDTH}x{test_floor.FLOOR_HEIGHT} = {test_floor.FLOOR_WIDTH * test_floor.FLOOR_HEIGHT} tiles"
+    )
 
 
 if __name__ == "__main__":
