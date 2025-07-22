@@ -9,7 +9,7 @@ from src.models.entity import Entity
 # Create concrete Entity subclasses for testing
 class MockPlayer(Entity):
     """Concrete player entity for testing."""
-    
+
     def update(self) -> None:
         """Update implementation."""
         self.updated = True
@@ -21,7 +21,7 @@ class MockPlayer(Entity):
 
 class MockMonster(Entity):
     """Concrete monster entity for testing."""
-    
+
     def update(self) -> None:
         """Update implementation."""
         self.health = getattr(self, "health", 100) - 1
