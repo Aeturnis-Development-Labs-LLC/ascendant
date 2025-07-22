@@ -1,7 +1,7 @@
 # Ascendant: The Eternal Spire
 # Main package initialization
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 __author__ = "Aeturnis Development Labs LLC"
 __email__ = "projects@aeturnis.dev"
 
@@ -13,3 +13,5 @@ __email__ = "projects@aeturnis.dev"
 # 0.5.0 - ASCII renderer with fog of war, trap placement, chest generation
 # 0.6.0 - Basic movement system (Character, MovementSystem, KeyboardHandler)
 # 0.7.0 - Stamina system (StaminaSystem, action costs, regeneration)
+# 0.8.0 - World map features (fog of war, fast travel, encounters, hazards)
+# 0.9.0 - Safe Haven & special locations (interior, Lost Souls, escape mechanics)

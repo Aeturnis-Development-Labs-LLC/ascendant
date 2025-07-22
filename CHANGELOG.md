@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2025-07-22
+
+### Added
+- Safe Haven & Special Locations (Phase 2.5)
+  - Safe Haven interior with 5x5 grid and named zones
+  - Lost Soul system with achievement badges and bonus caps
+  - Dungeon properties with level brackets and floor counts
+  - Escape rope mechanics with location-based restrictions
+  - Boss room locks preventing escape
+  - Deterministic dungeon generation using seeds
+- 51 new tests for special location features
+
+### Contract Coverage
+- GAME-WORLD-002: Safe Haven implementation ✅
+- GAME-WORLD-018: Lost Soul system ✅
+- GAME-WORLD-019: Dungeon properties ✅
+
 ## [0.8.0] - 2025-07-22
 
 ### Added
@@ -166,7 +183,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.3.0...v0.4.0
