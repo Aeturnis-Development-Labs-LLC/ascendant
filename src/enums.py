@@ -59,3 +59,17 @@ class EntityType(Enum):
     def __str__(self) -> str:
         """Return a readable string representation."""
         return self.name
+
+
+class ActionType(Enum):
+    """Types of actions that consume stamina."""
+
+    MOVE = auto()
+    ATTACK = auto()
+    USE_ITEM = auto()
+    CAST_SPELL = auto()
+    WAIT = auto()
+
+    def __str__(self) -> str:
+        """Return a readable string representation."""
+        return self.name
