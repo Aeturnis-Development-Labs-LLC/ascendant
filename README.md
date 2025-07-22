@@ -3,7 +3,7 @@
 [![CI](https://github.com/Aeturnis-Development-Labs-LLC/ascendant/actions/workflows/ci.yml/badge.svg)](https://github.com/Aeturnis-Development-Labs-LLC/ascendant/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Proprietary-red)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.5.0-green)](VERSION)
+[![Version](https://img.shields.io/badge/version-0.6.0-green)](VERSION)
 
 A roguelike tower climbing game where players must ascend an infinite tower, battling through increasingly difficult floors filled with monsters, traps, and bosses.
 

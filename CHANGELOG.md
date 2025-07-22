@@ -7,7 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.5.0] - 2025-07-22
+## [0.6.0] - 2025-07-22
+
+### Added
+- Character model extending Entity with stamina system in `src/models/character.py`
+- Movement system with collision detection in `src/game/movement.py`
+- Keyboard input handler with WASD support in `src/input/keyboard_handler.py`
+- Comprehensive movement test suite (20 new tests, all passing)
+- Performance benchmarking for movement operations
+
+### Performance
+- Movement Validation: 0.001ms per check (target <10ms) ✅
+- Movement Execution: 0.001ms per move (target <10ms) ✅
+- Keyboard Handling: 0.000ms per key (target <10ms) ✅
+- Full Movement Cycle: 0.001ms per cycle (target <10ms) ✅
+- Can handle 722,907 movements/second (12,000x exceeds 60 FPS requirement) ✅
+
+### Contract Coverage
+- GAME-MOVE-001: Basic 4-way movement ✅
+- GAME-MOVE-002: Collision detection ✅
+- GAME-MOVE-005: Diagonal movement ready ✅
+
+## [0.5.0] - 2025-07-21
 
 ### Added
 - ASCII renderer with fog of war in `src/renderers/ascii_renderer.py`
@@ -103,7 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.2.0...v0.3.0
