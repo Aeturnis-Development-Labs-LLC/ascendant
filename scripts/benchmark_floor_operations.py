@@ -1,7 +1,7 @@
 """Benchmark script for floor operations."""
 
-import time
 import statistics
+import time
 from typing import List, Tuple
 
 from src.models.floor import Floor
