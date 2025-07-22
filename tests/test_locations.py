@@ -1,7 +1,5 @@
 """Tests for location system."""
 
-import pytest
-
 from src.enums import LocationType, TileType
 from src.models.character import Character
 from src.models.location import DungeonEntrance, SafeHaven, TowerEntrance

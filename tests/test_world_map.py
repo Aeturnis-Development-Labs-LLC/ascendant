@@ -1,7 +1,5 @@
 """Tests for world map generation and functionality."""
 
-import pytest
-
 from src.enums import TerrainType
 from src.models.world_map import WorldMap, WorldTile
 

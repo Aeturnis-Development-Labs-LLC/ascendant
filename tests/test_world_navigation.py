@@ -85,9 +85,6 @@ class TestWorldNavigation:
         world_nav.reveal_from_position(center_x, center_y)
 
         # Check appropriate tiles are revealed based on terrain
-        tile = world_nav.world_map.get_tile(center_x, center_y)
-        radius = world_nav.get_vision_radius(tile.terrain_type)
-
         # At least the center and immediate neighbors should be revealed
         assert world_nav.world_map.tiles[center_y][center_x].discovered is True
         assert world_nav.world_map.tiles[center_y - 1][center_x].discovered is True
