@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-07-22
+
+### Added
+- ASCII renderer with fog of war in `src/renderers/ascii_renderer.py`
+- Trap placement system in `Floor.place_traps()` with density control
+- Chest generation in `Floor.place_chests()` with loot tier system
+- STAIRS_DOWN tile type for complete dungeon navigation
+- Width and height properties on Floor class for easier access
+- Comprehensive test suite for visualization (20 new tests)
+- Performance benchmarking for all visualization features
+
+### Performance
+- ASCII Rendering (fog): 0.106ms average (target <10ms) ✅
+- Full Map Rendering: 0.247ms average (target <20ms) ✅
+- Trap Placement: 0.622ms average (target <5ms) ✅
+- Chest Generation: 0.635ms average (target <5ms) ✅
+- Complete Floor: 0.752ms average (target <100ms) ✅
+
+### Contract Coverage
+- GAME-MAP-005: ASCII Renderer ✅
+- GAME-MAP-006: Trap Placement ✅
+- GAME-MAP-007: Chest Generation ✅
+
 ## [0.4.0] - 2025-07-21
 
 ### Added
@@ -80,7 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.1.0...v0.2.0

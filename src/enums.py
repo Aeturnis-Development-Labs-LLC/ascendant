@@ -9,6 +9,7 @@ class TileType(Enum):
     FLOOR = auto()
     WALL = auto()
     STAIRS_UP = auto()
+    STAIRS_DOWN = auto()
     TRAP = auto()
     CHEST = auto()
 
