@@ -405,7 +405,9 @@ class TestIntegratedVisualization:
         assert "@" in result
 
         # Player at edge
-        result = ASCIIRenderer.render_static(floor, (floor.width - 1, floor.height - 1), vision_radius=3)
+        result = ASCIIRenderer.render_static(
+            floor, (floor.width - 1, floor.height - 1), vision_radius=3
+        )
         assert "@" in result
 
         # Zero vision radius

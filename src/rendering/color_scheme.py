@@ -20,7 +20,7 @@ class ColorScheme:
 
     def __init__(self) -> None:
         """Initialize with default color scheme."""
-        self._colors: Dict[str, Dict[str, Union[Tuple[int, int, int], str]]] = {}
+        self._colors: Dict[str, Dict[str, Dict[str, Union[Tuple[int, int, int], str]]]] = {}
         self._load_defaults()
 
     def _load_defaults(self) -> None:
@@ -108,9 +108,12 @@ class ColorScheme:
             RGB tuple or ANSI string
         """
         key = tile_type.name
-        if key in self._colors.get("tiles", {}):
-            return self._colors["tiles"][key][mode.value]
-        return self._default_color[mode.value]
+        if "tiles" in self._colors and key in self._colors["tiles"]:
+            color_dict = self._colors["tiles"][key]
+            mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
+            return color_dict[mode_key]
+        mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
+        return self._default_color[mode_key]
 
     def get_terrain_color(
         self, terrain_type: TerrainType, mode: ColorMode
@@ -125,9 +128,12 @@ class ColorScheme:
             RGB tuple or ANSI string
         """
         key = terrain_type.name
-        if key in self._colors.get("terrain", {}):
-            return self._colors["terrain"][key][mode.value]
-        return self._default_color[mode.value]
+        if "terrain" in self._colors and key in self._colors["terrain"]:
+            color_dict = self._colors["terrain"][key]
+            mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
+            return color_dict[mode_key]
+        mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
+        return self._default_color[mode_key]
 
     def get_entity_color(
         self, entity_type: EntityType, mode: ColorMode
@@ -142,6 +148,9 @@ class ColorScheme:
             RGB tuple or ANSI string
         """
         key = entity_type.name
-        if key in self._colors.get("entities", {}):
-            return self._colors["entities"][key][mode.value]
-        return self._default_color[mode.value]
+        if "entities" in self._colors and key in self._colors["entities"]:
+            color_dict = self._colors["entities"][key]
+            mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
+            return color_dict[mode_key]
+        mode_key = "rgb" if mode == ColorMode.RGB else "ansi"
+        return self._default_color[mode_key]

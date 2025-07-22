@@ -41,7 +41,8 @@ def apply_fog_of_war(color: Tuple[int, int, int], visibility: float) -> Tuple[in
     min_brightness = 0.15
     brightness = min_brightness + (1.0 - min_brightness) * visibility
 
-    return tuple(int(c * brightness) for c in color)
+    r, g, b = color
+    return (int(r * brightness), int(g * brightness), int(b * brightness))
 
 
 def apply_status_effect(color: Tuple[int, int, int], effect: StatusEffect) -> Tuple[int, int, int]:
@@ -146,7 +147,10 @@ def brightness_adjust(color: Tuple[int, int, int], percent: int) -> Tuple[int, i
     factor = 1.0 + (percent / 100.0)
 
     # Apply factor to all components
-    result = tuple(int(c * factor) for c in color)
+    r, g, b = color
+    new_r = int(r * factor)
+    new_g = int(g * factor)
+    new_b = int(b * factor)
 
     # Clamp to valid range
-    return tuple(max(0, min(255, c)) for c in result)
+    return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))

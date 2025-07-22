@@ -93,6 +93,9 @@ class ASCIIRenderer:
                 else:
                     # Visible tile
                     tile = floor.get_tile(x, y)
+                    if tile is None:
+                        line.append("?")
+                        continue
 
                     # Check for entities first
                     if (x, y) == character.position:
@@ -137,6 +140,9 @@ class ASCIIRenderer:
         """
         # Get base color for character
         base_color = self.color_scheme.get_entity_color(EntityType.PLAYER, ColorMode.RGB)
+        if isinstance(base_color, str):
+            # If ANSI mode, use default RGB color
+            base_color = (0, 255, 0)  # Green for player
         flash_colors = flash_damage(base_color, damage_type)
 
         frames = []
@@ -162,19 +168,28 @@ class ASCIIRenderer:
         for tile_type in TileType:
             char = self._get_tile_char_for_type(tile_type)
             color = self.color_scheme.get_color(tile_type, ColorMode.RGB)
-            color_str = (
-                self._apply_color(char, color)
-                if self.color_mode == ColorMode.ANSI
-                else f"RGB{color}"
-            )
+            if isinstance(color, str):
+                color_str = color
+            else:
+                color_str = (
+                    self._apply_color(char, color)
+                    if self.color_mode == ColorMode.ANSI
+                    else f"RGB{color}"
+                )
             lines.append(f"  {char} {tile_type.name}: {color_str}")
 
         # Entities
         lines.append("\nEntities:")
         player_color = self.color_scheme.get_entity_color(EntityType.PLAYER, ColorMode.RGB)
         monster_color = self.color_scheme.get_entity_color(EntityType.MONSTER, ColorMode.RGB)
-        lines.append(f"  @ PLAYER: {self._apply_color('@', player_color)}")
-        lines.append(f"  M MONSTER: {self._apply_color('M', monster_color)}")
+        if isinstance(player_color, tuple):
+            lines.append(f"  @ PLAYER: {self._apply_color('@', player_color)}")
+        else:
+            lines.append(f"  @ PLAYER: {player_color}")
+        if isinstance(monster_color, tuple):
+            lines.append(f"  M MONSTER: {self._apply_color('M', monster_color)}")
+        else:
+            lines.append(f"  M MONSTER: {monster_color}")
 
         return "\n".join(lines)
 
@@ -188,6 +203,9 @@ class ASCIIRenderer:
             RGB color tuple
         """
         base_color = self.color_scheme.get_entity_color(entity.entity_type, ColorMode.RGB)
+        if isinstance(base_color, str):
+            # Return default RGB if string
+            return (128, 128, 128)
 
         # Apply status effects if present
         if hasattr(entity, "status_effects") and entity.status_effects:
@@ -205,7 +223,10 @@ class ASCIIRenderer:
         Returns:
             RGB color tuple
         """
-        return self.color_scheme.get_color(tile.tile_type, ColorMode.RGB)
+        color = self.color_scheme.get_color(tile.tile_type, ColorMode.RGB)
+        if isinstance(color, str):
+            return (128, 128, 128)  # Default gray
+        return color
 
     def _calculate_visibility(self, pos: Tuple[int, int], player_pos: Tuple[int, int]) -> float:
         """Calculate visibility of a position from player position.
@@ -231,8 +252,8 @@ class ASCIIRenderer:
             return 1.0
         else:
             # Gradual falloff
-            distance = distance_squared**0.5
-            return 1.0 - (distance / self.fog_radius)
+            distance = float(distance_squared**0.5)
+            return 1.0 - (distance / float(self.fog_radius))
 
     def _get_tile_char(self, tile) -> str:
         """Get character for a tile."""
@@ -256,6 +277,9 @@ class ASCIIRenderer:
     def _get_tile_color(self, tile, visibility: float) -> Tuple[int, int, int]:
         """Get color for a tile with visibility applied."""
         base_color = self.color_scheme.get_color(tile.tile_type, ColorMode.RGB)
+        if isinstance(base_color, str):
+            # Return default gray if string
+            base_color = (128, 128, 128)
 
         # Apply fog of war
         color = apply_fog_of_war(base_color, visibility)
@@ -337,6 +361,9 @@ class ASCIIRenderer:
                 else:
                     # Within vision
                     tile = floor.get_tile(x, y)
+                    if tile is None:
+                        line.append("?")
+                        continue
 
                     # Check for player first
                     if (x, y) == player_pos:

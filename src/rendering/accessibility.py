@@ -81,7 +81,7 @@ def apply_colorblind_filter(
     else:
         return color
 
-    # Ensure values are in valid range
+    # Ensure values are in valid range (only reached for colorblind modes)
     return (max(0, min(255, new_r)), max(0, min(255, new_g)), max(0, min(255, new_b)))
 
 
@@ -101,11 +101,17 @@ def apply_high_contrast(color: Tuple[int, int, int]) -> Tuple[int, int, int]:
     if luminance < 128:
         # Dark colors become darker
         factor = luminance / 128
-        return tuple(int(c * factor * 0.5) for c in color)
+        r, g, b = color
+        return (int(r * factor * 0.5), int(g * factor * 0.5), int(b * factor * 0.5))
     else:
         # Bright colors become brighter
         factor = (luminance - 128) / 128
-        return tuple(int(c + (255 - c) * factor * 0.5) for c in color)
+        r, g, b = color
+        return (
+            int(r + (255 - r) * factor * 0.5),
+            int(g + (255 - g) * factor * 0.5),
+            int(b + (255 - b) * factor * 0.5),
+        )
 
 
 def get_symbol_for_tile(tile_type: TileType) -> str:
@@ -151,16 +157,16 @@ def get_enhanced_symbol(element: Union[TileType, EntityType, TerrainType]) -> st
 
     elif isinstance(element, EntityType):
         # Entity symbols
-        symbols = {
+        entity_symbols = {
             EntityType.PLAYER: "@",
             EntityType.MONSTER: "&",
             EntityType.NPC: "☺",  # Smiley
         }
-        return symbols.get(element, "?")
+        return entity_symbols.get(element, "?")
 
     elif isinstance(element, TerrainType):
         # Terrain symbols
-        symbols = {
+        terrain_symbols = {
             TerrainType.PLAINS: '"',
             TerrainType.FOREST: "♣",
             TerrainType.MOUNTAINS: "^",
@@ -168,6 +174,6 @@ def get_enhanced_symbol(element: Union[TileType, EntityType, TerrainType]) -> st
             TerrainType.ROADS: "=",
             TerrainType.SHADOWLANDS: "░",
         }
-        return symbols.get(element, "?")
+        return terrain_symbols.get(element, "?")
 
     return "?"
