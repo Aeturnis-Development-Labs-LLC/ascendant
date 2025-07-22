@@ -63,6 +63,7 @@ omit = ["*/tests/*", "*/__init__.py"]
 precision = 2
 show_missing = true
 skip_covered = false
+fail_under = 90  # Allow up to 10% coverage drop
 
 [tool.bandit]
 targets = ["src"]

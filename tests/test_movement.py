@@ -1,14 +1,15 @@
 """Tests for movement system - UTF Contracts GAME-MOVE-001, GAME-MOVE-002, GAME-MOVE-005."""
 
-import pytest
 from typing import Tuple
 
+import pytest
+
 from src.enums import Direction, EntityType, TileType
+from src.game.movement import MovementSystem
+from src.input.keyboard_handler import KeyboardHandler
 from src.models.character import Character
 from src.models.floor import Floor
 from src.models.tile import Tile
-from src.game.movement import MovementSystem
-from src.input.keyboard_handler import KeyboardHandler
 
 
 class TestCharacter:
