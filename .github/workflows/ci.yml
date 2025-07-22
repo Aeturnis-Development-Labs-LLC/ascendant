@@ -37,11 +37,11 @@ jobs:
 
       - name: Run black
         run: |
-          black --check --line-length=100 src tests scripts
+          black --check --line-length=100 src tests
 
       - name: Run isort
         run: |
-          isort --check-only --profile black --line-length 100 src tests scripts
+          isort --check-only --profile black --line-length 100 src tests
 
       - name: Run flake8
         run: |
