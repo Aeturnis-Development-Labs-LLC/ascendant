@@ -85,7 +85,6 @@ class TestEntity:
 
     def test_abstract_methods_must_be_implemented(self):
         """Test that subclasses must implement abstract methods."""
-
         # Create a class that doesn't implement abstract methods
         class IncompleteEntity(Entity):
             pass
