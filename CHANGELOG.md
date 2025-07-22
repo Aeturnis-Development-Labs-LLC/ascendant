@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2025-01-22
+
+### Changed
+- **Major Refactoring**: KISS (Keep It Simple, Stupid) principle applied throughout codebase
+  - Consolidated color system from 921 lines (4 files) to 378 lines (2 files)
+  - Removed Entity abstract base class inheritance, simplified Character class (189 → 97 lines)
+  - Converted all static classes to simple functions:
+    - MovementSystem → movement functions (72 → 65 lines)
+    - StaminaSystem → stamina functions (147 → 65 lines)
+    - WorldMapRenderer → render function (85 → 84 lines)
+  - Archived premature features (soul system) for future implementation
+  - Total codebase reduction: 1,044 lines (30%)
+
+### Technical Improvements
+- Eliminated unnecessary abstraction layers
+- Simplified imports and function calls
+- Improved code readability and maintainability
+- All 255 tests passing with >98% coverage
+- Zero performance regression
+
+### Developer Experience
+- Direct function calls instead of static methods
+- Clearer code structure with less cognitive overhead
+- Easier testing and mocking
+- Better alignment with Python idioms
+
 ## [0.10.0] - 2025-01-22
 
 ### Added

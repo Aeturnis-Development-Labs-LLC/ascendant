@@ -81,15 +81,9 @@ class Floor:
     MAX_ROOM_SIZE = 8
     EDGE_BUFFER = 1
 
-    @property
-    def width(self) -> int:
-        """Get the width of the floor."""
-        return self.FLOOR_WIDTH
-
-    @property
-    def height(self) -> int:
-        """Get the height of the floor."""
-        return self.FLOOR_HEIGHT
+    # Direct access to constants is simpler than properties
+    width = FLOOR_WIDTH
+    height = FLOOR_HEIGHT
 
     def __init__(self, seed: int):
         """Initialize a new floor with the given seed.

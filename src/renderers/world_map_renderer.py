@@ -1,85 +1,85 @@
-"""ASCII renderer for world map with weather display."""
+"""Simple world map rendering functions."""
 
 from typing import Optional, Tuple
 
 from src.enums import TerrainType
 from src.game.environmental_hazards import Weather
-from src.models.world_map import WorldMap
+
+# Simple terrain display characters
+TERRAIN_CHARS = {
+    TerrainType.PLAINS: ".",
+    TerrainType.FOREST: "F",
+    TerrainType.MOUNTAINS: "^",
+    TerrainType.WATER: "~",
+    TerrainType.ROADS: "=",
+    TerrainType.SHADOWLANDS: "#",
+}
+
+# Weather display strings
+WEATHER_DISPLAY = {
+    Weather.CLEAR: "Clear Skies",
+    Weather.FOG: "Foggy (Vision -50%)",
+    Weather.STORM: "Stormy (Move -50%)",
+    Weather.BLIZZARD: "Blizzard! (Move -70%, Vision -70%)",
+}
 
 
-class WorldMapRenderer:
-    """Renders world map in ASCII format with weather indicators."""
+def render_area(
+    world,
+    center: Tuple[int, int],
+    radius: int = 10,
+    current_weather: Optional[Weather] = None,
+) -> str:
+    """Render a portion of the world map centered on position.
 
-    # Simple terrain display characters
-    TERRAIN_CHARS = {
-        TerrainType.PLAINS: ".",
-        TerrainType.FOREST: "F",
-        TerrainType.MOUNTAINS: "^",
-        TerrainType.WATER: "~",
-        TerrainType.ROADS: "=",
-        TerrainType.SHADOWLANDS: "#",
-    }
+    Args:
+        world: The world map to render
+        center: Center position (x, y)
+        radius: How many tiles to show in each direction
+        current_weather: Current weather condition
 
-    # Weather display strings
-    WEATHER_DISPLAY = {
-        Weather.CLEAR: "Clear Skies",
-        Weather.FOG: "Foggy (Vision -50%)",
-        Weather.STORM: "Stormy (Move -50%)",
-        Weather.BLIZZARD: "Blizzard! (Move -70%, Vision -70%)",
-    }
+    Returns:
+        Multi-line string with map and weather
+    """
+    lines = []
+    center_x, center_y = center
 
-    @staticmethod
-    def render_area(
-        world: WorldMap,
-        center: Tuple[int, int],
-        radius: int = 10,
-        current_weather: Optional[Weather] = None,
-    ) -> str:
-        """Render a portion of the world map centered on position.
+    # Add weather header
+    if current_weather:
+        lines.append(f"Weather: {WEATHER_DISPLAY.get(current_weather, 'Unknown')}")
+        lines.append("")
 
-        Args:
-            world: The world map to render
-            center: Center position (x, y)
-            radius: How many tiles to show in each direction
-            current_weather: Current weather condition
+    # Render the map area
+    for dy in range(-radius, radius + 1):
+        line = []
+        for dx in range(-radius, radius + 1):
+            x, y = center_x + dx, center_y + dy
 
-        Returns:
-            Multi-line string with map and weather
-        """
-        lines = []
-        center_x, center_y = center
+            # Mark center position with @
+            if dx == 0 and dy == 0:
+                line.append("@")
+                continue
 
-        # Add weather status at top
-        if current_weather:
-            weather_text = WorldMapRenderer.WEATHER_DISPLAY.get(current_weather, "Unknown Weather")
-            lines.append(f"Weather: {weather_text}")
-            lines.append("-" * (len(weather_text) + 9))
+            # Check bounds
+            if 0 <= x < world.WIDTH and 0 <= y < world.HEIGHT:
+                tile = world.tiles[y][x]
 
-        # Render map area
-        for dy in range(-radius, radius + 1):
-            line = []
-            for dx in range(-radius, radius + 1):
-                x = center_x + dx
-                y = center_y + dy
-
-                # Mark center with @
-                if dx == 0 and dy == 0:
-                    line.append("@")
-                elif world.is_valid_position(x, y):
-                    tile = world.get_tile(x, y)
-                    if tile and tile.discovered:
-                        # Show location symbols if present
-                        if tile.location:
-                            symbol = tile.location.get_display_symbol()[1]  # type: ignore
-                            line.append(symbol)
-                        else:
-                            char = WorldMapRenderer.TERRAIN_CHARS.get(tile.terrain_type, "?")
-                            line.append(char)
+                # Only show discovered tiles
+                if tile.discovered or (x, y) in world.discovered_tiles:
+                    if tile.location:
+                        # Show location with special marker
+                        line.append("*")
                     else:
-                        line.append(" ")  # Undiscovered
+                        # Show terrain
+                        terrain = tile.terrain_type
+                        char = TERRAIN_CHARS.get(terrain, ".")
+                        line.append(char)
                 else:
-                    line.append(" ")  # Out of bounds
+                    # Undiscovered area
+                    line.append(" ")
+            else:
+                line.append(" ")
 
-            lines.append("".join(line))
+        lines.append("".join(line))
 
-        return "\n".join(lines)
+    return "\n".join(lines)

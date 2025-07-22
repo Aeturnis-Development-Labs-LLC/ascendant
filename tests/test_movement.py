@@ -3,7 +3,7 @@
 import pytest
 
 from src.enums import Direction, EntityType, TileType
-from src.game.movement import MovementSystem
+from src.game.movement import calculate_new_position, execute_move, validate_position
 from src.input.keyboard_handler import KeyboardHandler
 from src.models.character import Character
 from src.models.floor import Floor
@@ -64,7 +64,7 @@ class TestCharacter:
 
 
 class TestMovementSystem:
-    """Tests for MovementSystem class."""
+    """Tests for movement functions."""
 
     def test_validate_position(self):
         """Test position validation."""
@@ -72,26 +72,26 @@ class TestMovementSystem:
         floor.generate()
 
         # Valid positions
-        assert MovementSystem.validate_position((5, 5), floor) is True
-        assert MovementSystem.validate_position((0, 0), floor) is True
-        assert MovementSystem.validate_position((19, 19), floor) is True
+        assert validate_position((5, 5), floor) is True
+        assert validate_position((0, 0), floor) is True
+        assert validate_position((19, 19), floor) is True
 
         # Invalid positions (out of bounds)
-        assert MovementSystem.validate_position((-1, 5), floor) is False
-        assert MovementSystem.validate_position((5, -1), floor) is False
-        assert MovementSystem.validate_position((20, 5), floor) is False
-        assert MovementSystem.validate_position((5, 20), floor) is False
+        assert validate_position((-1, 5), floor) is False
+        assert validate_position((5, -1), floor) is False
+        assert validate_position((20, 5), floor) is False
+        assert validate_position((5, 20), floor) is False
 
     def test_calculate_new_position(self):
         """Test new position calculation."""
         # North
-        assert MovementSystem.calculate_new_position((5, 5), Direction.NORTH) == (5, 4)
+        assert calculate_new_position((5, 5), Direction.NORTH) == (5, 4)
         # South
-        assert MovementSystem.calculate_new_position((5, 5), Direction.SOUTH) == (5, 6)
+        assert calculate_new_position((5, 5), Direction.SOUTH) == (5, 6)
         # East
-        assert MovementSystem.calculate_new_position((5, 5), Direction.EAST) == (6, 5)
+        assert calculate_new_position((5, 5), Direction.EAST) == (6, 5)
         # West
-        assert MovementSystem.calculate_new_position((5, 5), Direction.WEST) == (4, 5)
+        assert calculate_new_position((5, 5), Direction.WEST) == (4, 5)
 
     def test_execute_move_valid(self):
         """Test executing valid moves."""
@@ -105,7 +105,7 @@ class TestMovementSystem:
         char = Character("Hero", 5, 5)
 
         # Execute valid move
-        result = MovementSystem.execute_move(char, Direction.EAST, floor)
+        result = execute_move(char, Direction.EAST, floor)
         assert result is True
         assert char.position == (6, 5)
 
@@ -121,7 +121,7 @@ class TestMovementSystem:
         char = Character("Hero", 5, 5)
 
         # Try to move into wall
-        result = MovementSystem.execute_move(char, Direction.NORTH, floor)
+        result = execute_move(char, Direction.NORTH, floor)
         assert result is False
         assert char.position == (5, 5)  # Position unchanged
 
@@ -135,11 +135,11 @@ class TestMovementSystem:
         char = Character("Hero", 0, 0)
 
         # Try to move out of bounds
-        result = MovementSystem.execute_move(char, Direction.NORTH, floor)
+        result = execute_move(char, Direction.NORTH, floor)
         assert result is False
         assert char.position == (0, 0)  # Position unchanged
 
-        result = MovementSystem.execute_move(char, Direction.WEST, floor)
+        result = execute_move(char, Direction.WEST, floor)
         assert result is False
         assert char.position == (0, 0)  # Position unchanged
 
@@ -156,16 +156,16 @@ class TestMovementSystem:
         char = Character("Hero", 5, 5)
 
         # Move in all directions
-        assert MovementSystem.execute_move(char, Direction.NORTH, floor) is True
+        assert execute_move(char, Direction.NORTH, floor) is True
         assert char.position == (5, 4)
 
-        assert MovementSystem.execute_move(char, Direction.EAST, floor) is True
+        assert execute_move(char, Direction.EAST, floor) is True
         assert char.position == (6, 4)
 
-        assert MovementSystem.execute_move(char, Direction.SOUTH, floor) is True
+        assert execute_move(char, Direction.SOUTH, floor) is True
         assert char.position == (6, 5)
 
-        assert MovementSystem.execute_move(char, Direction.WEST, floor) is True
+        assert execute_move(char, Direction.WEST, floor) is True
         assert char.position == (5, 5)
 
     def test_diagonal_movement(self):
@@ -184,7 +184,7 @@ class TestMovementSystem:
         # This test documents expected behavior for future diagonal support
         # Currently expecting False as diagonals not in Direction enum
         with pytest.raises(AttributeError):
-            MovementSystem.execute_move(char, "NORTHEAST", floor)
+            execute_move(char, "NORTHEAST", floor)
 
 
 class TestKeyboardHandler:
@@ -308,7 +308,7 @@ class TestMovementIntegration:
             if direction is None:
                 break
 
-            if MovementSystem.execute_move(char, direction, floor):
+            if execute_move(char, direction, floor):
                 moves_executed += 1
 
         # Should have moved east 3 times (north was blocked)
@@ -332,7 +332,7 @@ class TestMovementIntegration:
         start = time.time()
         for _ in range(1000):
             for direction in [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]:
-                MovementSystem.execute_move(char, direction, floor)
+                execute_move(char, direction, floor)
         elapsed = time.time() - start
 
         # Should complete 4000 moves in under 100ms

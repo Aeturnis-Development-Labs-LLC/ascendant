@@ -1,12 +1,13 @@
-"""Simplified character model without unnecessary inheritance."""
+"""Character model representing the player character."""
 
 from typing import Tuple
 
 from src.enums import ActionType, Direction, EntityType, TileType
+from src.models.entity import Entity
 from src.models.floor import Floor
 
 
-class Character:
+class Character(Entity):
     """Represents a player character with movement and stamina."""
 
     def __init__(self, name: str, x: int, y: int):
@@ -17,12 +18,13 @@ class Character:
             x: Starting X coordinate
             y: Starting Y coordinate
         """
+        super().__init__((x, y), EntityType.PLAYER)
         self.name = name
-        self.x = x
-        self.y = y
-        self.entity_type = EntityType.PLAYER
         self._stamina = 100
         self.stamina_max = 100
+        # Store mutable position for movement
+        self._x = x
+        self._y = y
 
     @property
     def stamina(self) -> int:
@@ -37,7 +39,7 @@ class Character:
     @property
     def position(self) -> Tuple[int, int]:
         """Get current position as tuple."""
-        return (self.x, self.y)
+        return (self._x, self._y)
 
     def move_to(self, new_pos: Tuple[int, int]) -> None:
         """Move character to a new position.
@@ -45,7 +47,9 @@ class Character:
         Args:
             new_pos: Tuple of (x, y) coordinates
         """
-        self.x, self.y = new_pos
+        self._x, self._y = new_pos
+        # Update parent's immutable position
+        self._position = new_pos
 
     def validate_move(self, direction: Direction, floor: Floor) -> bool:
         """Check if a move in the given direction is valid.
@@ -58,8 +62,8 @@ class Character:
             True if move is valid, False otherwise
         """
         # Calculate new position
-        new_x = self.x + direction.dx
-        new_y = self.y + direction.dy
+        new_x = self._x + direction.dx
+        new_y = self._y + direction.dy
 
         # Check bounds
         if not floor.is_valid_position(new_x, new_y):
@@ -89,10 +93,14 @@ class Character:
             return True
         return False
 
-    def __str__(self) -> str:
-        """Return string representation of the character."""
-        return f"Character({self.x}, {self.y})"
+    def update(self) -> None:
+        """Update character state. Currently a no-op for basic movement."""
+        pass
 
-    def __repr__(self) -> str:
-        """Return detailed representation of the character."""
-        return f"Character(name='{self.name}', position={self.position})"
+    def render(self) -> str:
+        """Render character as string representation.
+
+        Returns:
+            '@' symbol representing the player
+        """
+        return "@"

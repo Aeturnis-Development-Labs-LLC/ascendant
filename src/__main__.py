@@ -14,7 +14,7 @@ except ImportError:
 
 
 def main():
-    """Main entry point for the game."""
+    """Run the main entry point for the game."""
     print(f"Ascendant: The Eternal Spire (Client) v{__version__}")
     return 0
 
