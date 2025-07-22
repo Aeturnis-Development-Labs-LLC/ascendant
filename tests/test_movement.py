@@ -3,7 +3,7 @@
 import pytest
 
 from src.enums import Direction, EntityType, TileType
-from src.game.movement import validate_position, calculate_new_position, execute_move
+from src.game.movement import calculate_new_position, execute_move, validate_position
 from src.input.keyboard_handler import KeyboardHandler
 from src.models.character import Character
 from src.models.floor import Floor

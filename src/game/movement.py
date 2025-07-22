@@ -16,7 +16,7 @@ def validate_position(pos: Tuple[int, int], floor) -> bool:
         True if position is within bounds
     """
     x, y = pos
-    return floor.is_valid_position(x, y)
+    return bool(floor.is_valid_position(x, y))
 
 
 def calculate_new_position(current: Tuple[int, int], direction: Direction) -> Tuple[int, int]:

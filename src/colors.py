@@ -53,7 +53,8 @@ def get_tile_color(tile_type: TileType, visibility: float = 1.0) -> Tuple[int, i
     # Apply fog of war dimming
     if visibility < 1.0:
         visibility = max(0.15, visibility)  # Minimum visibility
-        return tuple(int(c * visibility) for c in base_color)
+        r, g, b = base_color
+        return (int(r * visibility), int(g * visibility), int(b * visibility))
 
     return base_color
 
@@ -150,7 +151,9 @@ def apply_high_contrast(color: Tuple[int, int, int]) -> Tuple[int, int, int]:
     # Push dark colors darker, bright colors brighter
     if luminance < 128:
         factor = luminance / 128 * 0.5
-        return tuple(int(c * factor) for c in color)
+        r, g, b = color
+        return (int(r * factor), int(g * factor), int(b * factor))
     else:
         factor = (luminance - 128) / 128 * 0.5
-        return tuple(int(c + (255 - c) * factor) for c in color)
+        r, g, b = color
+        return (int(r + (255 - r) * factor), int(g + (255 - g) * factor), int(b + (255 - b) * factor))

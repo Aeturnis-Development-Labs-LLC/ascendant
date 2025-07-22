@@ -3,14 +3,14 @@
 from typing import List, Optional, Tuple
 
 from src.colors import (
-    get_tile_color,
-    get_entity_color,
-    to_ansi,
-    apply_status_tint,
     apply_deuteranopia,
-    apply_protanopia,
-    apply_tritanopia,
     apply_high_contrast,
+    apply_protanopia,
+    apply_status_tint,
+    apply_tritanopia,
+    get_entity_color,
+    get_tile_color,
+    to_ansi,
 )
 from src.enums import EntityType, TileType
 from src.models.character import Character

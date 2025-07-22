@@ -3,21 +3,21 @@
 import pytest
 
 from src.colors import (
-    get_tile_color,
-    get_entity_color,
-    get_terrain_color,
-    to_ansi,
-    apply_status_tint,
-    apply_deuteranopia,
-    apply_protanopia,
-    apply_tritanopia,
-    apply_high_contrast,
-    TILE_COLORS,
+    DEFAULT_COLOR,
     ENTITY_COLORS,
     TERRAIN_COLORS,
-    DEFAULT_COLOR,
+    TILE_COLORS,
+    apply_deuteranopia,
+    apply_high_contrast,
+    apply_protanopia,
+    apply_status_tint,
+    apply_tritanopia,
+    get_entity_color,
+    get_terrain_color,
+    get_tile_color,
+    to_ansi,
 )
-from src.enums import TileType, EntityType, TerrainType
+from src.enums import EntityType, TerrainType, TileType
 
 
 class TestColorFunctions:

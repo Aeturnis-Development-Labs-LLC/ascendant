@@ -2,10 +2,10 @@
 
 from src.enums import ActionType
 from src.game.stamina_system import (
-    get_action_cost,
     can_perform_action,
-    use_stamina,
+    get_action_cost,
     regenerate_stamina,
+    use_stamina,
 )
 from src.models.character import Character
 
