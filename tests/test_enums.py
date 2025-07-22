@@ -10,7 +10,7 @@ class TestTileType:
 
     def test_all_tile_types_exist(self):
         """Test that all required tile types are defined."""
-        expected_types = {"FLOOR", "WALL", "STAIRS_UP", "TRAP", "CHEST"}
+        expected_types = {"FLOOR", "WALL", "STAIRS_UP", "STAIRS_DOWN", "TRAP", "CHEST"}
         actual_types = {tile.name for tile in TileType}
         assert actual_types == expected_types
 

@@ -85,7 +85,7 @@ class Floor:
     def width(self) -> int:
         """Get the width of the floor."""
         return self.FLOOR_WIDTH
-    
+
     @property
     def height(self) -> int:
         """Get the height of the floor."""
@@ -227,12 +227,12 @@ class Floor:
 
         # Select two different rooms
         selected_rooms = self._random.sample(self.rooms, 2)
-        
+
         # Place stairs up in first room
         room_up = selected_rooms[0]
         center_x = room_up.x + room_up.width // 2
         center_y = room_up.y + room_up.height // 2
-        
+
         if self.tiles[(center_x, center_y)].tile_type == TileType.FLOOR:
             self.tiles[(center_x, center_y)] = Tile(center_x, center_y, TileType.STAIRS_UP)
         else:
@@ -245,12 +245,12 @@ class Floor:
             if floor_tiles:
                 x, y = self._random.choice(floor_tiles)
                 self.tiles[(x, y)] = Tile(x, y, TileType.STAIRS_UP)
-        
+
         # Place stairs down in second room
         room_down = selected_rooms[1]
         center_x = room_down.x + room_down.width // 2
         center_y = room_down.y + room_down.height // 2
-        
+
         if self.tiles[(center_x, center_y)].tile_type == TileType.FLOOR:
             self.tiles[(center_x, center_y)] = Tile(center_x, center_y, TileType.STAIRS_DOWN)
         else:
@@ -293,7 +293,11 @@ class Floor:
                 next_x, next_y = x + dx, y + dy
                 if (next_x, next_y) not in visited and self.is_valid_position(next_x, next_y):
                     tile = self.tiles.get((next_x, next_y))
-                    if tile and tile.tile_type in [TileType.FLOOR, TileType.STAIRS_UP, TileType.STAIRS_DOWN]:
+                    if tile and tile.tile_type in [
+                        TileType.FLOOR,
+                        TileType.STAIRS_UP,
+                        TileType.STAIRS_DOWN,
+                    ]:
                         queue.append((next_x, next_y))
 
         # Check if we can reach all rooms
@@ -319,7 +323,7 @@ class Floor:
         Args:
             density: Percentage of floor tiles that should have traps (0.0-1.0)
         """
-        if not hasattr(self, 'traps'):
+        if not hasattr(self, "traps"):
             self.traps = {}
 
         # Clamp density to valid range
@@ -338,20 +342,22 @@ class Floor:
                     if (x, y) == (center_x, center_y):
                         is_room_center = True
                         break
-                
+
                 if not is_room_center:
                     valid_positions.append((x, y))
 
         # Calculate number of traps to place
         num_traps = int(len(valid_positions) * density)
-        
+
         # Randomly select positions for traps
         if num_traps > 0 and valid_positions:
-            trap_positions = self._random.sample(valid_positions, min(num_traps, len(valid_positions)))
+            trap_positions = self._random.sample(
+                valid_positions, min(num_traps, len(valid_positions))
+            )
             for pos in trap_positions:
                 self.traps[pos] = {
-                    'revealed': False,
-                    'damage': self._random.randint(1, 3)  # 1-3 damage
+                    "revealed": False,
+                    "damage": self._random.randint(1, 3),  # 1-3 damage
                 }
 
     def place_chests(self, count: int = 3) -> None:
@@ -360,7 +366,7 @@ class Floor:
         Args:
             count: Number of chests to place
         """
-        if not hasattr(self, 'chests'):
+        if not hasattr(self, "chests"):
             self.chests = {}
 
         # Find valid positions in rooms (not doorways or stairs)
@@ -376,7 +382,7 @@ class Floor:
                             adj_tile = self.tiles.get((x + dx, y + dy))
                             if adj_tile and adj_tile.tile_type == TileType.WALL:
                                 adjacent_walls += 1
-                        
+
                         # Not a doorway if it doesn't have walls on exactly opposite sides
                         if adjacent_walls < 2:
                             valid_positions.append((x, y))
@@ -388,7 +394,4 @@ class Floor:
                 # Higher floors have better loot tables
                 # For now, just store a simple loot tier based on position
                 loot_tier = 1 + (i // 2)  # Every 2 chests increase tier
-                self.chests[pos] = {
-                    'opened': False,
-                    'loot_tier': loot_tier
-                }
+                self.chests[pos] = {"opened": False, "loot_tier": loot_tier}

@@ -78,7 +78,7 @@ def test_main_prints_game_title():
 
     assert result.returncode == 0, f"Main module exited with code {result.returncode}"
     assert "Ascendant: The Eternal Spire" in result.stdout, "Game title not printed"
-    assert "v0.4.0" in result.stdout, "Version not displayed"
+    assert "v0.5.0" in result.stdout, "Version not displayed"
 
 
 def test_project_runs_without_errors():
