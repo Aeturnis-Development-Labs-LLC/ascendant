@@ -1,11 +1,6 @@
 """Tests for the simplified color system."""
 
-import pytest
-
 from src.colors import (
-    DEFAULT_COLOR,
-    ENTITY_COLORS,
-    TERRAIN_COLORS,
     TILE_COLORS,
     apply_deuteranopia,
     apply_high_contrast,

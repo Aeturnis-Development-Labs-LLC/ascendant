@@ -212,6 +212,7 @@ class TestStaminaIntegration:
             result = use_stamina(char, cost)
         else:
             result = True  # No cost, always succeeds
+        assert result is True  # Should succeed
         assert char.stamina == initial_stamina  # No cost, unchanged
 
         # Wait to recover

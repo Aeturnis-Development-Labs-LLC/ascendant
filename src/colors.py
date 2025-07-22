@@ -4,7 +4,6 @@ This module consolidates all color functionality into a single file,
 following KISS principles to reduce complexity from 921 lines to ~150 lines.
 """
 
-from enum import Enum
 from typing import Dict, Tuple
 
 from src.enums import EntityType, TerrainType, TileType

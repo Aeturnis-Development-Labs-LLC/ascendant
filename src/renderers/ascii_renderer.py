@@ -1,6 +1,6 @@
 """Simplified ASCII renderer using KISS color system."""
 
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 from src.colors import (
     apply_deuteranopia,
