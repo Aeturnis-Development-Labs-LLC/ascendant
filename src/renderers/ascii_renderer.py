@@ -39,7 +39,7 @@ class ASCIIRenderer:
     def render_static(
         cls, floor: "Floor", player_pos: Tuple[int, int], vision_radius: int = 5
     ) -> str:
-        """Static method for backward compatibility with tests.
+        """Provide static method for backward compatibility with tests.
 
         Args:
             floor: The floor to render

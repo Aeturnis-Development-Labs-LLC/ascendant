@@ -1,5 +1,4 @@
-# Ascendant: The Eternal Spire
-# Main package initialization
+"""Ascendant: The Eternal Spire - A roguelike dungeon crawler."""
 
 __version__ = "0.11.0"
 __author__ = "Aeturnis Development Labs LLC"
