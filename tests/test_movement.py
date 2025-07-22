@@ -20,7 +20,7 @@ class TestCharacter:
         assert char.position == (5, 5)
         assert char.entity_type == EntityType.PLAYER
         assert char.stamina == 100
-        assert char.max_stamina == 100
+        assert char.stamina_max == 100
 
     def test_character_move_to(self):
         """Test moving character to new position."""

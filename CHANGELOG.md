@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2025-07-22
+
+### Added
+- StaminaSystem class for managing action costs and regeneration in `src/game/stamina_system.py`
+- ActionType enum for different action categories
+- Stamina management in Character class with proper bounds checking
+- Performance benchmarking script for stamina operations
+- Comprehensive stamina test suite (17 new tests, all passing)
+
+### Performance
+- Can Perform Action: 2,386,526 ops/sec (0.000ms per check) ✅
+- Execute Action: 1,068,612 ops/sec (0.001ms per action) ✅
+- State Queries: 3,427,867 ops/sec (0.000ms per query) ✅
+- Regeneration: 1,837,657 ops/sec (0.001ms per regen) ✅
+- Force Wait: 1,486,393 ops/sec (0.001ms per check) ✅
+
+### Contract Coverage
+- GAME-MOVE-003: Stamina-based action system ✅
+- GAME-MOVE-004: Stamina regeneration ✅
+
 ## [0.6.0] - 2025-07-22
 
 ### Added

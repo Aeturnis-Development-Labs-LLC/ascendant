@@ -2,7 +2,7 @@
 
 from typing import Tuple
 
-from src.enums import Direction, EntityType, TileType
+from src.enums import ActionType, Direction, EntityType, TileType
 from src.models.entity import Entity
 from src.models.floor import Floor
 
@@ -21,7 +21,7 @@ class Character(Entity):
         super().__init__((x, y), EntityType.PLAYER)
         self.name = name
         self._stamina = 100
-        self.max_stamina = 100
+        self.stamina_max = 100
         # Store mutable position for movement
         self._x = x
         self._y = y
@@ -29,12 +29,12 @@ class Character(Entity):
     @property
     def stamina(self) -> int:
         """Get current stamina."""
-        return self._stamina
+        return max(0, min(self._stamina, self.stamina_max))
 
     @stamina.setter
     def stamina(self, value: int) -> None:
-        """Set stamina, clamped between 0 and max_stamina."""
-        self._stamina = max(0, min(value, self.max_stamina))
+        """Set stamina, clamped between 0 and stamina_max."""
+        self._stamina = max(0, min(value, self.stamina_max))
 
     @property
     def position(self) -> Tuple[int, int]:
@@ -77,6 +77,21 @@ class Character(Entity):
         # Can walk on floor, stairs, but not walls
         walkable_tiles = {TileType.FLOOR, TileType.STAIRS_UP, TileType.STAIRS_DOWN}
         return tile.tile_type in walkable_tiles
+
+    def perform_action(self, action_type: ActionType, cost: int) -> bool:
+        """Perform an action if sufficient stamina is available.
+
+        Args:
+            action_type: Type of action to perform
+            cost: Stamina cost of the action
+
+        Returns:
+            True if action was performed, False if insufficient stamina
+        """
+        if self.stamina >= cost:
+            self.stamina -= cost
+            return True
+        return False
 
     def update(self) -> None:
         """Update character state. Currently a no-op for basic movement."""
