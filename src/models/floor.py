@@ -1,7 +1,8 @@
 """Floor generation system for dungeon levels."""
 
 import random
-from typing import Dict, List, Optional, Tuple
+from collections import deque
+from typing import Dict, List, Optional, Set, Tuple
 
 from src.enums import TileType
 from src.models.tile import Tile
@@ -165,3 +166,122 @@ class Floor:
             True if position is within floor bounds
         """
         return 0 <= x < self.FLOOR_WIDTH and 0 <= y < self.FLOOR_HEIGHT
+
+    def connect_rooms(self) -> None:
+        """Connect all rooms with L-shaped corridors."""
+        if len(self.rooms) < 2:
+            return
+
+        # Connect each room to the next one
+        for i in range(len(self.rooms) - 1):
+            room1 = self.rooms[i]
+            room2 = self.rooms[i + 1]
+
+            # Get center points of rooms
+            x1 = room1.x + room1.width // 2
+            y1 = room1.y + room1.height // 2
+            x2 = room2.x + room2.width // 2
+            y2 = room2.y + room2.height // 2
+
+            # Create L-shaped corridor (horizontal then vertical)
+            # Randomly choose whether to go horizontal first or vertical first
+            if self._random.random() < 0.5:
+                # Horizontal first
+                self._create_horizontal_corridor(x1, x2, y1)
+                self._create_vertical_corridor(y1, y2, x2)
+            else:
+                # Vertical first
+                self._create_vertical_corridor(y1, y2, x1)
+                self._create_horizontal_corridor(x1, x2, y2)
+
+    def _create_horizontal_corridor(self, x1: int, x2: int, y: int) -> None:
+        """Create a horizontal corridor."""
+        start = min(x1, x2)
+        end = max(x1, x2) + 1
+        for x in range(start, end):
+            if self.is_valid_position(x, y):
+                self.tiles[(x, y)] = Tile(x, y, TileType.FLOOR)
+
+    def _create_vertical_corridor(self, y1: int, y2: int, x: int) -> None:
+        """Create a vertical corridor."""
+        start = min(y1, y2)
+        end = max(y1, y2) + 1
+        for y in range(start, end):
+            if self.is_valid_position(x, y):
+                self.tiles[(x, y)] = Tile(x, y, TileType.FLOOR)
+
+    def place_stairs(self) -> None:
+        """Place stairs in a random room."""
+        if not self.rooms:
+            return
+
+        # Select a random room
+        room = self._random.choice(self.rooms)
+
+        # Try to place stairs in the center of the room
+        center_x = room.x + room.width // 2
+        center_y = room.y + room.height // 2
+
+        # Check if center is available
+        if self.tiles[(center_x, center_y)].tile_type == TileType.FLOOR:
+            self.tiles[(center_x, center_y)] = Tile(center_x, center_y, TileType.STAIRS_UP)
+        else:
+            # Find any floor tile in the room
+            floor_tiles = []
+            for y in range(room.y, room.y + room.height):
+                for x in range(room.x, room.x + room.width):
+                    if self.tiles[(x, y)].tile_type == TileType.FLOOR:
+                        floor_tiles.append((x, y))
+
+            if floor_tiles:
+                x, y = self._random.choice(floor_tiles)
+                self.tiles[(x, y)] = Tile(x, y, TileType.STAIRS_UP)
+
+    def is_fully_connected(self) -> bool:
+        """Check if all rooms are connected to each other.
+
+        Returns:
+            True if all rooms are reachable from any other room
+        """
+        if len(self.rooms) < 2:
+            return True
+
+        # Start from the first room
+        start_room = self.rooms[0]
+        start_x = start_room.x + start_room.width // 2
+        start_y = start_room.y + start_room.height // 2
+
+        # Use BFS to find all reachable floor tiles
+        visited: Set[Tuple[int, int]] = set()
+        queue = deque([(start_x, start_y)])
+
+        while queue:
+            x, y = queue.popleft()
+            if (x, y) in visited:
+                continue
+            visited.add((x, y))
+
+            # Check all adjacent positions
+            for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+                next_x, next_y = x + dx, y + dy
+                if (next_x, next_y) not in visited and self.is_valid_position(next_x, next_y):
+                    tile = self.tiles.get((next_x, next_y))
+                    if tile and tile.tile_type in [TileType.FLOOR, TileType.STAIRS_UP]:
+                        queue.append((next_x, next_y))
+
+        # Check if we can reach all rooms
+        for room in self.rooms:
+            # Check if at least one tile in the room was visited
+            room_visited = False
+            for y in range(room.y, room.y + room.height):
+                for x in range(room.x, room.x + room.width):
+                    if (x, y) in visited:
+                        room_visited = True
+                        break
+                if room_visited:
+                    break
+
+            if not room_visited:
+                return False
+
+        return True

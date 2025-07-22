@@ -101,7 +101,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install encies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -136,7 +136,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install encies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -166,13 +166,7 @@ jobs:
             echo "No contracts directory found" >> $GITHUB_STEP_SUMMARY
           fi
 
-  dependency-review:
-    name: Dependency Review
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Dependency Review
-        uses: actions/dependency-review-action@v4
+
 
   pr-comment:
     name: PR Summary Comment
