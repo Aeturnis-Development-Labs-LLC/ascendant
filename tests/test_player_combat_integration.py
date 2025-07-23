@@ -176,7 +176,7 @@ class TestPlayerCombatIntegration:
         for ability_name, stamina_cost, multiplier in abilities_to_test:
             # Reset for each test
             self.character.stamina = 100
-            
+
             # Create fresh monster for each test
             self.monster = Monster(
                 x=6,

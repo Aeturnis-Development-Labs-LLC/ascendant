@@ -209,7 +209,7 @@ class Character:
             return None
 
         ability = self.abilities[ability_name]
-        
+
         # Check if enough stamina
         if self.stamina < ability.stamina_cost:
             return None

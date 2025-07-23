@@ -30,7 +30,7 @@ class CombatSystem:
 
     def __init__(self, combat_log: Optional["CombatLog"] = None) -> None:
         """Initialize combat system.
-        
+
         Args:
             combat_log: Optional combat log to use for recording events
         """
@@ -123,19 +123,19 @@ class CombatSystem:
                 self.combat_log.add_message(f"{target.name} is defeated!")
 
         return result
-    
+
     def resolve_attack(self, attacker, target):
         """Alias for attack() method to match expected interface.
-        
+
         Args:
             attacker: Entity performing the attack
             target: Entity being attacked
-            
+
         Returns:
             Object with damage_dealt attribute
         """
         result = self.attack(attacker, target)
         if result:
             # Add damage_dealt attribute for compatibility
-            result.damage_dealt = result.damage
+            setattr(result, "damage_dealt", result.damage)
         return result

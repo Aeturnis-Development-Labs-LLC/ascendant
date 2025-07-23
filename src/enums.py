@@ -111,14 +111,14 @@ class LocationType(Enum):
 
 class MonsterType(Enum):
     """Types of monsters that can appear in the game."""
-    
+
     RAT = "rat"
     GOBLIN = "goblin"
     SKELETON = "skeleton"
     ORC = "orc"
     TROLL = "troll"
     DEMON = "demon"
-    
+
     def __str__(self) -> str:
         """Return a readable string representation."""
         return self.value

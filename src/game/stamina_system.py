@@ -3,7 +3,13 @@
 from src.enums import ActionType
 
 # Re-export ActionType for convenience
-__all__ = ['use_stamina', 'regenerate_stamina', 'get_action_cost', 'can_perform_action', 'ActionType']
+__all__ = [
+    "use_stamina",
+    "regenerate_stamina",
+    "get_action_cost",
+    "can_perform_action",
+    "ActionType",
+]
 
 # Action cost definitions
 ACTION_COSTS = {
@@ -27,12 +33,12 @@ def use_stamina(character, amount):
     # If amount is an ActionType, get its cost
     if isinstance(amount, ActionType):
         amount = get_action_cost(amount)
-    
+
     # Handle regeneration (negative costs)
     if amount < 0:
         regenerate_stamina(character, -amount)
         return True
-    
+
     if character.stamina >= amount:
         character.stamina -= amount
         return True

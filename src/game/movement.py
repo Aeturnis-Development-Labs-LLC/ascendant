@@ -16,16 +16,16 @@ def validate_position(pos: Tuple[int, int], floor) -> bool:
         True if position is within bounds and walkable
     """
     x, y = pos
-    
+
     # Check bounds
     if not floor.is_valid_position(x, y):
         return False
-    
+
     # Check if tile is walkable
     tile = floor.get_tile(x, y)
     if tile is None:
         return False
-    
+
     # Check tile type
     walkable_tiles = {TileType.FLOOR, TileType.STAIRS_UP, TileType.STAIRS_DOWN}
     return tile.tile_type in walkable_tiles
