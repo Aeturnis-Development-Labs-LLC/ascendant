@@ -114,14 +114,6 @@ class Character:
             return True
         return False
 
-    def __str__(self) -> str:
-        """Return string representation of the character."""
-        return f"Character({self.x}, {self.y})"
-
-    def __repr__(self) -> str:
-        """Return detailed representation of the character."""
-        return f"Character(name='{self.name}', position={self.position})"
-
     def take_damage(self, damage: int) -> None:
         """Apply damage to the character.
 
@@ -261,3 +253,11 @@ class Character:
         dx = abs(self.x - target.x)
         dy = abs(self.y - target.y)
         return dx <= 1 and dy <= 1 and (dx + dy) > 0
+
+    def __str__(self) -> str:
+        """String representation of character."""
+        return f"Character({self.x}, {self.y})"
+
+    def __repr__(self) -> str:
+        """Developer representation of character."""
+        return f"Character(name='{self.name}', x={self.x}, y={self.y}, hp={self.hp}/{self.hp_max})"

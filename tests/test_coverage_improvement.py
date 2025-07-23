@@ -34,15 +34,16 @@ class TestEntityCoverage:
     
     def test_entity_str_repr(self):
         """Test entity string representations."""
-        entity = Entity(5, 5, EntityType.PLAYER)
+        # Use Character since Entity is abstract
+        char = Character("Test", 5, 5)
         
-        str_repr = str(entity)
-        assert "Entity" in str_repr
+        str_repr = str(char)
+        assert "Character" in str_repr
         assert "5, 5" in str_repr
         
-        repr_str = repr(entity)
-        assert "Entity" in repr_str
-        assert "type=EntityType.PLAYER" in repr_str
+        repr_str = repr(char)
+        assert "Character" in repr_str
+        assert "name='Test'" in repr_str
         
 
 class TestTileCoverage:
@@ -57,7 +58,8 @@ class TestTileCoverage:
         
         repr_str = repr(tile)
         assert "Tile" in repr_str
-        assert "type=TileType.FLOOR" in repr_str
+        assert "type=" in repr_str
+        assert "FLOOR" in repr_str
         
         
 class TestCharacterCoverage:

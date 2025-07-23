@@ -27,9 +27,9 @@ class TrapResult:
 class TrapHandler:
     """Handles trap damage and effects following GAME-COMBAT-006."""
 
-    def __init__(self) -> None:
+    def __init__(self, combat_log: Optional["CombatLog"] = None) -> None:
         """Initialize trap handler."""
-        self.combat_log: Optional["CombatLog"] = None
+        self.combat_log = combat_log
 
     def handle_trap(self, character: "Character", trap: "Trap") -> Optional[TrapResult]:
         """Handle trap trigger and damage.

@@ -121,4 +121,4 @@ class MonsterType(Enum):
 
     def __str__(self) -> str:
         """Return a readable string representation."""
-        return self.value
+        return self.name

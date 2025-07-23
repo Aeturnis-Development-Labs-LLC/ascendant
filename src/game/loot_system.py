@@ -6,7 +6,7 @@ Part of Phase 4.2 Combat System Implementation
 
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -54,6 +54,10 @@ class LootSystem:
             {"item": "Hellfire Sword", "quantity": 1, "chance": 0.05, "type": "equipment"},
         ],
     }
+
+    def __init__(self, seed: Optional[int] = None) -> None:
+        """Initialize loot system with optional seed."""
+        self._rng = random.Random(seed)
 
     def generate_loot(self, monster_type: str, floor_level: int, luck: int = 0) -> List[LootDrop]:
         """Generate loot drops for a monster.

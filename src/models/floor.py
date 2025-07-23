@@ -110,7 +110,8 @@ class Floor:
         """
         if seed is None:
             seed = random.randint(0, 999999)
-        self.seed = seed
+        self._seed = seed
+        self.seed = seed  # Keep both for compatibility
         self.level = level
         self.width = width or self.FLOOR_WIDTH
         self.height = height or self.FLOOR_HEIGHT
@@ -475,3 +476,28 @@ class Floor:
             if tile.tile_type == TileType.STAIRS_DOWN:
                 return pos
         return None
+
+    def mark_as_seen(self, x: int, y: int) -> None:
+        """Mark a tile as seen for fog of war.
+        
+        Args:
+            x: X coordinate
+            y: Y coordinate
+        """
+        if not hasattr(self, "seen_tiles"):
+            self.seen_tiles = set()
+        self.seen_tiles.add((x, y))
+
+    def is_seen(self, x: int, y: int) -> bool:
+        """Check if a tile has been seen before.
+        
+        Args:
+            x: X coordinate
+            y: Y coordinate
+            
+        Returns:
+            True if tile has been seen
+        """
+        if not hasattr(self, "seen_tiles"):
+            return False
+        return (x, y) in self.seen_tiles

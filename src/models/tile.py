@@ -108,7 +108,7 @@ class Tile:
 
     def __str__(self) -> str:
         """Return string representation of the tile."""
-        return f"Tile({self.x}, {self.y}, {self.tile_type})"
+        return f"Tile({self.x}, {self.y})"
 
     def __repr__(self) -> str:
         """Return detailed representation of the tile."""

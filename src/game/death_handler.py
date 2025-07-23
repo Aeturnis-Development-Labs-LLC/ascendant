@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
 if TYPE_CHECKING:
+    from src.game.combat_log import CombatLog
     from src.game.loot_system import LootDrop, LootSystem
     from src.models.character import Character
     from src.models.floor import Floor
@@ -39,9 +40,10 @@ class DeathHandler:
         "dragon": 500,  # Boss
     }
 
-    def __init__(self) -> None:
+    def __init__(self, combat_log: Optional["CombatLog"] = None) -> None:
         """Initialize death handler."""
         self.loot_system: Optional["LootSystem"] = None
+        self.combat_log = combat_log
 
     def handle_death(
         self, entity: "Character | Monster", floor: "Floor", killer: Optional["Character | Monster"]
