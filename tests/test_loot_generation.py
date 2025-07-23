@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.game.loot_system import LootSystem, LootDrop
+from src.game.loot_system import LootDrop, LootSystem
 
 
 class TestLootGeneration:
