@@ -4,7 +4,7 @@ import random
 from typing import Dict, List, Optional, Set, Tuple
 
 from src.enums import TerrainType
-from src.models.location import SafeHaven, DungeonEntrance, TowerEntrance
+from src.models.location import DungeonEntrance, SafeHaven, TowerEntrance
 
 
 class WorldTile:

@@ -7,7 +7,7 @@ Part of Phase 4.1 Monster Implementation
 import random
 from typing import Dict, List, Optional, Tuple, TypedDict
 
-from src.enums import TileType, MonsterType
+from src.enums import MonsterType, TileType
 from src.models.floor import Floor
 from src.models.monster import AIBehavior, Monster
 

@@ -11,7 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
-from PyQt6.QtWidgets import QApplication, QLabel, QProgressBar, QListWidget
+from PyQt6.QtWidgets import QApplication, QLabel, QListWidget, QProgressBar
 
 # Create QApplication for widget tests
 app = QApplication([])
@@ -19,7 +19,7 @@ app = QApplication([])
 from client.widgets.character_panel import CharacterPanel
 from client.widgets.info_panel import InfoPanel
 from client.widgets.map_widget import MapWidget
-from client.widgets.status_bar import StatusBar, MessagePriority
+from client.widgets.status_bar import MessagePriority, StatusBar
 
 
 class TestCharacterPanelInterface:
