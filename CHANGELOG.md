@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2025-07-23
+
+### Added
+- Combat System Implementation (Phase 4.2)
+  - CombatSystem class for damage calculation and combat resolution
+    * ATK - DEF damage formula with minimum 1 damage
+    * Critical hit mechanics (double damage)
+    * Combat resolution with death detection
+    * UTF contract GAME-COMBAT-001, 002, 003 compliance
+  - DeathHandler for entity death management
+    * Entity removal from floor
+    * Experience calculation and awarding
+    * Loot drop integration
+    * Special player death handling
+    * UTF contract GAME-COMBAT-004 compliance
+  - CombatLog for battle message tracking
+    * Message type enumeration (ATTACK, CRITICAL, DEATH, LOOT, INFO)
+    * Timestamped message history
+    * Type-based message filtering
+    * Configurable history limit (default 100)
+  - LootSystem for item drops
+    * Monster-specific loot tables
+    * Luck-based drop rate modification
+    * Currency scaling with floor level
+    * Item type categorization
+  - TrapHandler for trap damage application
+    * Integration with existing Trap system
+    * Status effect handling for poison traps
+    * Alarm trap alert radius
+    * UTF contract GAME-COMBAT-006 compliance
+- Character class combat enhancements
+  - attack, defense, crit_chance attributes
+  - level and experience tracking
+  - luck stat for loot drops
+  - is_alive() method
+
+### Changed
+- Character class now includes full combat stats
+- __init__.py exports updated with new combat classes
+
+### Technical Details
+- 87.63% test coverage (41 tests across 5 modules)
+- Full type safety with mypy strict mode
+- Black formatted with 100-character line limit
+- UTF contracts implemented: GAME-COMBAT-001, 002, 003, 004, 006 (5/6 total)
+- GAME-COMBAT-005 (Ability Cooldowns) deferred to Phase 4.3
+
 ## [0.15.0] - 2025-07-23
 
 ### Added
