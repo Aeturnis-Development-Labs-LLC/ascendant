@@ -7,10 +7,10 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 try:
-    from PyQt6.QtCore import QTimer, Qt
+    from PyQt6.QtCore import Qt, QTimer
     from PyQt6.QtWidgets import QApplication, QLabel
 
-    from client.widgets.status_bar import StatusBar, MessagePriority
+    from client.widgets.status_bar import MessagePriority, StatusBar
 
     PYQT6_AVAILABLE = True
 except ImportError:
