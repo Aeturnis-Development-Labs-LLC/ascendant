@@ -4,7 +4,6 @@ Generated with AI assistance (Claude Opus 4) - 2025-07-23
 Part of Phase 4.1 Monster Implementation
 """
 
-
 from src.enums import TileType
 from src.game.monster_spawner import MonsterSpawner
 from src.models.floor import Floor, Room
