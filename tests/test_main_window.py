@@ -25,8 +25,7 @@ except ImportError:
 
 # Skip all tests if PyQt6 is not available
 pytestmark = pytest.mark.skipif(
-    not PYQT6_AVAILABLE,
-    reason="PyQt6 not installed - install with: pip install PyQt6"
+    not PYQT6_AVAILABLE, reason="PyQt6 not installed - install with: pip install PyQt6"
 )
 
 
@@ -128,9 +127,7 @@ class TestMenuSystem:
         assert file_menu is not None
 
         # Check menu items
-        actions = [
-            a.text() for a in file_menu.actions() if not a.isSeparator()
-        ]
+        actions = [a.text() for a in file_menu.actions() if not a.isSeparator()]
         assert "&New Game" in actions
         assert "&Save" in actions
         assert "&Load" in actions
@@ -212,11 +209,7 @@ class TestKeyboardHandling:
     def test_keyboard_handler_not_set(self, main_window, qapp):
         """Test keyboard events are handled when no handler is set."""
         # Test game key (WASD)
-        event = QKeyEvent(
-            QKeyEvent.Type.KeyPress,
-            Qt.Key.Key_W,
-            Qt.KeyboardModifier.NoModifier
-        )
+        event = QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_W, Qt.KeyboardModifier.NoModifier)
         main_window.keyPressEvent(event)
         assert event.isAccepted()
 
@@ -226,11 +219,7 @@ class TestKeyboardHandling:
         main_window.set_keyboard_handler(mock_handler)
 
         # Send key event
-        event = QKeyEvent(
-            QKeyEvent.Type.KeyPress,
-            Qt.Key.Key_W,
-            Qt.KeyboardModifier.NoModifier
-        )
+        event = QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_W, Qt.KeyboardModifier.NoModifier)
         main_window.keyPressEvent(event)
 
         # Check handler was called
@@ -251,11 +240,7 @@ class TestKeyboardHandling:
         ]
 
         for key in game_keys:
-            event = QKeyEvent(
-                QKeyEvent.Type.KeyPress,
-                key,
-                Qt.KeyboardModifier.NoModifier
-            )
+            event = QKeyEvent(QKeyEvent.Type.KeyPress, key, Qt.KeyboardModifier.NoModifier)
             main_window.keyPressEvent(event)
             assert event.isAccepted()
 
