@@ -6,8 +6,11 @@ Part of Phase 4.1 Monster Implementation
 
 from enum import Enum
 
-from src.enums import EntityType
+from src.enums import EntityType, MonsterType
 from src.models.entity import Entity
+
+# Re-export MonsterType for convenience
+__all__ = ["Monster", "AIBehavior", "MonsterType"]
 
 
 class AIBehavior(Enum):
@@ -32,7 +35,7 @@ class Monster(Entity):
         hp_max: int,
         attack: int,
         defense: int,
-        monster_type: str,
+        monster_type: MonsterType,
         ai_behavior: AIBehavior,
     ):
         """Initialize a monster with stats.
@@ -46,7 +49,7 @@ class Monster(Entity):
             hp_max: Maximum health points
             attack: Attack power
             defense: Defense value
-            monster_type: Type identifier (e.g., "goblin", "skeleton")
+            monster_type: Type of monster from MonsterType enum
             ai_behavior: AI behavior pattern
         """
         super().__init__(x, y, EntityType.MONSTER)

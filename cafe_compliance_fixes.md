@@ -18,11 +18,11 @@
 
 ### Priority 2: Feature Completions
 
-- [ ] Add `find_stairs_up()` method to Floor (GAME-MAP-004)
-- [ ] Add `find_stairs_down()` method to Floor (GAME-MAP-004)
-- [ ] Create MonsterType enum (GAME-COMBAT-001, 002, 005)
-- [ ] Fix trap placement (GAME-MAP-006)
-- [ ] Fix chest placement (GAME-MAP-007)
+- [x] Add `find_stairs_up()` method to Floor (GAME-MAP-004)
+- [x] Add `find_stairs_down()` method to Floor (GAME-MAP-004)
+- [x] Create MonsterType enum (GAME-COMBAT-001, 002, 005)
+- [x] Fix trap placement (GAME-MAP-006)
+- [x] Fix chest placement (GAME-MAP-007)
 
 ### Priority 3: API Alignment
 
@@ -56,3 +56,37 @@
    - Test result: PASS
 
 **Phase 0 Result**: 100% (5/5 contracts passing)
+
+### Priority 2 Fixes - Completed
+
+1. **Floor.find_stairs_up/down() methods** (GAME-MAP-004)
+   - Added methods to find stair positions
+   - Test result: PASS
+
+2. **MonsterType enum** (GAME-COMBAT-001, 002, 005)
+   - Added MonsterType enum to enums.py
+   - Updated Monster class to use enum
+   - Updated MonsterSpawner to convert string to enum
+   - Re-exported from monster module
+   - Test result: Imports working
+
+3. **Trap placement fix** (GAME-MAP-006)
+   - Added trap attribute to tiles when placing
+   - Called place_traps() in generate()
+   - Test result: PASS
+
+4. **Chest placement fix** (GAME-MAP-007)
+   - Added chest attribute to tiles when placing
+   - Called place_chests() in generate()
+   - Fixed test to not double-place chests
+   - Test result: PASS
+
+5. **ASCIIRenderer fix** (GAME-MAP-005)
+   - Fixed test to use fog_radius in constructor
+   - Test result: PASS
+
+6. **Monster constructor fixes**
+   - Updated all test Monster creations to match new signature
+   - Added display_char and hp_max parameters
+
+**Phase 1 Result**: 100% (7/7 contracts passing)

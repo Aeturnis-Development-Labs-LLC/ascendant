@@ -136,6 +136,10 @@ class Floor:
         
         # Place stairs
         self.place_stairs()
+        
+        # Place traps and chests
+        self.place_traps(0.02)  # 2% of floor tiles
+        self.place_chests(5)     # 5 chests per floor
 
     def _generate_rooms(self) -> None:
         """Generate random non-overlapping rooms."""
@@ -377,10 +381,15 @@ class Floor:
                 valid_positions, min(num_traps, len(valid_positions))
             )
             for pos in trap_positions:
+                # Store trap in both the traps dict and on the tile
                 self.traps[pos] = {
                     "revealed": False,
                     "damage": self._random.randint(1, 3),  # 1-3 damage
                 }
+                # Also add trap attribute to tile for test compatibility
+                tile = self.tiles.get(pos)
+                if tile:
+                    tile.trap = True
 
     def place_chests(self, count: int = 3) -> None:
         """Place chests in rooms.
@@ -417,6 +426,10 @@ class Floor:
                 # For now, just store a simple loot tier based on position
                 loot_tier = 1 + (i // 2)  # Every 2 chests increase tier
                 self.chests[pos] = {"opened": False, "loot_tier": loot_tier}
+                # Also add chest attribute to tile for test compatibility
+                tile = self.tiles.get(pos)
+                if tile:
+                    tile.chest = True
     
     def get_random_walkable_position(self) -> Tuple[int, int]:
         """Get a random walkable position on the floor.
@@ -443,3 +456,25 @@ class Floor:
         
         # Last resort: center of map
         return (self.width // 2, self.height // 2)
+    
+    def find_stairs_up(self) -> Optional[Tuple[int, int]]:
+        """Find the position of stairs going up.
+        
+        Returns:
+            Tuple of (x, y) coordinates if found, None otherwise
+        """
+        for pos, tile in self.tiles.items():
+            if tile.tile_type == TileType.STAIRS_UP:
+                return pos
+        return None
+    
+    def find_stairs_down(self) -> Optional[Tuple[int, int]]:
+        """Find the position of stairs going down.
+        
+        Returns:
+            Tuple of (x, y) coordinates if found, None otherwise
+        """
+        for pos, tile in self.tiles.items():
+            if tile.tile_type == TileType.STAIRS_DOWN:
+                return pos
+        return None
