@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
     from PyQt6.QtWidgets import QApplication, QLabel, QListWidget, QProgressBar  # noqa: E402
+
     HAS_PYQT6 = True
 except ImportError:
     HAS_PYQT6 = False
@@ -25,7 +26,7 @@ if HAS_PYQT6:
     from client.widgets.info_panel import InfoPanel  # noqa: E402
     from client.widgets.map_widget import MapWidget  # noqa: E402
     from client.widgets.status_bar import MessagePriority, StatusBar  # noqa: E402
-    
+
     # Create QApplication for widget tests
     app = QApplication([])
 
