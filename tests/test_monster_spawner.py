@@ -103,7 +103,8 @@ class TestMonsterSpawner:
         # Low level - basic monsters
         monsters_l1 = spawner.spawn_monsters(self.floor, count=10, level=1)
         types_l1 = {m.monster_type for m in monsters_l1}
-        assert "goblin" in types_l1 or "skeleton" in types_l1 or "rat" in types_l1
+        from src.enums import MonsterType
+        assert MonsterType.GOBLIN in types_l1 or MonsterType.SKELETON in types_l1 or MonsterType.RAT in types_l1
 
         # High level - advanced monsters
         self.floor.level = 10
@@ -172,7 +173,8 @@ class TestMonsterSpawner:
         # Spawn only goblins
         monsters = spawner.spawn_monsters(self.floor, count=5, level=1, monster_types=["goblin"])
 
-        assert all(m.monster_type == "goblin" for m in monsters)
+        from src.enums import MonsterType
+        assert all(m.monster_type == MonsterType.GOBLIN for m in monsters)
 
     def test_spawn_respects_room_capacity(self):
         """Test spawning doesn't overcrowd small rooms."""

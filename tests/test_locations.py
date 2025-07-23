@@ -38,13 +38,13 @@ class TestSafeHaven:
         haven = SafeHaven()
         interior = haven.create_interior()
 
-        # Floor is always 20x20
-        assert interior.width == 20
-        assert interior.height == 20
+        # Floor is always 50x50
+        assert interior.width == 50
+        assert interior.height == 50
 
         # Check center 5x5 area is cleared to floor
-        center_start = (20 - 5) // 2  # 7
-        center_end = center_start + 5  # 12
+        center_start = (50 - 5) // 2  # 22
+        center_end = center_start + 5  # 27
         floor_count = 0
 
         for y in range(center_start, center_end):
