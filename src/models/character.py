@@ -128,10 +128,10 @@ class Character:
             duration: Duration in turns
         """
         self.status_effects[status] = duration
-    
+
     def is_alive(self) -> bool:
         """Check if character is still alive.
-        
+
         Returns:
             True if HP > 0
         """

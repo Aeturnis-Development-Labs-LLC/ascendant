@@ -54,7 +54,7 @@ class CombatLog:
 
         # Trim to max size
         if len(self.messages) > self.max_messages:
-            self.messages = self.messages[-self.max_messages:]
+            self.messages = self.messages[-self.max_messages :]
 
     def get_recent_messages(self, count: int) -> List[CombatMessage]:
         """Get the most recent messages.
