@@ -66,13 +66,13 @@ class TestCharacterPanelInitialization:
     def test_panel_creation(self, character_panel):
         """Test panel is created with correct structure."""
         assert isinstance(character_panel, QWidget)
-        assert hasattr(character_panel, 'name_label')
-        assert hasattr(character_panel, 'hp_bar')
-        assert hasattr(character_panel, 'stamina_bar')
-        assert hasattr(character_panel, 'stats_labels')
-        assert hasattr(character_panel, 'buffs_list')
-        assert hasattr(character_panel, 'debuffs_list')
-        assert hasattr(character_panel, 'action_slots')
+        assert hasattr(character_panel, "name_label")
+        assert hasattr(character_panel, "hp_bar")
+        assert hasattr(character_panel, "stamina_bar")
+        assert hasattr(character_panel, "stats_labels")
+        assert hasattr(character_panel, "buffs_list")
+        assert hasattr(character_panel, "debuffs_list")
+        assert hasattr(character_panel, "action_slots")
 
     def test_default_state(self, character_panel):
         """Test panel has correct default state."""
@@ -89,7 +89,7 @@ class TestCharacterDisplay:
     def test_update_character_info(self, character_panel, character):
         """Test updating panel with character data."""
         character_panel.update_character(character)
-        
+
         assert character_panel.name_label.text() == "Test Hero (Lv.5)"
         assert character_panel.hp_bar.value() == 80
         assert character_panel.hp_bar.maximum() == 100
@@ -99,7 +99,7 @@ class TestCharacterDisplay:
     def test_stats_display(self, character_panel, character):
         """Test stats are displayed correctly."""
         character_panel.update_character(character)
-        
+
         assert "STR: 15" in character_panel.stats_labels["STR"].text()
         assert "DEX: 12" in character_panel.stats_labels["DEX"].text()
         assert "INT: 10" in character_panel.stats_labels["INT"].text()
@@ -108,16 +108,20 @@ class TestCharacterDisplay:
     def test_buffs_debuffs_display(self, character_panel, character):
         """Test buffs and debuffs are shown."""
         character_panel.update_character(character)
-        
+
         # Check buffs
-        buff_texts = [character_panel.buffs_list.item(i).text() 
-                      for i in range(character_panel.buffs_list.count())]
+        buff_texts = [
+            character_panel.buffs_list.item(i).text()
+            for i in range(character_panel.buffs_list.count())
+        ]
         assert "Strength+" in buff_texts
         assert "Shield" in buff_texts
-        
+
         # Check debuffs
-        debuff_texts = [character_panel.debuffs_list.item(i).text() 
-                        for i in range(character_panel.debuffs_list.count())]
+        debuff_texts = [
+            character_panel.debuffs_list.item(i).text()
+            for i in range(character_panel.debuffs_list.count())
+        ]
         assert "Poison" in debuff_texts
 
 
@@ -131,13 +135,13 @@ class TestHealthStaminaBars:
         character_panel.update_character(character)
         style = character_panel.hp_bar.styleSheet()
         assert "green" in style or "#00ff00" in style
-        
+
         # Half HP - should be yellow
         character.current_hp = 50
         character_panel.update_character(character)
         style = character_panel.hp_bar.styleSheet()
         assert "yellow" in style or "#ffff00" in style
-        
+
         # Low HP - should be red
         character.current_hp = 20
         character_panel.update_character(character)
@@ -147,7 +151,7 @@ class TestHealthStaminaBars:
     def test_bar_labels(self, character_panel, character):
         """Test bars show numeric values."""
         character_panel.update_character(character)
-        
+
         assert character_panel.hp_label.text() == "HP: 80/100"
         assert character_panel.stamina_label.text() == "Stamina: 100/100"
 
@@ -165,15 +169,15 @@ class TestActionSlots:
         """Test action slots emit signals when clicked."""
         slot_clicked = False
         slot_number = 0
-        
+
         def on_slot_click(num):
             nonlocal slot_clicked, slot_number
             slot_clicked = True
             slot_number = num
-        
+
         character_panel.action_slot_clicked.connect(on_slot_click)
         character_panel.action_slots["1"].click()
-        
+
         assert slot_clicked
         assert slot_number == 1
 
@@ -184,12 +188,12 @@ class TestPanelUpdates:
     def test_real_time_updates(self, character_panel, character):
         """Test panel updates immediately on state change."""
         character_panel.update_character(character)
-        
+
         # Change HP
         character.current_hp = 50
         character_panel.update_character(character)
         assert character_panel.hp_bar.value() == 50
-        
+
         # Change stamina
         character.stamina = 75
         character_panel.update_character(character)
@@ -198,7 +202,7 @@ class TestPanelUpdates:
     def test_null_character_handling(self, character_panel):
         """Test panel handles null character gracefully."""
         character_panel.update_character(None)
-        
+
         assert character_panel.name_label.text() == "No Character"
         assert character_panel.hp_bar.value() == 0
         assert character_panel.stamina_bar.value() == 0
@@ -209,7 +213,7 @@ class TestMiniMap:
 
     def test_minimap_exists(self, character_panel):
         """Test minimap widget exists."""
-        assert hasattr(character_panel, 'minimap')
+        assert hasattr(character_panel, "minimap")
         assert character_panel.minimap is not None
 
     def test_minimap_size(self, character_panel):
@@ -220,10 +224,10 @@ class TestMiniMap:
     def test_minimap_update(self, character_panel):
         """Test minimap can be updated with floor data."""
         from src.models.floor import Floor
-        
+
         floor = Floor(seed=42)
         floor.generate()
-        
+
         character_panel.update_minimap(floor, (10, 10))
         # Minimap should have floor data
         assert character_panel.minimap.floor is not None

@@ -311,7 +311,8 @@ class InfoPanel(QWidget):
 
         # Auto-scroll to bottom
         scrollbar = self.combat_log.verticalScrollBar()
-        scrollbar.setValue(scrollbar.maximum())
+        if scrollbar:
+            scrollbar.setValue(scrollbar.maximum())
 
     def update_statistic(self, name: str, value: Any, is_percentage: bool = False):
         """Update a statistic value.

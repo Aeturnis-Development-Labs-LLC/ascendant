@@ -398,7 +398,7 @@ class MainWindow(QMainWindow):
     def show_status_message(
         self, 
         text: str, 
-        priority: "MessagePriority" = None,
+        priority: Optional["MessagePriority"] = None,
         color: Optional[str] = None,
         timeout: int = 5000
     ) -> None:
@@ -411,9 +411,9 @@ class MainWindow(QMainWindow):
             timeout: Auto-clear timeout in milliseconds
         """
         if self.game_status_bar and HAS_WIDGETS:
-            if priority is None:
-                priority = MessagePriority.INFO
-            self.game_status_bar.show_message(text, priority, color, timeout)
+            # Set default priority if not provided
+            actual_priority = priority if priority is not None else MessagePriority.INFO
+            self.game_status_bar.show_message(text, actual_priority, color, timeout)
         else:
             # Fallback to standard status bar
             status_bar = self.statusBar()

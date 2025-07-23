@@ -50,8 +50,8 @@ class TestStatusBarInitialization:
         """Test status bar is created correctly."""
         assert isinstance(status_bar, QLabel)
         assert status_bar.text() == ""
-        assert hasattr(status_bar, 'show_message')
-        assert hasattr(status_bar, 'clear_message')
+        assert hasattr(status_bar, "show_message")
+        assert hasattr(status_bar, "clear_message")
 
     def test_message_priority_enum(self):
         """Test message priority enum exists."""
@@ -74,12 +74,12 @@ class TestMessageDisplay:
         status_bar.show_message("The wind blows...", MessagePriority.FLAVOR)
         style = status_bar.styleSheet()
         assert "gray" in style or "#808080" in style
-        
+
         # Info text - white
         status_bar.show_message("You found a key!", MessagePriority.INFO)
         style = status_bar.styleSheet()
         assert "white" in style or "#ffffff" in style
-        
+
         # Combat text - red
         status_bar.show_message("You take 10 damage!", MessagePriority.COMBAT)
         style = status_bar.styleSheet()
@@ -88,9 +88,7 @@ class TestMessageDisplay:
     def test_custom_message_colors(self, status_bar):
         """Test custom colors can be specified."""
         status_bar.show_message(
-            "Poisoned!", 
-            MessagePriority.COMBAT,
-            color="#00ff00"  # Green for poison
+            "Poisoned!", MessagePriority.COMBAT, color="#00ff00"  # Green for poison
         )
         style = status_bar.styleSheet()
         assert "#00ff00" in style
@@ -103,7 +101,7 @@ class TestMessagePriority:
         """Test higher priority messages overwrite lower ones."""
         status_bar.show_message("Low priority", MessagePriority.FLAVOR)
         assert status_bar.text() == "Low priority"
-        
+
         status_bar.show_message("High priority", MessagePriority.COMBAT)
         assert status_bar.text() == "High priority"
 
@@ -111,7 +109,7 @@ class TestMessagePriority:
         """Test lower priority messages don't overwrite higher ones."""
         status_bar.show_message("High priority", MessagePriority.COMBAT)
         status_bar.show_message("Low priority", MessagePriority.FLAVOR)
-        
+
         # Should still show high priority message
         assert status_bar.text() == "High priority"
 
@@ -119,7 +117,7 @@ class TestMessagePriority:
         """Test same priority messages overwrite each other."""
         status_bar.show_message("First info", MessagePriority.INFO)
         status_bar.show_message("Second info", MessagePriority.INFO)
-        
+
         assert status_bar.text() == "Second info"
 
 
@@ -128,9 +126,9 @@ class TestAutoClear:
 
     def test_auto_clear_timer(self, status_bar, qapp):
         """Test messages auto-clear after timeout."""
-        with patch.object(QTimer, 'singleShot') as mock_timer:
+        with patch.object(QTimer, "singleShot") as mock_timer:
             status_bar.show_message("Temporary message", MessagePriority.INFO)
-            
+
             # Check timer was set for 5 seconds
             mock_timer.assert_called_once()
             args = mock_timer.call_args[0]
@@ -138,25 +136,19 @@ class TestAutoClear:
 
     def test_custom_timeout(self, status_bar):
         """Test custom timeout can be specified."""
-        with patch.object(QTimer, 'singleShot') as mock_timer:
+        with patch.object(QTimer, "singleShot") as mock_timer:
             status_bar.show_message(
-                "Quick message", 
-                MessagePriority.INFO,
-                timeout=2000  # 2 seconds
+                "Quick message", MessagePriority.INFO, timeout=2000  # 2 seconds
             )
-            
+
             args = mock_timer.call_args[0]
             assert args[0] == 2000
 
     def test_no_auto_clear_option(self, status_bar):
         """Test messages can be set to not auto-clear."""
-        with patch.object(QTimer, 'singleShot') as mock_timer:
-            status_bar.show_message(
-                "Permanent message", 
-                MessagePriority.INFO,
-                auto_clear=False
-            )
-            
+        with patch.object(QTimer, "singleShot") as mock_timer:
+            status_bar.show_message("Permanent message", MessagePriority.INFO, auto_clear=False)
+
             # Timer should not be called
             mock_timer.assert_not_called()
 
@@ -164,7 +156,7 @@ class TestAutoClear:
         """Test clearing message resets priority."""
         status_bar.show_message("High priority", MessagePriority.COMBAT)
         status_bar.clear_message()
-        
+
         # Now low priority should work
         status_bar.show_message("Low priority", MessagePriority.FLAVOR)
         assert status_bar.text() == "Low priority"
@@ -180,10 +172,10 @@ class TestMessageQueue:
             ("Second message", MessagePriority.COMBAT),
             ("Third message", MessagePriority.FLAVOR),
         ]
-        
+
         for text, priority in messages:
             status_bar.show_message(text, priority)
-        
+
         history = status_bar.get_message_history()
         assert len(history) >= 3
         assert history[-1][0] == "Third message"
@@ -193,7 +185,7 @@ class TestMessageQueue:
         # Add many messages
         for i in range(100):
             status_bar.show_message(f"Message {i}", MessagePriority.INFO)
-        
+
         history = status_bar.get_message_history()
         assert len(history) <= 50  # Reasonable history limit
 
@@ -210,7 +202,7 @@ class TestEdgeCases:
         """Test handling of very long messages."""
         long_message = "A" * 500
         status_bar.show_message(long_message, MessagePriority.INFO)
-        
+
         # Should truncate or handle gracefully
         displayed_text = status_bar.text()
         assert len(displayed_text) <= 200  # Reasonable limit
@@ -219,6 +211,6 @@ class TestEdgeCases:
         """Test handling of special characters in messages."""
         special_message = "You found <gold>! & gained 100% more XP"
         status_bar.show_message(special_message, MessagePriority.INFO)
-        
+
         # Should handle HTML entities properly
         assert status_bar.text() == special_message
