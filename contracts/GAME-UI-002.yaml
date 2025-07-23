@@ -1,0 +1,55 @@
+id: GAME-UI-002
+category: user-interface
+priority: high
+dependencies:
+  - GAME-UI-001  # Window Layout
+  - GAME-MAP-001  # Floor Generation
+  - GAME-CORE-003  # Tile Data Structure
+
+description: |
+  Map Widget Display - Render the game map in the PyQt interface
+  
+  The map widget shall display the game world using tile-based rendering
+  with proper colors, centering on the player position, and smooth updates.
+
+acceptance_criteria:
+  - Tile-based rendering with calculated tile sizes
+  - Centers view on player position
+  - Smooth updates without flicker
+  - Proper color mapping for different tile types
+  - Handles resize events correctly
+  - Visual feedback for interactions
+
+test_cases:
+  - id: TC-UI-002-001
+    description: Verify tile rendering with correct colors
+    expected: |
+      - Background: #1a1a1a
+      - Walls: #666666
+      - Floor: #333333
+      - Player: #00ff00
+      - Monsters: #ff0000
+      
+  - id: TC-UI-002-002
+    description: Test view centering on player
+    expected: Player position always visible and centered when possible
+    
+  - id: TC-UI-002-003
+    description: Test resize handling
+    expected: Map scales appropriately with widget size changes
+    
+  - id: TC-UI-002-004
+    description: Test state updates
+    expected: Map updates when Floor object or player position changes
+    
+  - id: TC-UI-002-005
+    description: Test visual feedback
+    expected: |
+      - Valid move tiles highlighted on hover
+      - Combat tiles flash appropriately
+      - Smooth scrolling on player movement
+
+validation_rules:
+  - Map must render without visual artifacts
+  - Updates must be performant (< 16ms for 60 FPS)
+  - Memory usage must remain stable during updates
