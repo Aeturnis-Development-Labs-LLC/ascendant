@@ -1,6 +1,10 @@
-"""Simplified character model without unnecessary inheritance."""
+"""Simplified character model without unnecessary inheritance.
 
-from typing import Tuple
+Generated with AI assistance (Claude Opus 4) - 2025-07-23
+Modified for Phase 4.1 Monster Implementation
+"""
+
+from typing import Dict, Tuple
 
 from src.enums import ActionType, Direction, EntityType, TileType
 from src.models.floor import Floor
@@ -23,6 +27,9 @@ class Character:
         self.entity_type = EntityType.PLAYER
         self._stamina = 100
         self.stamina_max = 100
+        self.hp = 100
+        self.hp_max = 100
+        self.status_effects: Dict[str, int] = {}
 
     @property
     def stamina(self) -> int:
@@ -96,3 +103,20 @@ class Character:
     def __repr__(self) -> str:
         """Return detailed representation of the character."""
         return f"Character(name='{self.name}', position={self.position})"
+
+    def take_damage(self, damage: int) -> None:
+        """Apply damage to the character.
+
+        Args:
+            damage: Amount of damage to apply
+        """
+        self.hp = max(0, self.hp - damage)
+
+    def apply_status(self, status: str, duration: int) -> None:
+        """Apply a status effect to the character.
+
+        Args:
+            status: Name of the status effect
+            duration: Duration in turns
+        """
+        self.status_effects[status] = duration

@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2025-07-23
+
+### Added
+- Monster Implementation (Phase 4.1)
+  - Entity base class for all game entities
+    * Abstract methods for render() and update()
+    * Position property and entity type tracking
+  - Monster class with full combat stats
+    * HP, attack, defense attributes
+    * AIBehavior enum (PASSIVE, AGGRESSIVE, DEFENSIVE, RANGED)
+    * take_damage() and is_alive() methods
+    * Monster type identification system
+  - Trap system with three types
+    * SPIKE: Direct damage
+    * POISON: Damage + poison status effect
+    * ALARM: Alerts nearby monsters
+    * Damage scaling based on floor level
+    * One-time trigger mechanism
+  - MonsterSpawner for dynamic monster generation
+    * 6 monster types (rat, goblin, skeleton, orc, troll, demon)
+    * Level-based monster availability
+    * Stat scaling with floor level
+    * Room-based spawning only
+    * Exclusion zones (stairs, player position)
+- Character class enhancements
+  - take_damage() method for combat integration
+  - apply_status() method for status effects
+  - HP tracking (hp, hp_max attributes)
+
+### Changed
+- Character class now includes combat-related methods
+- Test infrastructure updated to use Tile objects properly
+
+### Technical Details
+- 95.74% test coverage (31 tests)
+- Full type safety with mypy strict mode
+- Black formatted with 79-character line limit
+- AI attribution headers on all generated files
+- UTF contracts GAME-COMBAT-001 and GAME-COMBAT-006 implemented
+
 ## [0.14.0] - 2025-07-23
 
 ### Added
@@ -348,7 +388,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.13.1...v0.14.0
 [0.13.1]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.12.0...v0.13.0
