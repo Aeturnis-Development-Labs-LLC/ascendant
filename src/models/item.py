@@ -38,6 +38,11 @@ class Item:
         return self._item_id
 
     @property
+    def uuid(self) -> str:
+        """Alias for item_id to match expected interface."""
+        return self._item_id
+
+    @property
     def name(self) -> str:
         """Get the name of this item."""
         return self._name

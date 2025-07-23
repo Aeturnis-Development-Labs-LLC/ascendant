@@ -4,6 +4,7 @@ Generated with AI assistance (Claude Opus 4) - 2025-07-23
 Modified for Phase 4.1 Monster Implementation
 """
 
+import uuid
 from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 from src.enums import ActionType, Direction, EntityType, TileType
@@ -26,6 +27,7 @@ class Character:
             x: Starting X coordinate
             y: Starting Y coordinate
         """
+        self.uuid = str(uuid.uuid4())  # Add UUID for entity identification
         self.name = name
         self.x = x
         self.y = y
