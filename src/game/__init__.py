@@ -11,6 +11,7 @@ from .location_actions import LocationActions
 from .location_manager import LocationManager
 from .loot_system import LootDrop, LootSystem
 from .monster_spawner import MonsterSpawner
+
 # Movement module has functions, not a class
 from .random_encounters import RandomEncounters
 from .trap_handler import TrapHandler, TrapResult
