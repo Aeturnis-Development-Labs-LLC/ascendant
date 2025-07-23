@@ -4,10 +4,15 @@ Generated with AI assistance (Claude Opus 4) - 2025-07-23
 Modified for Phase 4.1 Monster Implementation
 """
 
-from typing import Dict, Tuple
+from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 from src.enums import ActionType, Direction, EntityType, TileType
 from src.models.floor import Floor
+
+if TYPE_CHECKING:
+    from src.game.combat_system import CombatResult
+    from src.models.ability import Ability
+    from src.models.monster import Monster
 
 
 class Character:
@@ -38,6 +43,9 @@ class Character:
         self.level = 1
         self.experience = 0
         self.luck = 0
+        # Abilities
+        self.abilities: Dict[str, "Ability"] = {}
+        self.ability_cooldowns: Dict[str, int] = {}
 
     @property
     def stamina(self) -> int:
@@ -136,3 +144,110 @@ class Character:
             True if HP > 0
         """
         return self.hp > 0
+
+    def attack_target(self, target: "Monster", ability_name: Optional[str] = None) -> bool:
+        """Attack a target, optionally using an ability.
+
+        Args:
+            target: The target to attack
+            ability_name: Name of ability to use (None for basic attack)
+
+        Returns:
+            True if attack succeeded, False otherwise
+        """
+        # Check if target is adjacent
+        if not self._is_adjacent(target):
+            return False
+
+        # Check if target is alive
+        if not target.is_alive():
+            return False
+
+        # Handle ability usage
+        if ability_name:
+            # Check if ability exists
+            if ability_name not in self.abilities:
+                return False
+
+            ability = self.abilities[ability_name]
+            current_cooldown = self.ability_cooldowns.get(ability_name, 0)
+
+            # Check if ability can be used
+            if not ability.can_use(current_cooldown, self.stamina):
+                return False
+
+            # Use the ability
+            return self.use_ability(ability_name, target) is not None
+        else:
+            # Basic attack
+            from src.game.combat_system import CombatSystem
+
+            combat_system = CombatSystem()
+            # Set combat log if available
+            if hasattr(self, "_combat_log") and self._combat_log:
+                combat_system.combat_log = self._combat_log
+            result = combat_system.attack(self, target)
+            return result is not None
+
+    def use_ability(self, ability_name: str, target: "Monster") -> Optional["CombatResult"]:
+        """Use an ability on a target.
+
+        Args:
+            ability_name: Name of the ability to use
+            target: Target of the ability
+
+        Returns:
+            CombatResult if successful, None otherwise
+        """
+        if ability_name not in self.abilities:
+            return None
+
+        ability = self.abilities[ability_name]
+
+        # Deduct stamina
+        self.stamina -= ability.stamina_cost
+
+        # Set cooldown
+        self.ability_cooldowns[ability_name] = ability.cooldown_duration
+
+        # Apply damage with multiplier
+        from src.game.combat_system import CombatSystem
+
+        combat_system = CombatSystem()
+        # Set combat log if available
+        if hasattr(self, "_combat_log") and self._combat_log:
+            combat_system.combat_log = self._combat_log
+
+        # Temporarily boost attack for this ability
+        original_attack = self.attack
+        self.attack = int(self.attack * ability.damage_multiplier)
+
+        result = combat_system.attack(self, target)
+
+        # Restore original attack
+        self.attack = original_attack
+
+        # Apply any special effects
+        if ability.effect and result:
+            ability.effect(self, target, result)
+
+        return result
+
+    def tick_cooldowns(self) -> None:
+        """Decrement all ability cooldowns by 1 turn."""
+        for ability_name in self.ability_cooldowns:
+            if self.ability_cooldowns[ability_name] > 0:
+                self.ability_cooldowns[ability_name] -= 1
+
+    def _is_adjacent(self, target: "Monster") -> bool:
+        """Check if target is adjacent to character.
+
+        Args:
+            target: Target to check
+
+        Returns:
+            True if target is adjacent (including diagonals)
+        """
+        dx = abs(self.x - target.x)
+        dy = abs(self.y - target.y)
+        return dx <= 1 and dy <= 1 and (dx + dy) > 0
