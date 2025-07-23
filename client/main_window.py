@@ -1,5 +1,7 @@
 """Main window for Ascendant PyQt6 client."""
 
+from typing import Callable, Optional
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QKeyEvent
 from PyQt6.QtWidgets import (
@@ -53,7 +55,7 @@ class MainWindow(QMainWindow):
         self._create_status_bar()
 
         # Initialize keyboard handler (will be connected later)
-        self.keyboard_handler = None
+        self.keyboard_handler: Optional[Callable[[QKeyEvent], None]] = None
 
     def _create_panel(self, text: str, size: str) -> QWidget:
         """Create a panel widget with placeholder content.
@@ -79,12 +81,16 @@ class MainWindow(QMainWindow):
 
         return panel
 
-    def _create_menu_bar(self):
+    def _create_menu_bar(self) -> None:
         """Create the menu bar with File, Options, and Help menus."""
         menubar = self.menuBar()
+        if not menubar:
+            return
 
         # File menu
         file_menu = menubar.addMenu("&File")
+        if not file_menu:
+            return
 
         new_game_action = QAction("&New Game", self)
         new_game_action.setShortcut("Ctrl+N")
@@ -110,6 +116,8 @@ class MainWindow(QMainWindow):
 
         # Options menu
         options_menu = menubar.addMenu("&Options")
+        if not options_menu:
+            return
 
         settings_action = QAction("&Settings", self)
         settings_action.triggered.connect(self._on_settings)
@@ -121,6 +129,8 @@ class MainWindow(QMainWindow):
 
         # Help menu
         help_menu = menubar.addMenu("&Help")
+        if not help_menu:
+            return
 
         about_action = QAction("&About", self)
         about_action.triggered.connect(self._on_about)
@@ -131,9 +141,11 @@ class MainWindow(QMainWindow):
         how_to_play_action.triggered.connect(self._on_how_to_play)
         help_menu.addAction(how_to_play_action)
 
-    def _create_status_bar(self):
+    def _create_status_bar(self) -> None:
         """Create the status bar with version information."""
         status_bar = self.statusBar()
+        if not status_bar:
+            return
         status_bar.setStyleSheet("QStatusBar { background-color: #1e1e1e; color: #ffffff; }")
         
         # Add version label on the right
@@ -144,12 +156,14 @@ class MainWindow(QMainWindow):
         # Set initial message
         status_bar.showMessage("Ready", 5000)
 
-    def keyPressEvent(self, event: QKeyEvent):
+    def keyPressEvent(self, event: Optional[QKeyEvent]) -> None:
         """Handle keyboard events.
 
         Args:
             event: The key press event
         """
+        if not event:
+            return
         # Forward to keyboard handler if set
         if self.keyboard_handler:
             self.keyboard_handler(event)
@@ -162,7 +176,7 @@ class MainWindow(QMainWindow):
             else:
                 super().keyPressEvent(event)
 
-    def set_keyboard_handler(self, handler):
+    def set_keyboard_handler(self, handler: Callable[[QKeyEvent], None]) -> None:
         """Set the keyboard event handler.
 
         Args:
@@ -171,30 +185,30 @@ class MainWindow(QMainWindow):
         self.keyboard_handler = handler
 
     # Menu action handlers (placeholders for now)
-    def _on_new_game(self):
+    def _on_new_game(self) -> None:
         """Handle new game action."""
         print("New Game clicked")
 
-    def _on_save(self):
+    def _on_save(self) -> None:
         """Handle save action."""
         print("Save clicked")
 
-    def _on_load(self):
+    def _on_load(self) -> None:
         """Handle load action."""
         print("Load clicked")
 
-    def _on_settings(self):
+    def _on_settings(self) -> None:
         """Handle settings action."""
         print("Settings clicked")
 
-    def _on_controls(self):
+    def _on_controls(self) -> None:
         """Handle controls action."""
         print("Controls clicked")
 
-    def _on_about(self):
+    def _on_about(self) -> None:
         """Handle about action."""
         print("About clicked")
 
-    def _on_how_to_play(self):
+    def _on_how_to_play(self) -> None:
         """Handle how to play action."""
         print("How to Play clicked")

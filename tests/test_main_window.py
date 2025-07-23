@@ -11,6 +11,7 @@ try:
     from PyQt6.QtTest import QTest
     from PyQt6.QtWidgets import QApplication, QHBoxLayout, QWidget
     from client.main_window import MainWindow
+
     PYQT6_AVAILABLE = True
 except ImportError:
     PYQT6_AVAILABLE = False
@@ -24,8 +25,7 @@ except ImportError:
 
 # Skip all tests if PyQt6 is not available
 pytestmark = pytest.mark.skipif(
-    not PYQT6_AVAILABLE,
-    reason="PyQt6 not installed - install with: pip install PyQt6"
+    not PYQT6_AVAILABLE, reason="PyQt6 not installed - install with: pip install PyQt6"
 )
 
 
@@ -77,7 +77,7 @@ class TestMainWindowLayout:
     def test_panel_stretch_ratios(self, main_window):
         """Test panels have correct 20-60-20 stretch ratios."""
         layout = main_window.centralWidget().layout()
-        
+
         # Check stretch factors
         assert layout.stretch(0) == 20  # Left panel
         assert layout.stretch(1) == 60  # Center panel
@@ -85,10 +85,10 @@ class TestMainWindowLayout:
 
     def test_panels_exist(self, main_window):
         """Test all three panels exist."""
-        assert hasattr(main_window, 'left_panel')
-        assert hasattr(main_window, 'center_panel')
-        assert hasattr(main_window, 'right_panel')
-        
+        assert hasattr(main_window, "left_panel")
+        assert hasattr(main_window, "center_panel")
+        assert hasattr(main_window, "right_panel")
+
         assert isinstance(main_window.left_panel, QWidget)
         assert isinstance(main_window.center_panel, QWidget)
         assert isinstance(main_window.right_panel, QWidget)
@@ -98,7 +98,7 @@ class TestMainWindowLayout:
         status_bar = main_window.statusBar()
         assert status_bar is not None
         assert status_bar.isVisible()
-        
+
         # Check for version widget
         # Status bar should have at least one permanent widget (version label)
         assert len(status_bar.children()) > 1  # Has widgets
@@ -117,15 +117,15 @@ class TestMenuSystem:
         """Test File menu has correct items."""
         menubar = main_window.menuBar()
         file_menu = None
-        
+
         # Find File menu
         for action in menubar.actions():
             if action.text() == "&File":
                 file_menu = action.menu()
                 break
-        
+
         assert file_menu is not None
-        
+
         # Check menu items
         actions = [a.text() for a in file_menu.actions() if not a.isSeparator()]
         assert "&New Game" in actions
@@ -137,15 +137,15 @@ class TestMenuSystem:
         """Test Options menu has correct items."""
         menubar = main_window.menuBar()
         options_menu = None
-        
+
         # Find Options menu
         for action in menubar.actions():
             if action.text() == "&Options":
                 options_menu = action.menu()
                 break
-        
+
         assert options_menu is not None
-        
+
         # Check menu items
         actions = [a.text() for a in options_menu.actions()]
         assert "&Settings" in actions
@@ -155,15 +155,15 @@ class TestMenuSystem:
         """Test Help menu has correct items."""
         menubar = main_window.menuBar()
         help_menu = None
-        
+
         # Find Help menu
         for action in menubar.actions():
             if action.text() == "&Help":
                 help_menu = action.menu()
                 break
-        
+
         assert help_menu is not None
-        
+
         # Check menu items
         actions = [a.text() for a in help_menu.actions()]
         assert "&About" in actions
@@ -172,7 +172,7 @@ class TestMenuSystem:
     def test_keyboard_shortcuts(self, main_window):
         """Test menu items have appropriate keyboard shortcuts."""
         menubar = main_window.menuBar()
-        
+
         # Check File menu shortcuts
         for action in menubar.actions():
             if action.text() == "&File":
@@ -187,11 +187,11 @@ class TestMenuSystem:
                     elif menu_action.text() == "&Quit":
                         assert menu_action.shortcut().toString() == "Ctrl+Q"
 
-    @patch('builtins.print')
+    @patch("builtins.print")
     def test_menu_actions_connected(self, mock_print, main_window):
         """Test menu actions are connected to handlers."""
         menubar = main_window.menuBar()
-        
+
         # Test New Game action
         for action in menubar.actions():
             if action.text() == "&File":
@@ -217,20 +217,28 @@ class TestKeyboardHandling:
         """Test keyboard events are forwarded to handler when set."""
         mock_handler = Mock()
         main_window.set_keyboard_handler(mock_handler)
-        
+
         # Send key event
         event = QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_W, Qt.KeyboardModifier.NoModifier)
         main_window.keyPressEvent(event)
-        
+
         # Check handler was called
         mock_handler.assert_called_once_with(event)
 
     def test_game_keys_prevented(self, main_window, qapp):
         """Test game keys are prevented from default behavior."""
         # Test all game keys
-        game_keys = [Qt.Key.Key_W, Qt.Key.Key_A, Qt.Key.Key_S, Qt.Key.Key_D,
-                    Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_Left, Qt.Key.Key_Right]
-        
+        game_keys = [
+            Qt.Key.Key_W,
+            Qt.Key.Key_A,
+            Qt.Key.Key_S,
+            Qt.Key.Key_D,
+            Qt.Key.Key_Up,
+            Qt.Key.Key_Down,
+            Qt.Key.Key_Left,
+            Qt.Key.Key_Right,
+        ]
+
         for key in game_keys:
             event = QKeyEvent(QKeyEvent.Type.KeyPress, key, Qt.KeyboardModifier.NoModifier)
             main_window.keyPressEvent(event)
@@ -251,7 +259,7 @@ class TestWindowResize:
         """Test window cannot be resized below minimum."""
         # Try to resize below minimum
         main_window.resize(800, 400)
-        
+
         # Size should be clamped to minimum
         assert main_window.width() >= 1024
         assert main_window.height() >= 600
@@ -260,11 +268,11 @@ class TestWindowResize:
         """Test panel ratios are maintained when window is resized."""
         # Get initial layout
         layout = main_window.centralWidget().layout()
-        
+
         # Resize window
         main_window.resize(1600, 900)
         qapp.processEvents()
-        
+
         # Check stretch factors are still correct
         assert layout.stretch(0) == 20  # Left panel
         assert layout.stretch(1) == 60  # Center panel
