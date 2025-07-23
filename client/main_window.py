@@ -1,6 +1,6 @@
 """Main window for Ascendant PyQt6 client."""
 
-from typing import Callable, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QKeyEvent
@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMainWindow,
+    QVBoxLayout,
     QWidget,
 )
 
@@ -16,6 +17,16 @@ try:
     from src import __version__
 except ImportError:
     __version__ = "Unknown"
+
+# Import our custom widgets
+if TYPE_CHECKING:
+    from client.widgets.map_widget import MapWidget
+
+try:
+    from client.widgets.map_widget import MapWidget
+    HAS_MAP_WIDGET = True
+except ImportError:
+    HAS_MAP_WIDGET = False
 
 
 class MainWindow(QMainWindow):
@@ -37,7 +48,7 @@ class MainWindow(QMainWindow):
 
         # Create three panels with fixed ratios
         self.left_panel = self._create_panel("Left Panel", "20%")
-        self.center_panel = self._create_panel("Center Panel", "60%")
+        self.center_panel = self._create_center_panel()
         self.right_panel = self._create_panel("Right Panel", "20%")
 
         # Add panels to layout with stretch factors (20-60-20 ratio)
@@ -53,6 +64,9 @@ class MainWindow(QMainWindow):
 
         # Initialize keyboard handler (will be connected later)
         self.keyboard_handler: Optional[Callable[[QKeyEvent], None]] = None
+        
+        # Initialize map widget reference
+        self.map_widget: Optional["MapWidget"] = None
 
     def _create_panel(self, text: str, size: str) -> QWidget:
         """Create a panel widget with placeholder content.
@@ -78,6 +92,34 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout(panel)
         layout.addWidget(label)
 
+        return panel
+
+    def _create_center_panel(self) -> QWidget:
+        """Create the center panel with map widget.
+        
+        Returns:
+            Center panel widget
+        """
+        panel = QWidget()
+        panel.setStyleSheet(
+            "QWidget { background-color: #2b2b2b; border: 1px solid #555; }"
+        )
+        
+        # Create layout for center panel
+        layout = QVBoxLayout(panel)
+        layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Create map widget if available
+        if HAS_MAP_WIDGET:
+            self.map_widget = MapWidget()
+            layout.addWidget(self.map_widget)
+        else:
+            # Fallback to label if MapWidget not available
+            label = QLabel("Map Display\n(60%)")
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label.setStyleSheet("QLabel { color: #ffffff; font-size: 14px; }")
+            layout.addWidget(label)
+            
         return panel
 
     def _create_menu_bar(self) -> None:
@@ -220,3 +262,23 @@ class MainWindow(QMainWindow):
     def _on_how_to_play(self) -> None:
         """Handle how to play action."""
         print("How to Play clicked")
+    
+    # Game state methods
+    def set_floor(self, floor) -> None:
+        """Set the floor to display in the map widget.
+        
+        Args:
+            floor: Floor object to display
+        """
+        if self.map_widget:
+            self.map_widget.set_floor(floor)
+            
+    def set_player_position(self, x: int, y: int) -> None:
+        """Set the player position on the map.
+        
+        Args:
+            x: Player X coordinate
+            y: Player Y coordinate
+        """
+        if self.map_widget:
+            self.map_widget.set_player_position(x, y)

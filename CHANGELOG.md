@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2025-01-23
+
+### Added
+- Map Display Widget Implementation (Phase 3.2)
+  - MapWidget class with tile-based rendering
+  - Dynamic tile size calculation based on widget size
+  - Player position centering with viewport management
+  - Color mapping for different tile types:
+    * Background: #1a1a1a
+    * Walls: #666666
+    * Floor: #333333
+    * Player: #00ff00
+    * Monsters: #ff0000
+  - Visual feedback features:
+    * Hover highlighting
+    * Combat tile flashing
+    * Valid move indicators
+  - Mouse tracking for interactive features
+  - UTF contract GAME-UI-002 implementation
+  - Comprehensive test suite (18 tests) for map rendering
+
+### Changed
+- MainWindow now integrates MapWidget in center panel
+- Added client/widgets directory for custom PyQt widgets
+
+### Technical Details
+- Tile-based rendering with automatic size calculation
+- Smooth viewport scrolling when player moves
+- Performance optimized for 60 FPS rendering
+- Memory-stable update system
+- Graceful fallback when PyQt6 not available
+
 ## [0.12.0] - 2025-01-22
 
 ### Added
@@ -252,7 +284,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.9.0...v0.10.0
