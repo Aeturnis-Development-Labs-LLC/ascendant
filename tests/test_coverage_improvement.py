@@ -36,14 +36,15 @@ class TestEntityCoverage:
         """Test entity string representations."""
         # Use Character since Entity is abstract
         char = Character("Test", 5, 5)
-        
+
         str_repr = str(char)
         assert "Character" in str_repr
         assert "5, 5" in str_repr
-        
+
         repr_str = repr(char)
         assert "Character" in repr_str
         assert "name='Test'" in repr_str
+
 
 class TestTileCoverage:
     """Tests to improve tile coverage."""
@@ -59,6 +60,8 @@ class TestTileCoverage:
         assert "Tile" in repr_str
         assert "type=" in repr_str
         assert "FLOOR" in repr_str
+
+
 class TestCharacterCoverage:
     """Tests to improve character coverage."""
 
