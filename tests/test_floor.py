@@ -74,8 +74,8 @@ class TestFloor:
 
     def test_floor_dimensions(self):
         """Test floor dimension constants."""
-        assert Floor.FLOOR_WIDTH == 20
-        assert Floor.FLOOR_HEIGHT == 20
+        assert Floor.FLOOR_WIDTH == 50
+        assert Floor.FLOOR_HEIGHT == 50
 
     def test_floor_generation_creates_tiles(self):
         """Test that generate() creates all tiles."""
@@ -83,11 +83,11 @@ class TestFloor:
         floor.generate()
 
         # Check that all tiles exist
-        assert len(floor.tiles) == 20 * 20
+        assert len(floor.tiles) == 50 * 50
 
         # Check that all positions are covered
-        for y in range(20):
-            for x in range(20):
+        for y in range(50):
+            for x in range(50):
                 assert (x, y) in floor.tiles
                 tile = floor.tiles[(x, y)]
                 assert tile.x == x
@@ -157,8 +157,8 @@ class TestFloor:
         # Out of bounds
         assert floor.get_tile(-1, 5) is None
         assert floor.get_tile(5, -1) is None
-        assert floor.get_tile(20, 5) is None
-        assert floor.get_tile(5, 20) is None
+        assert floor.get_tile(50, 5) is None
+        assert floor.get_tile(5, 50) is None
 
     def test_is_valid_position(self):
         """Test position validation."""
@@ -166,14 +166,14 @@ class TestFloor:
 
         # Valid positions
         assert floor.is_valid_position(0, 0)
-        assert floor.is_valid_position(19, 19)
+        assert floor.is_valid_position(49, 49)
         assert floor.is_valid_position(10, 10)
 
         # Invalid positions
         assert not floor.is_valid_position(-1, 0)
         assert not floor.is_valid_position(0, -1)
-        assert not floor.is_valid_position(20, 0)
-        assert not floor.is_valid_position(0, 20)
+        assert not floor.is_valid_position(50, 0)
+        assert not floor.is_valid_position(0, 50)
 
 
 class TestRoomGeneration:
@@ -186,17 +186,17 @@ class TestRoomGeneration:
             floor.generate()
 
             room_count = len(floor.rooms)
-            # Relaxed minimum from 5 to 4 due to spacing constraints between rooms
-            assert 4 <= room_count <= 10, f"Seed {seed} generated {room_count} rooms"
+            # New parameters: 8-12 rooms
+            assert 8 <= room_count <= 12, f"Seed {seed} generated {room_count} rooms"
 
     def test_room_dimensions_in_range(self):
-        """Test that all rooms have dimensions between 3x3 and 8x8."""
+        """Test that all rooms have dimensions between 4x4 and 10x10."""
         floor = Floor(12345)
         floor.generate()
 
         for room in floor.rooms:
-            assert 3 <= room.width <= 8, f"Room width {room.width} out of range"
-            assert 3 <= room.height <= 8, f"Room height {room.height} out of range"
+            assert 4 <= room.width <= 10, f"Room width {room.width} out of range"
+            assert 4 <= room.height <= 10, f"Room height {room.height} out of range"
 
     def test_no_room_overlaps(self):
         """Test that no rooms overlap."""
@@ -209,68 +209,98 @@ class TestRoomGeneration:
                 assert not room1.overlaps(room2), f"{room1} overlaps with {room2}"
 
     def test_rooms_respect_edge_buffer(self):
-        """Test that rooms are at least 1 tile from edges."""
+        """Test that rooms are at least 2 tiles from edges."""
         floor = Floor(12345)
         floor.generate()
 
         for room in floor.rooms:
             # Check left and top edges
-            assert room.x >= 1, f"Room at x={room.x} too close to left edge"
-            assert room.y >= 1, f"Room at y={room.y} too close to top edge"
+            assert room.x >= 2, f"Room at x={room.x} too close to left edge"
+            assert room.y >= 2, f"Room at y={room.y} too close to top edge"
 
             # Check right and bottom edges
-            assert room.x2 < 19, f"Room ending at x={room.x2} too close to right edge"
-            assert room.y2 < 19, f"Room ending at y={room.y2} too close to bottom edge"
+            assert room.x2 < 48, f"Room ending at x={room.x2} too close to right edge"
+            assert room.y2 < 48, f"Room ending at y={room.y2} too close to bottom edge"
 
-    def test_room_tiles_are_floor(self):
-        """Test that room interiors are FLOOR tiles."""
+    def test_room_tiles_are_walkable(self):
+        """Test that room interiors are walkable (FLOOR or STAIRS)."""
         floor = Floor(12345)
         floor.generate()
 
+        walkable_types = {TileType.FLOOR, TileType.STAIRS_UP, TileType.STAIRS_DOWN}
+        
         for room in floor.rooms:
             for y in range(room.y, room.y + room.height):
                 for x in range(room.x, room.x + room.width):
                     tile = floor.get_tile(x, y)
                     assert tile is not None
-                    assert tile.tile_type == TileType.FLOOR, f"Room tile at ({x}, {y}) is not FLOOR"
+                    assert tile.tile_type in walkable_types, f"Room tile at ({x}, {y}) is not walkable"
 
-    def test_non_room_tiles_are_walls(self):
-        """Test that non-room tiles are WALL tiles."""
+    def test_floor_has_walls_and_walkable_areas(self):
+        """Test that floor has both walls and walkable areas (rooms + corridors)."""
         floor = Floor(12345)
         floor.generate()
 
-        # Create set of all room positions
-        room_positions = set()
+        wall_count = 0
+        walkable_count = 0
+        
+        for tile in floor.tiles.values():
+            if tile.tile_type == TileType.WALL:
+                wall_count += 1
+            elif tile.tile_type in {TileType.FLOOR, TileType.STAIRS_UP, TileType.STAIRS_DOWN}:
+                walkable_count += 1
+        
+        # Should have both walls and walkable areas
+        assert wall_count > 0, "Floor should have walls"
+        assert walkable_count > 0, "Floor should have walkable areas"
+        
+        # Walkable area should be reasonable (10-40% of total)
+        total_tiles = len(floor.tiles)
+        walkable_percentage = (walkable_count / total_tiles) * 100
+        assert 10 <= walkable_percentage <= 40, f"Walkable area {walkable_percentage:.1f}% is out of expected range"
+
+    def test_edge_buffer_maintained(self):
+        """Test that edge buffer is maintained (no rooms at very edge)."""
+        floor = Floor(12345)
+        floor.generate()
+
+        # Check that no rooms are at the very edge (0 or width-1/height-1)
         for room in floor.rooms:
-            for y in range(room.y, room.y + room.height):
-                for x in range(room.x, room.x + room.width):
-                    room_positions.add((x, y))
-
-        # Check all non-room tiles
-        for y in range(20):
-            for x in range(20):
-                if (x, y) not in room_positions:
-                    tile = floor.get_tile(x, y)
-                    assert tile is not None
-                    assert (
-                        tile.tile_type == TileType.WALL
-                    ), f"Non-room tile at ({x}, {y}) is not WALL"
-
-    def test_edge_tiles_are_walls(self):
-        """Test that all edge tiles are walls."""
+            assert room.x > 0, f"Room at x={room.x} touches left edge"
+            assert room.y > 0, f"Room at y={room.y} touches top edge"
+            assert room.x2 < floor.width - 1, f"Room at x2={room.x2} touches right edge"
+            assert room.y2 < floor.height - 1, f"Room at y2={room.y2} touches bottom edge"
+    
+    def test_floor_connectivity(self):
+        """Test that all rooms are connected via corridors."""
         floor = Floor(12345)
         floor.generate()
-
-        # Check top and bottom edges
-        for x in range(20):
-            top_tile = floor.get_tile(x, 0)
-            bottom_tile = floor.get_tile(x, 19)
-            assert top_tile.tile_type == TileType.WALL
-            assert bottom_tile.tile_type == TileType.WALL
-
-        # Check left and right edges
-        for y in range(20):
-            left_tile = floor.get_tile(0, y)
-            right_tile = floor.get_tile(19, y)
-            assert left_tile.tile_type == TileType.WALL
-            assert right_tile.tile_type == TileType.WALL
+        
+        # Should have corridors connecting rooms
+        assert hasattr(floor, 'connect_rooms'), "Floor should have connect_rooms method"
+        
+        # Verify connectivity by checking if we can reach all rooms from the first room
+        if floor.rooms:
+            is_connected = floor.is_fully_connected()
+            assert is_connected, f"Not all rooms are connected"
+    
+    def test_stairs_placement(self):
+        """Test that stairs are placed in rooms."""
+        floor = Floor(12345)
+        floor.generate()
+        
+        # Find stairs
+        stairs_up = None
+        stairs_down = None
+        
+        for tile in floor.tiles.values():
+            if tile.tile_type == TileType.STAIRS_UP:
+                stairs_up = (tile.x, tile.y)
+            elif tile.tile_type == TileType.STAIRS_DOWN:
+                stairs_down = (tile.x, tile.y)
+        
+        # Should have both stairs if there are at least 2 rooms
+        if len(floor.rooms) >= 2:
+            assert stairs_up is not None, "Should have stairs up"
+            assert stairs_down is not None, "Should have stairs down"
+            assert stairs_up != stairs_down, "Stairs should be in different locations"

@@ -81,13 +81,13 @@ class Room:
 class Floor:
     """Represents a single floor/level of the dungeon."""
 
-    FLOOR_WIDTH = 20
-    FLOOR_HEIGHT = 20
-    MIN_ROOMS = 5
-    MAX_ROOMS = 10
-    MIN_ROOM_SIZE = 3
-    MAX_ROOM_SIZE = 8
-    EDGE_BUFFER = 1
+    FLOOR_WIDTH = 50
+    FLOOR_HEIGHT = 50
+    MIN_ROOMS = 8
+    MAX_ROOMS = 12
+    MIN_ROOM_SIZE = 4
+    MAX_ROOM_SIZE = 10
+    EDGE_BUFFER = 2
 
     # Direct access to constants is simpler than properties
     width = FLOOR_WIDTH
@@ -130,6 +130,12 @@ class Floor:
 
         # Carve out rooms from the walls
         self._carve_rooms()
+        
+        # Connect rooms with corridors
+        self.connect_rooms()
+        
+        # Place stairs
+        self.place_stairs()
 
     def _generate_rooms(self) -> None:
         """Generate random non-overlapping rooms."""
@@ -191,7 +197,7 @@ class Floor:
         Returns:
             True if position is within floor bounds
         """
-        return 0 <= x < self.FLOOR_WIDTH and 0 <= y < self.FLOOR_HEIGHT
+        return 0 <= x < self.width and 0 <= y < self.height
 
     def connect_rooms(self) -> None:
         """Connect all rooms with L-shaped corridors."""
@@ -411,3 +417,29 @@ class Floor:
                 # For now, just store a simple loot tier based on position
                 loot_tier = 1 + (i // 2)  # Every 2 chests increase tier
                 self.chests[pos] = {"opened": False, "loot_tier": loot_tier}
+    
+    def get_random_walkable_position(self) -> Tuple[int, int]:
+        """Get a random walkable position on the floor.
+        
+        Returns:
+            Tuple of (x, y) coordinates
+        """
+        # Try to place in a room first
+        if self.rooms:
+            room = self._random.choice(self.rooms)
+            # Place away from walls
+            x = room.x + self._random.randint(1, max(1, room.width - 2))
+            y = room.y + self._random.randint(1, max(1, room.height - 2))
+            return (x, y)
+        
+        # Fallback: find any walkable tile
+        walkable_tiles = [
+            (x, y) for (x, y), tile in self.tiles.items()
+            if tile.tile_type == TileType.FLOOR
+        ]
+        
+        if walkable_tiles:
+            return self._random.choice(walkable_tiles)
+        
+        # Last resort: center of map
+        return (self.width // 2, self.height // 2)
