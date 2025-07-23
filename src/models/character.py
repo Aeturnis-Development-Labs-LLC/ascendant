@@ -30,6 +30,14 @@ class Character:
         self.hp = 100
         self.hp_max = 100
         self.status_effects: Dict[str, int] = {}
+        # Combat stats
+        self.attack = 10
+        self.defense = 5
+        self.crit_chance = 0.1  # 10% base crit chance
+        # Progression
+        self.level = 1
+        self.experience = 0
+        self.luck = 0
 
     @property
     def stamina(self) -> int:
@@ -120,3 +128,11 @@ class Character:
             duration: Duration in turns
         """
         self.status_effects[status] = duration
+    
+    def is_alive(self) -> bool:
+        """Check if character is still alive.
+        
+        Returns:
+            True if HP > 0
+        """
+        return self.hp > 0
