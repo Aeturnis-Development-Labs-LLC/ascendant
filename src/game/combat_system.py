@@ -137,5 +137,5 @@ class CombatSystem:
         result = self.attack(attacker, target)
         if result:
             # Add damage_dealt attribute for compatibility
-            setattr(result, "damage_dealt", result.damage)
+            setattr(result, "damage_dealt", result.damage)  # noqa: B010
         return result

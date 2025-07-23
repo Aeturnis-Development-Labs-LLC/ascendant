@@ -388,7 +388,7 @@ class Floor:
                 }
                 # Also add trap attribute to tile for test compatibility
                 if pos in self.tiles:
-                    setattr(self.tiles[pos], "trap", True)
+                    setattr(self.tiles[pos], "trap", True)  # noqa: B010
 
     def place_chests(self, count: int = 3) -> None:
         """Place chests in rooms.
@@ -427,7 +427,7 @@ class Floor:
                 self.chests[pos] = {"opened": False, "loot_tier": loot_tier}
                 # Also add chest attribute to tile for test compatibility
                 if pos in self.tiles:
-                    setattr(self.tiles[pos], "chest", True)
+                    setattr(self.tiles[pos], "chest", True)  # noqa: B010
 
     def get_random_walkable_position(self) -> Tuple[int, int]:
         """Get a random walkable position on the floor.

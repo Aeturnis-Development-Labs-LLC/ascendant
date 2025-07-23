@@ -5,7 +5,7 @@ Part of Phase 4.3 Player Combat Integration
 """
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
 if TYPE_CHECKING:
     from src.game.combat_system import CombatResult

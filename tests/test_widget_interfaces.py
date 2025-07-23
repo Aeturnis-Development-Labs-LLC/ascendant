@@ -10,16 +10,15 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pytest
-from PyQt6.QtWidgets import QApplication, QLabel, QListWidget, QProgressBar
+from PyQt6.QtWidgets import QApplication, QLabel, QListWidget, QProgressBar  # noqa: E402
+
+from client.widgets.character_panel import CharacterPanel  # noqa: E402
+from client.widgets.info_panel import InfoPanel  # noqa: E402
+from client.widgets.map_widget import MapWidget  # noqa: E402
+from client.widgets.status_bar import MessagePriority, StatusBar  # noqa: E402
 
 # Create QApplication for widget tests
 app = QApplication([])
-
-from client.widgets.character_panel import CharacterPanel
-from client.widgets.info_panel import InfoPanel
-from client.widgets.map_widget import MapWidget
-from client.widgets.status_bar import MessagePriority, StatusBar
 
 
 class TestCharacterPanelInterface:
@@ -192,7 +191,7 @@ class TestStatusBarInterface:
 
 
 def print_widget_interface(widget_class):
-    """Helper to print all public attributes of a widget class."""
+    """Print all public attributes of a widget class."""
     widget = widget_class()
 
     print(f"\n{widget_class.__name__} Interface:")

@@ -6,7 +6,7 @@ inconsistencies and coupling issues.
 """
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 if TYPE_CHECKING:
     from client.main_window import MainWindow
@@ -77,7 +77,7 @@ class GameStateManager:
 
         self.state.combat_log = CombatLog()
         # Set combat log on character using setattr for dynamic attribute
-        setattr(self.state.character, "_combat_log", self.state.combat_log)
+        setattr(self.state.character, "_combat_log", self.state.combat_log)  # noqa: B010
 
         self.state.monsters = []
 

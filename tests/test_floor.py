@@ -286,7 +286,7 @@ class TestRoomGeneration:
         # Verify connectivity by checking if we can reach all rooms from the first room
         if floor.rooms:
             is_connected = floor.is_fully_connected()
-            assert is_connected, f"Not all rooms are connected"
+            assert is_connected, "Not all rooms are connected"
 
     def test_stairs_placement(self):
         """Test that stairs are placed in rooms."""

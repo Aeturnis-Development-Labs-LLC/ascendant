@@ -16,7 +16,7 @@ class TestEnvironmentalHazards:
 
     def test_weather_generation_by_terrain(self, hazards):
         """Test weather is generated based on terrain probabilities."""
-        weather_counts = {terrain: {weather: 0 for weather in Weather} for terrain in TerrainType}
+        weather_counts = {terrain: dict.fromkeys(Weather, 0) for terrain in TerrainType}
 
         # Generate many weather instances
         for terrain in TerrainType:

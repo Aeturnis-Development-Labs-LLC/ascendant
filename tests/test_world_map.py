@@ -119,7 +119,7 @@ class TestWorldMap:
         world = WorldMap(seed=42)
         world.generate_world()
 
-        terrain_counts = {terrain: 0 for terrain in TerrainType}
+        terrain_counts = dict.fromkeys(TerrainType, 0)
 
         for y in range(world.HEIGHT):
             for x in range(world.WIDTH):

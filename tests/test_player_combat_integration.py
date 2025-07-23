@@ -173,7 +173,7 @@ class TestPlayerCombatIntegration:
             ("Defensive Strike", 10, 1.0),
         ]
 
-        for ability_name, stamina_cost, multiplier in abilities_to_test:
+        for ability_name, stamina_cost, _multiplier in abilities_to_test:
             # Reset for each test
             self.character.stamina = 100
 
