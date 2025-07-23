@@ -1,7 +1,7 @@
 """Tests for info panel widget - UTF Contract GAME-UI-003."""
 
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 

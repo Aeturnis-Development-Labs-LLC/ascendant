@@ -1,13 +1,12 @@
 """Tests for character panel widget - UTF Contract GAME-UI-003."""
 
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
 try:
-    from PyQt6.QtCore import Qt
-    from PyQt6.QtWidgets import QApplication, QLabel, QProgressBar, QWidget
+    from PyQt6.QtWidgets import QApplication, QWidget
 
     from client.widgets.character_panel import CharacterPanel
     from src.models.character import Character

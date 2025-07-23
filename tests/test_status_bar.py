@@ -1,13 +1,12 @@
 """Tests for status bar widget - UTF Contract GAME-UI-005."""
 
 import sys
-import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
 try:
-    from PyQt6.QtCore import Qt, QTimer
+    from PyQt6.QtCore import QTimer
     from PyQt6.QtWidgets import QApplication, QLabel
 
     from client.widgets.status_bar import MessagePriority, StatusBar
