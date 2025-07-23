@@ -62,9 +62,7 @@ class Trap:
         return (self.x, self.y)
 
     @classmethod
-    def create_scaled(
-        cls, x: int, y: int, trap_type: TrapType, floor_level: int
-    ) -> "Trap":
+    def create_scaled(cls, x: int, y: int, trap_type: TrapType, floor_level: int) -> "Trap":
         """Create a trap with damage scaled by floor level.
 
         Args:

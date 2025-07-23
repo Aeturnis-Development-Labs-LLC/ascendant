@@ -127,16 +127,12 @@ class MonsterSpawner:
             exclude_positions = []
 
         # Get valid spawn positions (in rooms, on floor tiles)
-        valid_positions = self._get_valid_spawn_positions(
-            floor, exclude_positions
-        )
+        valid_positions = self._get_valid_spawn_positions(floor, exclude_positions)
         if not valid_positions:
             return []
 
         # Determine which monster types can spawn at this level
-        available_types = monster_types or self._get_available_monster_types(
-            level
-        )
+        available_types = monster_types or self._get_available_monster_types(level)
         if not available_types:
             return []
 
@@ -173,9 +169,7 @@ class MonsterSpawner:
 
         return monsters
 
-    def get_monster_stats(
-        self, monster_type: str, level: int
-    ) -> ScaledMonsterStats:
+    def get_monster_stats(self, monster_type: str, level: int) -> ScaledMonsterStats:
         """Get scaled monster stats for a given type and level.
 
         Args:
@@ -228,8 +222,7 @@ class MonsterSpawner:
                         pos not in exclude_set
                         and tile is not None
                         and tile.tile_type == TileType.FLOOR
-                        and tile.tile_type
-                        not in [TileType.STAIRS_UP, TileType.STAIRS_DOWN]
+                        and tile.tile_type not in [TileType.STAIRS_UP, TileType.STAIRS_DOWN]
                     ):
                         valid_positions.append(pos)
 

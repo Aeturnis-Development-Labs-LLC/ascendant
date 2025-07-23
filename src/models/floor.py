@@ -68,7 +68,7 @@ class Room:
     def center(self) -> Tuple[int, int]:
         """Get the center point of the room."""
         return (self.x + self.width // 2, self.y + self.height // 2)
-        
+
     def contains_point(self, x: int, y: int) -> bool:
         """Check if a point is inside this room."""
         return self.x <= x <= self.x2 and self.y <= y <= self.y2
@@ -93,8 +93,13 @@ class Floor:
     width = FLOOR_WIDTH
     height = FLOOR_HEIGHT
 
-    def __init__(self, seed: Optional[int] = None, width: Optional[int] = None, 
-                 height: Optional[int] = None, level: int = 1):
+    def __init__(
+        self,
+        seed: Optional[int] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        level: int = 1,
+    ):
         """Initialize a new floor with the given parameters.
 
         Args:
