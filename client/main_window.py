@@ -24,10 +24,14 @@ if TYPE_CHECKING:
 
 try:
     from client.widgets.map_widget import MapWidget  # noqa: F811
-
     HAS_MAP_WIDGET = True
 except ImportError:
-    HAS_MAP_WIDGET = False
+    try:
+        # Try relative import if absolute fails
+        from .widgets.map_widget import MapWidget  # noqa: F811
+        HAS_MAP_WIDGET = True
+    except ImportError:
+        HAS_MAP_WIDGET = False
 
 
 class MainWindow(QMainWindow):
@@ -39,6 +43,10 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f"Ascendant: The Eternal Spire v{__version__}")
         self.setGeometry(100, 100, 1280, 720)
         self.setMinimumSize(1024, 600)
+
+        # Initialize attributes FIRST before creating panels
+        self.keyboard_handler: Optional[Callable[[QKeyEvent], None]] = None
+        self.map_widget: Optional["MapWidget"] = None
 
         # Create central widget and layout
         central_widget = QWidget()
@@ -62,12 +70,6 @@ class MainWindow(QMainWindow):
 
         # Create status bar with version
         self._create_status_bar()
-
-        # Initialize keyboard handler (will be connected later)
-        self.keyboard_handler: Optional[Callable[[QKeyEvent], None]] = None
-
-        # Initialize map widget reference
-        self.map_widget: Optional["MapWidget"] = None
 
     def _create_panel(self, text: str, size: str) -> QWidget:
         """Create a panel widget with placeholder content.

@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.1] - 2025-07-23
+
+### Added
+- Zoom functionality for map widget
+  - Mouse wheel zoom support (0.5x to 3.0x range)
+  - Keyboard shortcuts (Ctrl++, Ctrl+-, Ctrl+0)
+  - Dynamic tile size recalculation
+- Minimap overlay feature
+  - Toggle with 'M' key
+  - Shows entire floor overview
+  - Yellow viewport indicator
+  - Player position marker
+  - Semi-transparent rendering
+- View menu in main window with zoom/minimap controls
+- Integration with movement and stamina systems
+
+### Fixed
+- Map widget initialization order issue
+- Import path problems when running from different locations
+- Minimap grid lines removed for cleaner appearance
+
+### Improved
+- Performance optimization (<16ms paint time)
+- Test coverage increased to 28 tests for map widget
+
 ## [0.13.0] - 2025-01-23
 
 ### Added

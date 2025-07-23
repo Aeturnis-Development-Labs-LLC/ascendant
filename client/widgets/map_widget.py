@@ -412,8 +412,9 @@ class MapWidget(QWidget):
         scale = self._calculate_minimap_scale()
         minimap_rect = self._get_minimap_rect()
 
-        x = int(minimap_rect.x() + self.player_pos[0] * scale)
-        y = int(minimap_rect.y() + self.player_pos[1] * scale)
+        # Center the player position in the tile
+        x = int(minimap_rect.x() + (self.player_pos[0] + 0.5) * scale)
+        y = int(minimap_rect.y() + (self.player_pos[1] + 0.5) * scale)
 
         return QPoint(x, y)
 
@@ -449,39 +450,74 @@ class MapWidget(QWidget):
         minimap_rect = self._get_minimap_rect()
         scale = self._calculate_minimap_scale()
 
+        # Save painter state
+        painter.save()
+        
+        # Clip to minimap area to prevent overflow
+        painter.setClipRect(minimap_rect)
+
         # Draw minimap background
         painter.fillRect(minimap_rect, QColor(0, 0, 0, 200))  # Semi-transparent black  # noqa: E501
 
-        # Draw minimap border
-        painter.setPen(QColor(100, 100, 100))
-        painter.drawRect(minimap_rect)
-
-        # Draw floor tiles on minimap
+        # Calculate actual floor area on minimap
+        floor_width = int(self.floor.width * scale)
+        floor_height = int(self.floor.height * scale)
+        floor_rect = QRect(minimap_rect.x(), minimap_rect.y(), floor_width, floor_height)
+        
+        # Fill entire floor area with floor color (no gaps)
+        painter.fillRect(floor_rect, QColor(30, 30, 30))
+        
+        # Draw walls as continuous blocks where possible
+        painter.setPen(Qt.PenStyle.NoPen)
+        wall_brush = QBrush(QColor(100, 100, 100))
+        painter.setBrush(wall_brush)
+        
+        # Draw each wall tile
         for y in range(self.floor.height):
             for x in range(self.floor.width):
                 tile = self.floor.get_tile(x, y)
-                if tile:
-                    # Calculate position on minimap
-                    mini_x = int(minimap_rect.x() + x * scale)
-                    mini_y = int(minimap_rect.y() + y * scale)
-                    mini_size = max(1, int(scale))
-
-                    # Choose color based on tile type
-                    if tile.tile_type == TileType.WALL:
-                        color = QColor(150, 150, 150)
-                    else:
-                        color = QColor(50, 50, 50)
-
-                    painter.fillRect(mini_x, mini_y, mini_size, mini_size, color)  # noqa: E501
+                if tile and tile.tile_type == TileType.WALL:
+                    # Calculate position on minimap with proper rounding
+                    mini_x = minimap_rect.x() + x * scale
+                    mini_y = minimap_rect.y() + y * scale
+                    mini_w = scale
+                    mini_h = scale
+                    
+                    # Ensure we cover the full pixel by rounding up
+                    rect = QRect(
+                        int(mini_x),
+                        int(mini_y),
+                        int(mini_x + mini_w) - int(mini_x) + 1,
+                        int(mini_y + mini_h) - int(mini_y) + 1
+                    )
+                    painter.drawRect(rect)
+        
+        # Restore painter state
+        painter.restore()
+        
+        # Draw minimap border (outside the clip)
+        painter.setPen(QColor(150, 150, 150))
+        painter.setBrush(Qt.BrushStyle.NoBrush)
+        painter.drawRect(minimap_rect)
 
         # Draw viewport rectangle
         viewport_rect = self._viewport_rect_on_minimap()
-        painter.setPen(QColor(255, 255, 0))  # Yellow
+        painter.setPen(QColor(255, 255, 0, 200))  # Yellow with transparency
+        painter.setBrush(QBrush(QColor(255, 255, 0, 50)))  # Semi-transparent fill
         painter.drawRect(viewport_rect)
 
         # Draw player position
         if self.player_pos:
             player_point = self._player_pos_on_minimap()
+            # Draw player as a small dot, not scaled with zoom
             painter.setBrush(QBrush(self.colors["player"]))
             painter.setPen(Qt.PenStyle.NoPen)
-            painter.drawEllipse(player_point, 2, 2)
+            # Use fixed size for player dot
+            player_size = 3
+            player_rect = QRect(
+                player_point.x() - player_size // 2,
+                player_point.y() - player_size // 2,
+                player_size,
+                player_size
+            )
+            painter.drawEllipse(player_rect)
