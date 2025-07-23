@@ -479,7 +479,7 @@ class Floor:
 
     def mark_as_seen(self, x: int, y: int) -> None:
         """Mark a tile as seen for fog of war.
-        
+
         Args:
             x: X coordinate
             y: Y coordinate
@@ -490,11 +490,11 @@ class Floor:
 
     def is_seen(self, x: int, y: int) -> bool:
         """Check if a tile has been seen before.
-        
+
         Args:
             x: X coordinate
             y: Y coordinate
-            
+
         Returns:
             True if tile has been seen
         """

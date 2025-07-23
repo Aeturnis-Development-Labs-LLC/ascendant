@@ -97,7 +97,9 @@ class TestASCIIRenderer:
 
         # Render with player near stairs (not on them)
         player_pos = (stairs_up_pos[0] + 1, stairs_up_pos[1])
-        result = ASCIIRenderer.render_static(floor, player_pos, vision_radius=50)  # Large radius to see both
+        result = ASCIIRenderer.render_static(
+            floor, player_pos, vision_radius=50
+        )  # Large radius to see both
 
         # Stairs should be visible
         assert "^" in result  # Stairs up
@@ -260,7 +262,7 @@ class TestChestGeneration:
 
         # Clear any existing chests from generate()
         floor.chests = {}
-        
+
         # Place chests
         floor.place_chests(count=3)
 
