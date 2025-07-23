@@ -31,8 +31,14 @@ class TestDirection:
     def test_all_directions_exist(self):
         """Test that all required directions are defined."""
         expected_directions = {
-            "NORTH", "SOUTH", "EAST", "WEST",
-            "NORTHEAST", "NORTHWEST", "SOUTHEAST", "SOUTHWEST"
+            "NORTH",
+            "SOUTH",
+            "EAST",
+            "WEST",
+            "NORTHEAST",
+            "NORTHWEST",
+            "SOUTHEAST",
+            "SOUTHWEST",
         }
         actual_directions = {direction.name for direction in Direction}
         assert actual_directions == expected_directions
