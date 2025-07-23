@@ -4,11 +4,9 @@ Generated with AI assistance (Claude Opus 4) - 2025-07-23
 Part of Phase 4.1 Monster Implementation
 """
 
-from unittest.mock import MagicMock
-
 import pytest
 
-from src.enums import EntityType, TileType
+from src.enums import EntityType
 from src.models.monster import AIBehavior, Monster
 
 

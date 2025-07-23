@@ -6,8 +6,6 @@ Part of Phase 4.1 Monster Implementation
 
 from unittest.mock import MagicMock
 
-import pytest
-
 from src.models.character import Character
 from src.models.trap import Trap, TrapType
 
