@@ -4,11 +4,12 @@ Generated with AI assistance (Claude Opus 4) - 2025-07-23
 Part of Phase 4.1 Monster Implementation
 """
 
-import pytest
 from unittest.mock import MagicMock
 
-from src.models.trap import Trap, TrapType
+import pytest
+
 from src.models.character import Character
+from src.models.trap import Trap, TrapType
 
 
 class TestTrap:

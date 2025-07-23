@@ -4,7 +4,7 @@ Generated with AI assistance (Claude Opus 4) - 2025-07-23
 Modified for Phase 4.1 Monster Implementation
 """
 
-from typing import Tuple, Dict
+from typing import Dict, Tuple
 
 from src.enums import ActionType, Direction, EntityType, TileType
 from src.models.floor import Floor

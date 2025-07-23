@@ -5,11 +5,11 @@ Part of Phase 4.1 Monster Implementation
 """
 
 import random
-from typing import List, Dict, Optional, Tuple, TypedDict
+from typing import Dict, List, Optional, Tuple, TypedDict
 
-from src.models.monster import Monster, AIBehavior
-from src.models.floor import Floor
 from src.enums import TileType
+from src.models.floor import Floor
+from src.models.monster import AIBehavior, Monster
 
 
 class MonsterStats(TypedDict):
