@@ -1,27 +1,29 @@
 # Project Capsule: Ascendant - The Eternal Spire
 
-**Version**: 0.11.0  
-**Last Updated**: 2025-01-22  
-**Status**: Alpha - KISS Refactoring Complete
+**Version**: 0.14.0  
+**Last Updated**: 2025-07-23  
+**Status**: Alpha - Basic Client UI Complete
 
 ## Executive Summary
 
-Ascendant: The Eternal Spire is a roguelike dungeon crawler focused on ascending an infinite tower. Following a KISS (Keep It Simple, Stupid) refactoring, the codebase has been reduced by 30% while maintaining all functionality and improving maintainability.
+Ascendant: The Eternal Spire is a roguelike dungeon crawler focused on ascending an infinite tower. The project now features a complete PyQt6-based client with map display, zoom/minimap functionality, and comprehensive information panels for character status, inventory, and game messages.
 
 ## Current State
 
 ### Codebase Statistics
-- **Total Lines**: ~2,400 (reduced from 3,465)
-- **Test Coverage**: 93.01%
-- **Tests**: 265 (all passing)
+- **Total Lines**: ~4,200 (including new UI components)
+- **Test Coverage**: 92.56%
+- **Tests**: 360 (all passing)
 - **Python Version**: 3.11+
+- **UI Framework**: PyQt6
 
-### Recent Changes (v0.11.0)
-- Removed Entity abstract base class inheritance
-- Converted all static classes to simple functions
-- Consolidated color system from 4 files to 2
-- Archived premature features (soul system)
-- Removed unused implementation files
+### Recent Changes (v0.14.0)
+- Implemented complete PyQt6 client with three-panel layout
+- Added MapWidget with zoom (0.5x-3.0x) and minimap overlay
+- Created CharacterPanel with HP/stamina bars, stats, and action slots
+- Built InfoPanel with tabs for inventory, combat log, and statistics
+- Developed StatusBar with priority-based messaging system
+- Integrated all panels with real-time synchronization
 
 ## Architecture Overview
 
@@ -52,7 +54,14 @@ Ascendant: The Eternal Spire is a roguelike dungeon crawler focused on ascending
 - **Color System**: RGB/ANSI colors with accessibility features
 
 #### 4. Input (`src/input/`)
-- **Keyboard Handler**: WASD movement input (orphaned - not integrated)
+- **Keyboard Handler**: WASD movement input (integrated with MainWindow)
+
+#### 5. Client UI (`client/`)
+- **MainWindow**: Three-panel layout with menu system
+- **MapWidget**: Tile-based map display with zoom and minimap
+- **CharacterPanel**: Character info, HP/stamina, stats, buffs/debuffs
+- **InfoPanel**: Tabbed interface for inventory, combat log, statistics
+- **StatusBar**: Priority-based message system with auto-clear
 
 ### Implementation Status
 
@@ -66,6 +75,11 @@ Ascendant: The Eternal Spire is a roguelike dungeon crawler focused on ascending
 - Stamina system with action costs
 - World map with terrain types
 - Color system with accessibility
+- PyQt6 client with three-panel layout
+- Map display with zoom and minimap
+- Character information panel
+- Tabbed info panel (inventory, combat log, stats)
+- Priority-based status messages
 
 #### Partially Implemented 🟡
 - Item system (base class only)
@@ -74,12 +88,12 @@ Ascendant: The Eternal Spire is a roguelike dungeon crawler focused on ascending
 - Fast travel (system complete, not integrated)
 
 #### Not Integrated ❌
-- Main game loop
-- Keyboard input handling
+- Main game loop (UI exists but no game logic)
 - Save/load system
 - Combat system
-- Inventory management
-- UI/menu system
+- Inventory management (UI exists but no items)
+- NPCs and dialogue
+- Sound system
 
 ## File Organization
 
@@ -89,8 +103,15 @@ ascendant/
 │   ├── models/            # Data models
 │   ├── game/              # Game systems
 │   ├── renderers/         # Display systems
-│   └── input/             # Input handling (orphaned)
-├── tests/                 # Test suite (265 tests)
+│   └── input/             # Input handling
+├── client/                # PyQt6 UI components
+│   ├── widgets/           # Custom widgets
+│   │   ├── map_widget.py
+│   │   ├── character_panel.py
+│   │   ├── info_panel.py
+│   │   └── status_bar.py
+│   └── main_window.py    # Main application window
+├── tests/                 # Test suite (360 tests)
 ├── contracts/             # UTF behavioral contracts
 ├── archived/              # KISS-removed code
 │   └── premature_features/  # Soul system
@@ -100,10 +121,10 @@ ascendant/
 ## Known Issues & Debt
 
 ### Technical Debt
-1. **No Main Game Loop**: `__main__.py` only prints version
-2. **Orphaned Systems**: Many game systems only used in tests
-3. **Input Not Connected**: Keyboard handler exists but unused
-4. **No State Management**: No save/load or game state tracking
+1. **No Game Logic Integration**: UI exists but game systems not connected
+2. **Mock Data**: Demo uses hardcoded data instead of real game state
+3. **No State Management**: No save/load or game state tracking
+4. **Limited Panel Interactions**: Panels display but don't affect gameplay
 
 ### Architectural Decisions
 - **No Entity Inheritance**: Characters directly implement properties
@@ -113,9 +134,9 @@ ascendant/
 ## Next Steps
 
 ### High Priority
-1. Implement main game loop connecting all systems
-2. Integrate keyboard input with movement system
-3. Create basic UI/menu system
+1. Integrate game logic with UI (connect movement, stamina, floor systems)
+2. Implement game state management
+3. Create item system and connect to inventory UI
 4. Implement save/load functionality
 
 ### Medium Priority
@@ -151,6 +172,10 @@ ascendant/
 - Save/load: <500ms
 
 ## Version History
+- v0.14.0: Information panels (character, info tabs, status bar)
+- v0.13.1: Map zoom and minimap overlay
+- v0.13.0: Map display widget implementation
+- v0.12.0: PyQt6 client with three-panel layout
 - v0.11.0: KISS refactoring (-30% code)
 - v0.10.0: Color system implementation
 - v0.9.0: Safe Haven & special locations

@@ -65,6 +65,14 @@ class Room:
             return False
         return True
 
+    def center(self) -> Tuple[int, int]:
+        """Get the center point of the room."""
+        return (self.x + self.width // 2, self.y + self.height // 2)
+        
+    def contains_point(self, x: int, y: int) -> bool:
+        """Check if a point is inside this room."""
+        return self.x <= x <= self.x2 and self.y <= y <= self.y2
+
     def __repr__(self) -> str:
         """Return string representation of the room."""
         return f"Room({self.x}, {self.y}, {self.width}x{self.height})"
@@ -85,13 +93,22 @@ class Floor:
     width = FLOOR_WIDTH
     height = FLOOR_HEIGHT
 
-    def __init__(self, seed: int):
-        """Initialize a new floor with the given seed.
+    def __init__(self, seed: Optional[int] = None, width: Optional[int] = None, 
+                 height: Optional[int] = None, level: int = 1):
+        """Initialize a new floor with the given parameters.
 
         Args:
-            seed: Random seed for reproducible generation
+            seed: Random seed for reproducible generation (optional)
+            width: Floor width (uses FLOOR_WIDTH if not specified)
+            height: Floor height (uses FLOOR_HEIGHT if not specified)
+            level: Floor level number (default 1)
         """
+        if seed is None:
+            seed = random.randint(0, 999999)
         self.seed = seed
+        self.level = level
+        self.width = width or self.FLOOR_WIDTH
+        self.height = height or self.FLOOR_HEIGHT
         self.tiles: Dict[Tuple[int, int], Tile] = {}
         self.rooms: List[Room] = []
         self._random = random.Random(seed)
@@ -99,8 +116,8 @@ class Floor:
     def generate(self) -> None:
         """Generate the floor layout with rooms."""
         # Initialize all tiles as walls
-        for y in range(self.FLOOR_HEIGHT):
-            for x in range(self.FLOOR_WIDTH):
+        for y in range(self.height):
+            for x in range(self.width):
                 self.tiles[(x, y)] = Tile(x, y, TileType.WALL)
 
         # Generate rooms
@@ -124,8 +141,8 @@ class Floor:
             height = self._random.randint(self.MIN_ROOM_SIZE, self.MAX_ROOM_SIZE)
 
             # Generate random position (accounting for edge buffer)
-            max_x = self.FLOOR_WIDTH - width - self.EDGE_BUFFER
-            max_y = self.FLOOR_HEIGHT - height - self.EDGE_BUFFER
+            max_x = self.width - width - self.EDGE_BUFFER
+            max_y = self.height - height - self.EDGE_BUFFER
 
             if max_x <= self.EDGE_BUFFER or max_y <= self.EDGE_BUFFER:
                 continue
