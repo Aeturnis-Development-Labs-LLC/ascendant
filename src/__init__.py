@@ -1,6 +1,6 @@
 """Ascendant: The Eternal Spire - A roguelike dungeon crawler."""
 
-__version__ = "0.16.0"
+__version__ = "0.17.0"
 __author__ = "Aeturnis Development Labs LLC"
 __email__ = "projects@aeturnis.dev"
 
@@ -22,3 +22,4 @@ __email__ = "projects@aeturnis.dev"
 # 0.14.0 - Information panels (character panel, info panel with tabs, status bar)
 # 0.15.0 - Monster implementation (Monster, Trap, MonsterSpawner, Entity base class)
 # 0.16.0 - Combat system (CombatSystem, DeathHandler, CombatLog, LootSystem, TrapHandler)
+# 0.17.0 - Player combat integration (Abilities, cooldowns, improved dungeon generation, UI consistency)

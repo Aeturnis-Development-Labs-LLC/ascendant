@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2025-07-23
+
+### Added
+- Player Combat Integration (Phase 4.3)
+  - Ability system with cooldown management
+    * Ability model with stamina costs and damage multipliers
+    * Cooldown tracking per ability
+    * UTF contract GAME-COMBAT-005 compliance
+  - Character combat extensions
+    * attack_target() method for basic and ability attacks
+    * use_ability() method with damage calculations
+    * tick_cooldowns() for turn-based cooldown management
+    * Abilities dictionary and cooldown tracking
+  - Default abilities set
+    * Power Strike (2x damage, 3 turn cooldown)
+    * Quick Attack (0.75x damage, no cooldown)
+    * Heavy Slam (3x damage, 5 turn cooldown)
+    * Precise Strike (1.5x damage, 2 turn cooldown)
+    * Defensive Strike (1x damage, 1 turn cooldown)
+- Dungeon Generation Improvements
+  - Increased floor size from 20x20 to 50x50
+  - Increased room count from 5-10 to 8-12
+  - Larger room sizes from 3x3-8x8 to 4x4-10x10
+  - Added corridor generation between rooms
+  - Added stairs placement in different rooms
+  - Added get_random_walkable_position() method
+- UI Consistency Framework
+  - GameStateManager for centralized UI updates
+  - Type-safe UI accessor to prevent AttributeErrors
+  - Widget interface documentation
+  - Widget interface validation tests
+
+### Changed
+- Floor generation now calls connect_rooms() and place_stairs()
+- is_valid_position() now uses dynamic width/height
+- Floor tests updated for new generation parameters
+
+### Fixed
+- Disconnected rooms in dungeon generation
+- UI attribute naming inconsistencies
+
 ## [0.16.0] - 2025-07-23
 
 ### Added
