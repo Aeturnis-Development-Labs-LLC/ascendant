@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0] - 2025-07-23
+
+### Added
+- Information Panels Implementation (Phase 3.3)
+  - CharacterPanel widget with comprehensive character display
+    * HP and stamina bars with color-coded health status
+    * Character stats display (STR, DEX, INT, VIT)
+    * Buffs and debuffs lists
+    * Mini-map widget (10x10 grid centered on player)
+    * Quick action slots (1-9) with signal emission
+  - InfoPanel widget with tabbed interface
+    * Inventory tab with 5x8 grid (40 slots)
+    * Combat log tab with auto-scrolling and 500-line limit
+    * Statistics tab with categorized game stats
+    * Floor info display (always visible)
+  - StatusBar widget with priority system
+    * Three priority levels: FLAVOR < INFO < COMBAT
+    * Auto-clear functionality (5-second default)
+    * Message history tracking (50 messages)
+    * Custom color support per message type
+- Panel synchronization in MainWindow
+  - update_character() method for character data
+  - show_status_message() for status bar updates
+  - add_combat_message() for combat log
+  - update_floor_info() for floor information
+  - Signal connections for action/inventory clicks
+- Comprehensive test suite (47 new tests)
+- Demo script (demo_panels.py) showing all features
+
+### Changed
+- MainWindow now integrates all three information panels
+- Status bar now uses custom widget instead of default QStatusBar
+
+### Technical Details
+- 100% test coverage for all new widgets
+- All linting issues resolved with black formatting
+- KISS principles maintained throughout implementation
+- UTF contracts GAME-UI-003 and GAME-UI-005 fully implemented
+
 ## [0.13.1] - 2025-07-23
 
 ### Added
@@ -309,7 +348,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.13.1...v0.14.0
+[0.13.1]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.10.0...v0.11.0

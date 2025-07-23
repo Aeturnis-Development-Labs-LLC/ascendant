@@ -452,7 +452,7 @@ class MapWidget(QWidget):
 
         # Save painter state
         painter.save()
-        
+
         # Clip to minimap area to prevent overflow
         painter.setClipRect(minimap_rect)
 
@@ -463,15 +463,15 @@ class MapWidget(QWidget):
         floor_width = int(self.floor.width * scale)
         floor_height = int(self.floor.height * scale)
         floor_rect = QRect(minimap_rect.x(), minimap_rect.y(), floor_width, floor_height)
-        
+
         # Fill entire floor area with floor color (no gaps)
         painter.fillRect(floor_rect, QColor(30, 30, 30))
-        
+
         # Draw walls as continuous blocks where possible
         painter.setPen(Qt.PenStyle.NoPen)
         wall_brush = QBrush(QColor(100, 100, 100))
         painter.setBrush(wall_brush)
-        
+
         # Draw each wall tile
         for y in range(self.floor.height):
             for x in range(self.floor.width):
@@ -482,19 +482,19 @@ class MapWidget(QWidget):
                     mini_y = minimap_rect.y() + y * scale
                     mini_w = scale
                     mini_h = scale
-                    
+
                     # Ensure we cover the full pixel by rounding up
                     rect = QRect(
                         int(mini_x),
                         int(mini_y),
                         int(mini_x + mini_w) - int(mini_x) + 1,
-                        int(mini_y + mini_h) - int(mini_y) + 1
+                        int(mini_y + mini_h) - int(mini_y) + 1,
                     )
                     painter.drawRect(rect)
-        
+
         # Restore painter state
         painter.restore()
-        
+
         # Draw minimap border (outside the clip)
         painter.setPen(QColor(150, 150, 150))
         painter.setBrush(Qt.BrushStyle.NoBrush)
@@ -518,6 +518,6 @@ class MapWidget(QWidget):
                 player_point.x() - player_size // 2,
                 player_point.y() - player_size // 2,
                 player_size,
-                player_size
+                player_size,
             )
             painter.drawEllipse(player_rect)

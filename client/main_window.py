@@ -20,18 +20,27 @@ except ImportError:
 
 # Import our custom widgets
 if TYPE_CHECKING:
+    from client.widgets.character_panel import CharacterPanel
+    from client.widgets.info_panel import InfoPanel
     from client.widgets.map_widget import MapWidget
+    from client.widgets.status_bar import StatusBar
 
 try:
-    from client.widgets.map_widget import MapWidget  # noqa: F811
-    HAS_MAP_WIDGET = True
+    from client.widgets.character_panel import CharacterPanel
+    from client.widgets.info_panel import InfoPanel
+    from client.widgets.map_widget import MapWidget
+    from client.widgets.status_bar import MessagePriority, StatusBar
+    HAS_WIDGETS = True
 except ImportError:
     try:
         # Try relative import if absolute fails
-        from .widgets.map_widget import MapWidget  # noqa: F811
-        HAS_MAP_WIDGET = True
+        from .widgets.character_panel import CharacterPanel
+        from .widgets.info_panel import InfoPanel
+        from .widgets.map_widget import MapWidget
+        from .widgets.status_bar import MessagePriority, StatusBar
+        HAS_WIDGETS = True
     except ImportError:
-        HAS_MAP_WIDGET = False
+        HAS_WIDGETS = False
 
 
 class MainWindow(QMainWindow):
@@ -47,6 +56,9 @@ class MainWindow(QMainWindow):
         # Initialize attributes FIRST before creating panels
         self.keyboard_handler: Optional[Callable[[QKeyEvent], None]] = None
         self.map_widget: Optional["MapWidget"] = None
+        self.character_panel: Optional["CharacterPanel"] = None
+        self.info_panel: Optional["InfoPanel"] = None
+        self.game_status_bar: Optional["StatusBar"] = None
 
         # Create central widget and layout
         central_widget = QWidget()
@@ -56,9 +68,9 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(5, 5, 5, 5)
 
         # Create three panels with fixed ratios
-        self.left_panel = self._create_panel("Left Panel", "20%")
+        self.left_panel = self._create_left_panel()
         self.center_panel = self._create_center_panel()
-        self.right_panel = self._create_panel("Right Panel", "20%")
+        self.right_panel = self._create_right_panel()
 
         # Add panels to layout with stretch factors (20-60-20 ratio)
         layout.addWidget(self.left_panel, 20)
@@ -70,6 +82,32 @@ class MainWindow(QMainWindow):
 
         # Create status bar with version
         self._create_status_bar()
+
+    def _create_left_panel(self) -> QWidget:
+        """Create the left panel with character information.
+        
+        Returns:
+            Left panel widget
+        """
+        if HAS_WIDGETS:
+            self.character_panel = CharacterPanel()
+            return self.character_panel
+        else:
+            # Fallback to placeholder
+            return self._create_panel("Left Panel", "20%")
+    
+    def _create_right_panel(self) -> QWidget:
+        """Create the right panel with info tabs.
+        
+        Returns:
+            Right panel widget
+        """
+        if HAS_WIDGETS:
+            self.info_panel = InfoPanel()
+            return self.info_panel
+        else:
+            # Fallback to placeholder
+            return self._create_panel("Right Panel", "20%")
 
     def _create_panel(self, text: str, size: str) -> QWidget:
         """Create a panel widget with placeholder content.
@@ -113,7 +151,7 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(0, 0, 0, 0)
 
         # Create map widget if available
-        if HAS_MAP_WIDGET:
+        if HAS_WIDGETS:
             self.map_widget = MapWidget()
             layout.addWidget(self.map_widget)
         else:
@@ -219,13 +257,22 @@ class MainWindow(QMainWindow):
             "QStatusBar { background-color: #1e1e1e; color: #ffffff; }"
         )  # noqa: E501
 
+        # Add our custom game status bar widget
+        if HAS_WIDGETS:
+            self.game_status_bar = StatusBar()
+            self.game_status_bar.setMinimumWidth(400)
+            status_bar.addWidget(self.game_status_bar, 1)
+            
+            # Show initial message
+            self.game_status_bar.show_message("Ready", MessagePriority.INFO)
+        else:
+            # Fallback to standard message
+            status_bar.showMessage("Ready", 5000)
+
         # Add version label on the right
         version_label = QLabel(f"v{__version__}")
         version_label.setStyleSheet("QLabel { color: #888888; padding: 0 10px; }")  # noqa: E501
         status_bar.addPermanentWidget(version_label)
-
-        # Set initial message
-        status_bar.showMessage("Ready", 5000)
 
     def keyPressEvent(self, event: Optional[QKeyEvent]) -> None:
         """Handle keyboard events.
@@ -331,3 +378,97 @@ class MainWindow(QMainWindow):
         """
         if self.map_widget:
             self.map_widget.set_player_position(x, y)
+        
+        # Update minimap in character panel
+        if self.character_panel and hasattr(self.character_panel, 'update_minimap'):
+            floor = self.map_widget.floor if self.map_widget else None
+            if floor:
+                self.character_panel.update_minimap(floor, (x, y))
+    
+    # Panel synchronization methods
+    def update_character(self, character) -> None:
+        """Update character information in the character panel.
+        
+        Args:
+            character: Character object to display
+        """
+        if self.character_panel:
+            self.character_panel.update_character(character)
+    
+    def show_status_message(
+        self, 
+        text: str, 
+        priority: Optional["MessagePriority"] = None,
+        color: Optional[str] = None,
+        timeout: int = 5000
+    ) -> None:
+        """Show a message in the status bar.
+        
+        Args:
+            text: Message text
+            priority: Message priority (defaults to INFO)
+            color: Optional custom color
+            timeout: Auto-clear timeout in milliseconds
+        """
+        if self.game_status_bar and HAS_WIDGETS:
+            # Set default priority if not provided
+            actual_priority = priority if priority is not None else MessagePriority.INFO
+            self.game_status_bar.show_message(text, actual_priority, color, timeout)
+        else:
+            # Fallback to standard status bar
+            status_bar = self.statusBar()
+            if status_bar:
+                status_bar.showMessage(text, timeout)
+    
+    def add_combat_message(self, message: str) -> None:
+        """Add a message to the combat log.
+        
+        Args:
+            message: Combat message to add
+        """
+        if self.info_panel:
+            self.info_panel.add_combat_message(message)
+        
+        # Also show in status bar with combat priority
+        if HAS_WIDGETS:
+            self.show_status_message(message, MessagePriority.COMBAT)
+    
+    def update_floor_info(self, floor_number: int, floor_name: str, special_status: str = "") -> None:
+        """Update the floor information display.
+        
+        Args:
+            floor_number: Current floor number
+            floor_name: Name of the floor
+            special_status: Optional special status (e.g., "BOSS")
+        """
+        if self.info_panel:
+            self.info_panel.update_floor_info(floor_number, floor_name, special_status)
+    
+    def update_statistic(self, name: str, value, is_percentage: bool = False) -> None:
+        """Update a game statistic.
+        
+        Args:
+            name: Statistic name
+            value: Statistic value
+            is_percentage: Whether to display as percentage
+        """
+        if self.info_panel:
+            self.info_panel.update_statistic(name, value, is_percentage)
+    
+    def connect_action_slots(self, handler: Callable[[int], None]) -> None:
+        """Connect handler to action slot clicks.
+        
+        Args:
+            handler: Function to handle action slot clicks
+        """
+        if self.character_panel:
+            self.character_panel.action_slot_clicked.connect(handler)
+    
+    def connect_inventory_slots(self, handler: Callable[[int], None]) -> None:
+        """Connect handler to inventory slot clicks.
+        
+        Args:
+            handler: Function to handle inventory slot clicks
+        """
+        if self.info_panel:
+            self.info_panel.inventory_slot_clicked.connect(handler)
