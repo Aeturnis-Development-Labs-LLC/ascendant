@@ -8,9 +8,6 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMainWindow,
-    QMenu,
-    QMenuBar,
-    QStatusBar,
     QWidget,
 )
 
@@ -68,7 +65,9 @@ class MainWindow(QMainWindow):
             Panel widget
         """
         panel = QWidget()
-        panel.setStyleSheet("QWidget { background-color: #2b2b2b; border: 1px solid #555; }")
+        panel.setStyleSheet(
+            "QWidget { background-color: #2b2b2b; border: 1px solid #555; }"
+        )
 
         # Add placeholder label
         label = QLabel(f"{text}\n({size})")
@@ -146,13 +145,17 @@ class MainWindow(QMainWindow):
         status_bar = self.statusBar()
         if not status_bar:
             return
-        status_bar.setStyleSheet("QStatusBar { background-color: #1e1e1e; color: #ffffff; }")
-        
+        status_bar.setStyleSheet(
+            "QStatusBar { background-color: #1e1e1e; color: #ffffff; }"
+        )
+
         # Add version label on the right
         version_label = QLabel(f"v{__version__}")
-        version_label.setStyleSheet("QLabel { color: #888888; padding: 0 10px; }")
+        version_label.setStyleSheet(
+            "QLabel { color: #888888; padding: 0 10px; }"
+        )
         status_bar.addPermanentWidget(version_label)
-        
+
         # Set initial message
         status_bar.showMessage("Ready", 5000)
 
@@ -170,13 +173,18 @@ class MainWindow(QMainWindow):
         else:
             # Default behavior - prevent propagation of game keys
             key = event.key()
-            if key in (Qt.Key.Key_W, Qt.Key.Key_A, Qt.Key.Key_S, Qt.Key.Key_D,
-                      Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_Left, Qt.Key.Key_Right):
+            if key in (
+                    Qt.Key.Key_W, Qt.Key.Key_A, Qt.Key.Key_S, Qt.Key.Key_D,
+                    Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_Left,
+                    Qt.Key.Key_Right
+            ):
                 event.accept()
             else:
                 super().keyPressEvent(event)
 
-    def set_keyboard_handler(self, handler: Callable[[QKeyEvent], None]) -> None:
+    def set_keyboard_handler(
+        self, handler: Callable[[QKeyEvent], None]
+    ) -> None:
         """Set the keyboard event handler.
 
         Args:
