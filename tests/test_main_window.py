@@ -8,7 +8,6 @@ import pytest
 try:
     from PyQt6.QtCore import Qt
     from PyQt6.QtGui import QKeyEvent
-    from PyQt6.QtTest import QTest
     from PyQt6.QtWidgets import QApplication, QHBoxLayout, QWidget
 
     from client.main_window import MainWindow
