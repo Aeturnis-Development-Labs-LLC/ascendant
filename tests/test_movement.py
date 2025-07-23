@@ -78,18 +78,18 @@ class TestMovementSystem:
                 walkable_positions.append((x, y))
                 if len(walkable_positions) >= 3:
                     break
-        
+
         # Test valid walkable positions
         for pos in walkable_positions:
             assert validate_position(pos, floor) is True
-        
+
         # Find a wall position
         wall_pos = None
         for (x, y), tile in floor.tiles.items():
             if tile.tile_type == TileType.WALL:
                 wall_pos = (x, y)
                 break
-        
+
         # Test wall position is not valid
         if wall_pos:
             assert validate_position(wall_pos, floor) is False
