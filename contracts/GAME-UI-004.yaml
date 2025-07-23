@@ -1,0 +1,47 @@
+contract_id: GAME-UI-004
+name: "Menu System"
+description: "Handle menu bar functionality for game actions"
+version: "1.0.0"
+dependencies: ["GAME-UI-001"]
+
+behavioral_specifications:
+  menu_structure:
+    - The window SHALL have a menu bar
+    - The menu bar SHALL contain File, Options, and Help menus
+    
+  file_menu:
+    - File menu SHALL contain "New Game" action with Ctrl+N shortcut
+    - File menu SHALL contain "Save" action with Ctrl+S shortcut
+    - File menu SHALL contain "Load" action with Ctrl+L shortcut
+    - File menu SHALL contain a separator
+    - File menu SHALL contain "Quit" action with Ctrl+Q shortcut
+    
+  options_menu:
+    - Options menu SHALL contain "Settings" action
+    - Options menu SHALL contain "Controls" action
+    
+  help_menu:
+    - Help menu SHALL contain "About" action
+    - Help menu SHALL contain "How to Play" action with F1 shortcut
+    
+  functionality:
+    - All menu items SHALL be functional
+    - Menu actions SHALL trigger appropriate handlers
+    - Keyboard shortcuts SHALL work as specified
+
+test_cases:
+  - test_menu_bar_exists:
+      description: "Verify menu bar is present"
+      expected: "Menu bar is visible"
+      
+  - test_file_menu_structure:
+      description: "Verify File menu contains all required items"
+      expected: "New Game, Save, Load, separator, Quit present"
+      
+  - test_keyboard_shortcuts:
+      description: "Verify keyboard shortcuts are assigned"
+      expected: "Ctrl+N, Ctrl+S, Ctrl+L, Ctrl+Q, F1 work correctly"
+      
+  - test_menu_actions_connected:
+      description: "Verify menu actions trigger handlers"
+      expected: "Each menu item triggers its handler when clicked"

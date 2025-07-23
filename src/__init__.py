@@ -1,6 +1,6 @@
 """Ascendant: The Eternal Spire - A roguelike dungeon crawler."""
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 __author__ = "Aeturnis Development Labs LLC"
 __email__ = "projects@aeturnis.dev"
 
@@ -16,3 +16,4 @@ __email__ = "projects@aeturnis.dev"
 # 0.9.0 - Safe Haven & special locations (interior, Lost Souls, escape mechanics)
 # 0.10.0 - Color system implementation (ColorScheme, effects, accessibility features)
 # 0.11.0 - KISS refactor (removed Entity inheritance, converted static classes to functions)
+# 0.12.0 - PyQt6 client implementation (main window, menu system, three-panel layout)

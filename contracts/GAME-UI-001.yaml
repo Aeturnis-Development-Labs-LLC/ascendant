@@ -1,0 +1,37 @@
+contract_id: GAME-UI-001
+name: "Window Layout"
+description: "Create three-panel layout for the main game window"
+version: "1.0.0"
+dependencies: []
+
+behavioral_specifications:
+  window_properties:
+    - The main window SHALL have a default size of 1280x720 pixels
+    - The main window SHALL have a minimum size of 1024x600 pixels
+    - The window SHALL be resizable
+    - The window SHALL have title "Ascendant: The Eternal Spire"
+    
+  panel_layout:
+    - The window SHALL contain three panels in a horizontal layout
+    - The left panel SHALL occupy 20% of the window width
+    - The center panel SHALL occupy 60% of the window width
+    - The right panel SHALL occupy 20% of the window width
+    - Panel ratios SHALL be maintained during window resize
+    - The three panel widths SHALL sum to 100%
+
+test_cases:
+  - test_window_default_size:
+      description: "Verify window starts with correct default size"
+      expected: "Window size is 1280x720"
+      
+  - test_window_minimum_size:
+      description: "Verify window has correct minimum size"
+      expected: "Window minimum size is 1024x600"
+      
+  - test_three_panel_layout:
+      description: "Verify window has three panels"
+      expected: "Window contains left, center, and right panels"
+      
+  - test_panel_ratios:
+      description: "Verify panel widths are 20%-60%-20%"
+      expected: "Panels maintain correct ratio on resize"

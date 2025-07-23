@@ -68,9 +68,9 @@ def test_main_prints_game_title():
     """Test that running main prints the game title."""
     base_path = Path(__file__).parent.parent
 
-    # Run the module and capture output
+    # Run the module in console mode and capture output
     result = subprocess.run(
-        [sys.executable, "-m", "src"],
+        [sys.executable, "-m", "src", "--console"],
         cwd=str(base_path),
         capture_output=True,
         text=True,
@@ -78,7 +78,7 @@ def test_main_prints_game_title():
 
     assert result.returncode == 0, f"Main module exited with code {result.returncode}"
     assert "Ascendant: The Eternal Spire" in result.stdout, "Game title not printed"
-    assert "v0.11.0" in result.stdout, "Version not displayed"
+    assert "v0.12.0" in result.stdout, "Version not displayed"
 
 
 def test_project_runs_without_errors():

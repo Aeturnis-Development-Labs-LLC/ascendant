@@ -215,7 +215,7 @@ jobs:
 
       - name: Verify package structure
         run: |
-          python -m src
+          python -m src --console
 
       - name: Check version consistency
         run: |
