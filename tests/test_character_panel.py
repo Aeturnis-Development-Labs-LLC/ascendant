@@ -1,7 +1,6 @@
 """Tests for character panel widget - UTF Contract GAME-UI-003."""
 
 import sys
-from unittest.mock import MagicMock
 
 import pytest
 
