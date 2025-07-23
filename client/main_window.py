@@ -8,8 +8,15 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QMenu,
     QMenuBar,
+    QStatusBar,
     QWidget,
 )
+
+# Import version from main package
+try:
+    from src import __version__
+except ImportError:
+    __version__ = "Unknown"
 
 
 class MainWindow(QMainWindow):
@@ -18,7 +25,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         """Initialize the main window."""
         super().__init__()
-        self.setWindowTitle("Ascendant: The Eternal Spire")
+        self.setWindowTitle(f"Ascendant: The Eternal Spire v{__version__}")
         self.setGeometry(100, 100, 1280, 720)
         self.setMinimumSize(1024, 600)
 
@@ -41,6 +48,9 @@ class MainWindow(QMainWindow):
 
         # Create menu bar
         self._create_menu_bar()
+
+        # Create status bar with version
+        self._create_status_bar()
 
         # Initialize keyboard handler (will be connected later)
         self.keyboard_handler = None
@@ -120,6 +130,19 @@ class MainWindow(QMainWindow):
         how_to_play_action.setShortcut("F1")
         how_to_play_action.triggered.connect(self._on_how_to_play)
         help_menu.addAction(how_to_play_action)
+
+    def _create_status_bar(self):
+        """Create the status bar with version information."""
+        status_bar = self.statusBar()
+        status_bar.setStyleSheet("QStatusBar { background-color: #1e1e1e; color: #ffffff; }")
+        
+        # Add version label on the right
+        version_label = QLabel(f"v{__version__}")
+        version_label.setStyleSheet("QLabel { color: #888888; padding: 0 10px; }")
+        status_bar.addPermanentWidget(version_label)
+        
+        # Set initial message
+        status_bar.showMessage("Ready", 5000)
 
     def keyPressEvent(self, event: QKeyEvent):
         """Handle keyboard events.

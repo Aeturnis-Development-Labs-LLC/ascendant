@@ -61,8 +61,9 @@ class TestMainWindowLayout:
         assert main_window.minimumHeight() == 600
 
     def test_window_title(self, main_window):
-        """Test window has correct title."""
-        assert main_window.windowTitle() == "Ascendant: The Eternal Spire"
+        """Test window has correct title with version."""
+        assert "Ascendant: The Eternal Spire" in main_window.windowTitle()
+        assert "v" in main_window.windowTitle()  # Should include version
 
     def test_three_panel_layout(self, main_window):
         """Test window has three panels with correct layout."""
@@ -91,6 +92,16 @@ class TestMainWindowLayout:
         assert isinstance(main_window.left_panel, QWidget)
         assert isinstance(main_window.center_panel, QWidget)
         assert isinstance(main_window.right_panel, QWidget)
+
+    def test_status_bar_exists(self, main_window):
+        """Test status bar exists with version."""
+        status_bar = main_window.statusBar()
+        assert status_bar is not None
+        assert status_bar.isVisible()
+        
+        # Check for version widget
+        # Status bar should have at least one permanent widget (version label)
+        assert len(status_bar.children()) > 1  # Has widgets
 
 
 class TestMenuSystem:

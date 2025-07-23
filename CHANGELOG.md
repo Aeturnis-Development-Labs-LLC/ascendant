@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2025-01-22
+
+### Added
+- PyQt6 Client Implementation (Phase 3.1)
+  - MainWindow class with three-panel layout (20%-60%-20% ratios)
+  - Menu bar with File, Options, and Help menus
+  - Keyboard event handling with customizable handler
+  - Application entry point with GUI/console mode detection
+  - UTF contracts GAME-UI-001 and GAME-UI-004
+  - Comprehensive test suite (18 tests) with PyQt6 skip handling
+
+### Changed
+- Main entry point now defaults to GUI mode
+- Console mode requires --console flag
+- Added PyQt6 to requirements.txt
+
+### Technical Details
+- Default window size: 1280x720 pixels
+- Minimum window size: 1024x600 pixels
+- Panel ratios maintained during window resize
+- All menu items have keyboard shortcuts
+- Tests skip gracefully when PyQt6 not installed
+
 ## [0.11.0] - 2025-01-22
 
 ### Changed
@@ -229,7 +252,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contract Coverage
 - GAME-CORE-001: Project Initialization ✅
 
-[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/Aeturnis-Development-Labs-LLC/ascendant/compare/v0.6.0...v0.7.0
