@@ -32,7 +32,8 @@ except ImportError:
 
 # Skip all tests if PyQt6 is not available
 pytestmark = pytest.mark.skipif(
-    not PYQT6_AVAILABLE, reason="PyQt6 not installed - install with: pip install PyQt6"
+    not PYQT6_AVAILABLE,
+    reason="PyQt6 not installed - install with: pip install PyQt6",  # noqa: E501
 )
 
 
@@ -141,8 +142,12 @@ class TestMapRendering:
         viewport_center_y = (viewport[2] + viewport[3]) // 2
 
         # Allow for edge cases where player is near map edge
-        assert abs(viewport_center_x - 5) <= map_widget.width() // (2 * map_widget.tile_size)
-        assert abs(viewport_center_y - 5) <= map_widget.height() // (2 * map_widget.tile_size)
+        assert abs(viewport_center_x - 5) <= map_widget.width() // (
+            2 * map_widget.tile_size
+        )  # noqa: E501
+        assert abs(viewport_center_y - 5) <= map_widget.height() // (
+            2 * map_widget.tile_size
+        )  # noqa: E501
 
 
 class TestGameStateConnection:
@@ -220,7 +225,7 @@ class TestVisualFeedback:
 class TestResizeHandling:
     """Test widget resize handling."""
 
-    def test_resize_event_updates_tile_size(self, map_widget, sample_floor, qapp):
+    def test_resize_event_updates_tile_size(self, map_widget, sample_floor, qapp):  # noqa: E501
         """Test resize recalculates tile size."""
         map_widget.set_floor(sample_floor)
 
@@ -256,8 +261,80 @@ class TestResizeHandling:
         viewport_center_x = (viewport[0] + viewport[1]) // 2
         viewport_center_y = (viewport[2] + viewport[3]) // 2
 
-        assert abs(viewport_center_x - 10) <= map_widget.width() // (2 * map_widget.tile_size)
-        assert abs(viewport_center_y - 10) <= map_widget.height() // (2 * map_widget.tile_size)
+        assert abs(viewport_center_x - 10) <= map_widget.width() // (
+            2 * map_widget.tile_size
+        )  # noqa: E501
+        assert abs(viewport_center_y - 10) <= map_widget.height() // (
+            2 * map_widget.tile_size
+        )  # noqa: E501
+
+
+class TestZoomFunctionality:
+    """Test zoom functionality for map exploration."""
+
+    def test_zoom_levels(self, map_widget):
+        """Test zoom level constraints."""
+        # Default zoom should be 1.0
+        assert map_widget.zoom_level == 1.0
+
+        # Test zoom in
+        map_widget.zoom_in()
+        assert map_widget.zoom_level == 1.25
+
+        # Test zoom out
+        map_widget.zoom_out()
+        map_widget.zoom_out()
+        assert map_widget.zoom_level == 0.75
+
+    def test_zoom_limits(self, map_widget):
+        """Test zoom min/max limits."""
+        # Zoom out to minimum
+        for _ in range(10):
+            map_widget.zoom_out()
+        assert map_widget.zoom_level >= 0.5  # Min zoom
+
+        # Zoom in to maximum
+        for _ in range(20):
+            map_widget.zoom_in()
+        assert map_widget.zoom_level <= 3.0  # Max zoom
+
+    def test_zoom_tile_size_update(self, map_widget, sample_floor):
+        """Test that zoom affects tile size."""
+        map_widget.set_floor(sample_floor)
+        base_tile_size = map_widget.tile_size
+
+        # Zoom in should increase tile size
+        map_widget.zoom_in()
+        assert map_widget.tile_size > base_tile_size
+
+        # Zoom out should decrease tile size
+        map_widget.zoom_out()
+        map_widget.zoom_out()
+        assert map_widget.tile_size < base_tile_size
+
+    def test_zoom_with_mouse_wheel(self, map_widget, sample_floor):
+        """Test zoom with mouse wheel events."""
+        map_widget.set_floor(sample_floor)
+        initial_zoom = map_widget.zoom_level
+
+        # Create wheel event for zoom in
+        wheel_event = MagicMock()
+        wheel_event.angleDelta.return_value.y.return_value = 120
+        wheel_event.position.return_value = QPoint(100, 100)
+
+        map_widget.wheelEvent(wheel_event)
+        assert map_widget.zoom_level > initial_zoom
+
+    def test_zoom_reset(self, map_widget):
+        """Test zoom reset functionality."""
+        # Change zoom
+        map_widget.zoom_in()
+        map_widget.zoom_in()
+        assert map_widget.zoom_level != 1.0
+
+        # Reset zoom
+        map_widget.reset_zoom()
+        assert map_widget.zoom_level == 1.0
 
 
 class TestPerformance:
@@ -300,3 +377,71 @@ class TestPerformance:
 
         # Allow for some growth but not linear with updates
         assert final_objects - initial_objects < 50
+
+
+class TestMiniMapOverlay:
+    """Test mini-map overlay functionality."""
+
+    def test_minimap_visibility_toggle(self, map_widget):
+        """Test mini-map can be toggled on/off."""
+        # Should be hidden by default
+        assert not map_widget.show_minimap
+
+        # Toggle on
+        map_widget.toggle_minimap()
+        assert map_widget.show_minimap
+
+        # Toggle off
+        map_widget.toggle_minimap()
+        assert not map_widget.show_minimap
+
+    def test_minimap_position(self, map_widget):
+        """Test mini-map position in corner."""
+        map_widget.show_minimap = True
+
+        # Get minimap rect
+        rect = map_widget._get_minimap_rect()
+
+        # Should be in top-right corner with margin
+        assert rect.x() > map_widget.width() - 200
+        assert rect.y() < 50
+        assert rect.width() == 150
+        assert rect.height() == 150
+
+    def test_minimap_scale_calculation(self, map_widget, sample_floor):
+        """Test mini-map scale calculation."""
+        map_widget.set_floor(sample_floor)
+        map_widget.show_minimap = True
+
+        scale = map_widget._calculate_minimap_scale()
+
+        # Scale should fit entire floor in minimap
+        assert scale > 0
+        assert scale * sample_floor.width <= 150
+        assert scale * sample_floor.height <= 150
+
+    def test_minimap_player_indicator(self, map_widget, sample_floor):
+        """Test player position shown on minimap."""
+        map_widget.set_floor(sample_floor)
+        map_widget.set_player_position(10, 10)
+        map_widget.show_minimap = True
+
+        # Calculate player position on minimap
+        minimap_pos = map_widget._player_pos_on_minimap()
+
+        # Should be within minimap bounds
+        minimap_rect = map_widget._get_minimap_rect()
+        assert minimap_rect.contains(minimap_pos)
+
+    def test_minimap_viewport_indicator(self, map_widget, sample_floor):
+        """Test viewport rectangle shown on minimap."""
+        map_widget.set_floor(sample_floor)
+        map_widget.set_player_position(10, 10)
+        map_widget.show_minimap = True
+
+        # Get viewport rect on minimap
+        viewport_rect = map_widget._viewport_rect_on_minimap()
+
+        # Should be within minimap bounds
+        minimap_rect = map_widget._get_minimap_rect()
+        assert minimap_rect.contains(viewport_rect)

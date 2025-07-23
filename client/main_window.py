@@ -23,7 +23,8 @@ if TYPE_CHECKING:
     from client.widgets.map_widget import MapWidget
 
 try:
-    from client.widgets.map_widget import MapWidget
+    from client.widgets.map_widget import MapWidget  # noqa: F811
+
     HAS_MAP_WIDGET = True
 except ImportError:
     HAS_MAP_WIDGET = False
@@ -64,7 +65,7 @@ class MainWindow(QMainWindow):
 
         # Initialize keyboard handler (will be connected later)
         self.keyboard_handler: Optional[Callable[[QKeyEvent], None]] = None
-        
+
         # Initialize map widget reference
         self.map_widget: Optional["MapWidget"] = None
 
@@ -81,7 +82,7 @@ class MainWindow(QMainWindow):
         panel = QWidget()
         panel.setStyleSheet(
             "QWidget { background-color: #2b2b2b; border: 1px solid #555; }"
-        )
+        )  # noqa: E501
 
         # Add placeholder label
         label = QLabel(f"{text}\n({size})")
@@ -96,19 +97,19 @@ class MainWindow(QMainWindow):
 
     def _create_center_panel(self) -> QWidget:
         """Create the center panel with map widget.
-        
+
         Returns:
             Center panel widget
         """
         panel = QWidget()
         panel.setStyleSheet(
             "QWidget { background-color: #2b2b2b; border: 1px solid #555; }"
-        )
-        
+        )  # noqa: E501
+
         # Create layout for center panel
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(0, 0, 0, 0)
-        
+
         # Create map widget if available
         if HAS_MAP_WIDGET:
             self.map_widget = MapWidget()
@@ -119,7 +120,7 @@ class MainWindow(QMainWindow):
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setStyleSheet("QLabel { color: #ffffff; font-size: 14px; }")
             layout.addWidget(label)
-            
+
         return panel
 
     def _create_menu_bar(self) -> None:
@@ -182,6 +183,31 @@ class MainWindow(QMainWindow):
         how_to_play_action.triggered.connect(self._on_how_to_play)
         help_menu.addAction(how_to_play_action)
 
+        # Add view menu for zoom and minimap
+        view_menu = menubar.addMenu("&View")
+        if view_menu:
+            zoom_in_action = QAction("Zoom &In", self)
+            zoom_in_action.setShortcut("Ctrl++")
+            zoom_in_action.triggered.connect(self._on_zoom_in)
+            view_menu.addAction(zoom_in_action)
+
+            zoom_out_action = QAction("Zoom &Out", self)
+            zoom_out_action.setShortcut("Ctrl+-")
+            zoom_out_action.triggered.connect(self._on_zoom_out)
+            view_menu.addAction(zoom_out_action)
+
+            reset_zoom_action = QAction("&Reset Zoom", self)
+            reset_zoom_action.setShortcut("Ctrl+0")
+            reset_zoom_action.triggered.connect(self._on_reset_zoom)
+            view_menu.addAction(reset_zoom_action)
+
+            view_menu.addSeparator()
+
+            minimap_action = QAction("Toggle &Minimap", self)
+            minimap_action.setShortcut("M")
+            minimap_action.triggered.connect(self._on_toggle_minimap)
+            view_menu.addAction(minimap_action)
+
     def _create_status_bar(self) -> None:
         """Create the status bar with version information."""
         status_bar = self.statusBar()
@@ -189,13 +215,11 @@ class MainWindow(QMainWindow):
             return
         status_bar.setStyleSheet(
             "QStatusBar { background-color: #1e1e1e; color: #ffffff; }"
-        )
+        )  # noqa: E501
 
         # Add version label on the right
         version_label = QLabel(f"v{__version__}")
-        version_label.setStyleSheet(
-            "QLabel { color: #888888; padding: 0 10px; }"
-        )
+        version_label.setStyleSheet("QLabel { color: #888888; padding: 0 10px; }")  # noqa: E501
         status_bar.addPermanentWidget(version_label)
 
         # Set initial message
@@ -216,17 +240,20 @@ class MainWindow(QMainWindow):
             # Default behavior - prevent propagation of game keys
             key = event.key()
             if key in (
-                    Qt.Key.Key_W, Qt.Key.Key_A, Qt.Key.Key_S, Qt.Key.Key_D,
-                    Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_Left,
-                    Qt.Key.Key_Right
+                Qt.Key.Key_W,
+                Qt.Key.Key_A,
+                Qt.Key.Key_S,
+                Qt.Key.Key_D,
+                Qt.Key.Key_Up,
+                Qt.Key.Key_Down,
+                Qt.Key.Key_Left,
+                Qt.Key.Key_Right,
             ):
                 event.accept()
             else:
                 super().keyPressEvent(event)
 
-    def set_keyboard_handler(
-        self, handler: Callable[[QKeyEvent], None]
-    ) -> None:
+    def set_keyboard_handler(self, handler: Callable[[QKeyEvent], None]) -> None:  # noqa: E501
         """Set the keyboard event handler.
 
         Args:
@@ -262,20 +289,40 @@ class MainWindow(QMainWindow):
     def _on_how_to_play(self) -> None:
         """Handle how to play action."""
         print("How to Play clicked")
-    
+
+    def _on_zoom_in(self) -> None:
+        """Handle zoom in action."""
+        if self.map_widget:
+            self.map_widget.zoom_in()
+
+    def _on_zoom_out(self) -> None:
+        """Handle zoom out action."""
+        if self.map_widget:
+            self.map_widget.zoom_out()
+
+    def _on_reset_zoom(self) -> None:
+        """Handle reset zoom action."""
+        if self.map_widget:
+            self.map_widget.reset_zoom()
+
+    def _on_toggle_minimap(self) -> None:
+        """Handle toggle minimap action."""
+        if self.map_widget:
+            self.map_widget.toggle_minimap()
+
     # Game state methods
     def set_floor(self, floor) -> None:
         """Set the floor to display in the map widget.
-        
+
         Args:
             floor: Floor object to display
         """
         if self.map_widget:
             self.map_widget.set_floor(floor)
-            
+
     def set_player_position(self, x: int, y: int) -> None:
         """Set the player position on the map.
-        
+
         Args:
             x: Player X coordinate
             y: Player Y coordinate
