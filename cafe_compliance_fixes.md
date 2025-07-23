@@ -24,11 +24,16 @@
 - [x] Fix trap placement (GAME-MAP-006)
 - [x] Fix chest placement (GAME-MAP-007)
 
-### Priority 3: API Alignment
+### Priority 3: API Alignment - Completed
 
-- [ ] Fix ASCIIRenderer vision_radius parameter (GAME-MAP-005)
-- [ ] Fix stamina system type comparison (GAME-MOVE-003)
-- [ ] Add/fix WorldMap.generate() method (GAME-WORLD-001, 002)
+- [x] Fix ASCIIRenderer vision_radius parameter (GAME-MAP-005)
+- [x] Fix stamina system type comparison (GAME-MOVE-003)
+- [x] Add/fix WorldMap.generate() method (GAME-WORLD-001, 002)
+- [x] Add width/height properties to WorldMap
+- [x] Add safe_haven property to WorldMap
+- [x] Add resolve_attack method to CombatSystem
+- [x] Fix ability cooldown tracking
+- [x] Fix ASCIIRenderer vision_radius in INTEGRATION-01
 
 ---
 
@@ -90,3 +95,55 @@
    - Added display_char and hp_max parameters
 
 **Phase 1 Result**: 100% (7/7 contracts passing)
+
+### Priority 3 Fixes - Completed
+
+1. **ASCIIRenderer vision_radius** (GAME-MAP-005)
+   - Already passing - test using fog_radius correctly
+   
+2. **Stamina system type comparison** (GAME-MOVE-003, INTEGRATION-01)
+   - Added ActionType handling to use_stamina()
+   - Re-exported ActionType from stamina_system
+   - Test result: PASS
+   
+3. **WorldMap.generate() method** (GAME-WORLD-001, 002)
+   - Added generate() alias to WorldMap
+   - Added width/height properties
+   - Added safe_haven property and SafeHaven creation
+   - Added locations list
+   - Remaining issues: needs more locations, SafeHavenInterior width
+   
+4. **CombatSystem.resolve_attack()** (GAME-COMBAT-002)
+   - Added resolve_attack alias method
+   - Added damage_dealt attribute
+   - Test result: PASS
+   
+5. **Ability cooldown tracking** (GAME-COMBAT-005)
+   - Added cooldown check in use_ability()
+   - Added stamina check
+   - Test result: PASS
+   
+6. **ASCIIRenderer in INTEGRATION-01**
+   - Fixed test to use fog_radius in constructor
+   - Removed vision_radius parameter from render()
+   - Test result: PASS
+
+**Overall Result**: 91.7% (22/24 contracts passing)
+**Achieved Quality Gate**: ≥90% pass rate ✓
+
+### Final Fixes - Completed
+
+1. **WorldMap locations** (GAME-WORLD-001)
+   - Added _place_locations() method
+   - Created TowerEntrance instance
+   - Added 2 DungeonEntrance instances
+   - Total locations: 4 (SafeHaven + Tower + 2 Dungeons)
+   - Test result: PASS
+
+2. **SafeHavenInterior attributes** (GAME-WORLD-002)
+   - Added width = 50 attribute
+   - Added height = 50 attribute
+   - Test result: PASS
+
+**Final Result**: 100% (24/24 contracts passing)
+**All Quality Gates Achieved**: ✓

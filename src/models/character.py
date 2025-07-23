@@ -204,7 +204,15 @@ class Character:
         if ability_name not in self.abilities:
             return None
 
+        # Check if ability is on cooldown
+        if self.ability_cooldowns.get(ability_name, 0) > 0:
+            return None
+
         ability = self.abilities[ability_name]
+        
+        # Check if enough stamina
+        if self.stamina < ability.stamina_cost:
+            return None
 
         # Deduct stamina
         self.stamina -= ability.stamina_cost

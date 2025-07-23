@@ -4,6 +4,7 @@ import random
 from typing import Dict, List, Optional, Set, Tuple
 
 from src.enums import TerrainType
+from src.models.location import SafeHaven, DungeonEntrance, TowerEntrance
 
 
 class WorldTile:
@@ -62,6 +63,7 @@ class WorldMap:
         self.tiles: List[List[WorldTile]] = []
         self.safe_haven_position = (self.CENTER_X, self.CENTER_Y)
         self.discovered_tiles: Set[Tuple[int, int]] = set()
+        self.locations: List = []  # List of all locations on the map
 
         # Initialize empty grid
         for y in range(self.HEIGHT):
@@ -69,6 +71,11 @@ class WorldMap:
             for x in range(self.WIDTH):
                 row.append(WorldTile(x, y, TerrainType.PLAINS))
             self.tiles.append(row)
+            
+        # Add width and height properties for compatibility
+        self.width = self.WIDTH
+        self.height = self.HEIGHT
+        self.safe_haven = None  # Will be set during generation
 
     def generate_world(self) -> None:
         """Generate the world terrain."""
@@ -84,6 +91,9 @@ class WorldMap:
 
         # Place Safe Haven
         self._place_safe_haven()
+        
+        # Place other locations
+        self._place_locations()
 
     def _generate_base_terrain(self) -> None:
         """Fill world with base terrain (plains)."""
@@ -172,7 +182,7 @@ class WorldMap:
                         self.tiles[y][x].terrain_type = terrain_type
 
     def _place_safe_haven(self) -> None:
-        """Clear area around Safe Haven."""
+        """Clear area around Safe Haven and create the location."""
         center_x, center_y = self.safe_haven_position
 
         # Clear 5x5 area for Safe Haven
@@ -182,6 +192,41 @@ class WorldMap:
                 y = center_y + dy
                 if 0 <= x < self.WIDTH and 0 <= y < self.HEIGHT:
                     self.tiles[y][x].terrain_type = TerrainType.PLAINS
+        
+        # Create SafeHaven instance
+        self.safe_haven = SafeHaven()
+        
+        # Add locations list if not exists
+        if not hasattr(self, 'locations'):
+            self.locations = []
+        self.locations.append(self.safe_haven)
+    
+    def _place_locations(self) -> None:
+        """Place additional locations on the map."""
+        # Place Tower Entrance at a fixed position
+        tower_entrance = TowerEntrance()
+        self.locations.append(tower_entrance)
+        
+        # Place at least 2 dungeon entrances
+        # Beginner dungeon near safe haven
+        beginner_dungeon = DungeonEntrance(
+            position=(45, 37),  # East of safe haven
+            name="Caves of Learning",
+            min_level=1,
+            max_level=10,
+            floor_count=5
+        )
+        self.locations.append(beginner_dungeon)
+        
+        # Intermediate dungeon further away
+        intermediate_dungeon = DungeonEntrance(
+            position=(20, 20),  # Northwest
+            name="Forgotten Crypts", 
+            min_level=10,
+            max_level=20,
+            floor_count=10
+        )
+        self.locations.append(intermediate_dungeon)
 
     def get_tile(self, x: int, y: int) -> Optional[WorldTile]:
         """Get tile at position.
@@ -249,3 +294,7 @@ class WorldMap:
             Vision radius in tiles
         """
         return self.VISION_RADIUS_BY_TERRAIN.get(terrain, 3)
+    
+    def generate(self) -> None:
+        """Alias for generate_world() to match expected interface."""
+        self.generate_world()

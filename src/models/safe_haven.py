@@ -20,6 +20,8 @@ class SafeHavenInterior:
 
     def __init__(self):
         """Initialize Safe Haven interior."""
+        self.width = 50  # Full floor width
+        self.height = 50  # Full floor height
         self.no_combat_zone = True
         self.respawn_point = self.SPAWN_PLAZA
         self.zones: Dict[Tuple[int, int], str] = {
