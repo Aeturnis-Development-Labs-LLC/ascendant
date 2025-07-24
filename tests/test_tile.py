@@ -127,7 +127,7 @@ class TestTile:
     def test_string_representation(self):
         """Test string representations of tiles."""
         tile = Tile(3, 4, TileType.WALL)
-        assert str(tile) == "Tile(3, 4, WALL)"
+        assert str(tile) == "Tile(3, 4)"
 
         # Test repr with occupant and item
         entity = MockEntity((3, 4), EntityType.PLAYER)

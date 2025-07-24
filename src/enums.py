@@ -12,6 +12,7 @@ class TileType(Enum):
     STAIRS_DOWN = auto()
     TRAP = auto()
     CHEST = auto()
+    DOOR = auto()  # Added for room connections
 
     def __str__(self) -> str:
         """Return a readable string representation."""
@@ -19,12 +20,16 @@ class TileType(Enum):
 
 
 class Direction(Enum):
-    """Cardinal directions for movement and orientation."""
+    """Cardinal and diagonal directions for movement and orientation."""
 
     NORTH = (0, -1)
     SOUTH = (0, 1)
     EAST = (1, 0)
     WEST = (-1, 0)
+    NORTHEAST = (1, -1)
+    NORTHWEST = (-1, -1)
+    SOUTHEAST = (1, 1)
+    SOUTHWEST = (-1, 1)
 
     def __init__(self, dx: int, dy: int):
         """Initialize with direction vector."""
@@ -43,6 +48,7 @@ class ItemType(Enum):
     ARMOR = auto()
     CONSUMABLE = auto()
     MISC = auto()
+    KEY = auto()  # For locked doors and chests
 
     def __str__(self) -> str:
         """Return a readable string representation."""
@@ -97,6 +103,21 @@ class LocationType(Enum):
     DUNGEON_ENTRANCE = auto()
     TOWER_ENTRANCE = auto()
     VILLAGE = auto()  # For future use
+
+    def __str__(self) -> str:
+        """Return a readable string representation."""
+        return self.name
+
+
+class MonsterType(Enum):
+    """Types of monsters that can appear in the game."""
+
+    RAT = "rat"
+    GOBLIN = "goblin"
+    SKELETON = "skeleton"
+    ORC = "orc"
+    TROLL = "troll"
+    DEMON = "demon"
 
     def __str__(self) -> str:
         """Return a readable string representation."""

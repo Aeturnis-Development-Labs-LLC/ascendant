@@ -10,7 +10,7 @@ class TestTileType:
 
     def test_all_tile_types_exist(self):
         """Test that all required tile types are defined."""
-        expected_types = {"FLOOR", "WALL", "STAIRS_UP", "STAIRS_DOWN", "TRAP", "CHEST"}
+        expected_types = {"FLOOR", "WALL", "STAIRS_UP", "STAIRS_DOWN", "TRAP", "CHEST", "DOOR"}
         actual_types = {tile.name for tile in TileType}
         assert actual_types == expected_types
 
@@ -30,7 +30,16 @@ class TestDirection:
 
     def test_all_directions_exist(self):
         """Test that all required directions are defined."""
-        expected_directions = {"NORTH", "SOUTH", "EAST", "WEST"}
+        expected_directions = {
+            "NORTH",
+            "SOUTH",
+            "EAST",
+            "WEST",
+            "NORTHEAST",
+            "NORTHWEST",
+            "SOUTHEAST",
+            "SOUTHWEST",
+        }
         actual_directions = {direction.name for direction in Direction}
         assert actual_directions == expected_directions
 
@@ -52,7 +61,7 @@ class TestItemType:
 
     def test_all_item_types_exist(self):
         """Test that all required item types are defined."""
-        expected_types = {"WEAPON", "ARMOR", "CONSUMABLE", "MISC"}
+        expected_types = {"WEAPON", "ARMOR", "CONSUMABLE", "MISC", "KEY"}
         actual_types = {item.name for item in ItemType}
         assert actual_types == expected_types
 

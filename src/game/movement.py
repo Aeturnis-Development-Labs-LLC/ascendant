@@ -6,17 +6,29 @@ from src.enums import Direction, TileType
 
 
 def validate_position(pos: Tuple[int, int], floor) -> bool:
-    """Check if a position is valid on the floor.
+    """Check if a position is valid and walkable on the floor.
 
     Args:
         pos: (x, y) position to validate
         floor: Floor to check against
 
     Returns:
-        True if position is within bounds
+        True if position is within bounds and walkable
     """
     x, y = pos
-    return bool(floor.is_valid_position(x, y))
+
+    # Check bounds
+    if not floor.is_valid_position(x, y):
+        return False
+
+    # Check if tile is walkable
+    tile = floor.get_tile(x, y)
+    if tile is None:
+        return False
+
+    # Check tile type
+    walkable_tiles = {TileType.FLOOR, TileType.STAIRS_UP, TileType.STAIRS_DOWN}
+    return tile.tile_type in walkable_tiles
 
 
 def calculate_new_position(current: Tuple[int, int], direction: Direction) -> Tuple[int, int]:

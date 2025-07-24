@@ -70,6 +70,16 @@ class Tile:
         self._occupant = entity
 
     @property
+    def entity(self) -> Optional["Entity"]:
+        """Alias for occupant to match expected interface."""
+        return self._occupant
+
+    @entity.setter
+    def entity(self, entity: Optional["Entity"]) -> None:
+        """Alias for occupant setter to match expected interface."""
+        self.occupant = entity
+
+    @property
     def item(self) -> Optional["Item"]:
         """Get the item on this tile."""
         return self._item
@@ -88,9 +98,17 @@ class Tile:
         """
         return self._tile_type in (TileType.FLOOR, TileType.STAIRS_UP)
 
+    def is_occupied(self) -> bool:
+        """Check if this tile has an entity occupying it.
+
+        Returns:
+            True if an entity is on this tile, False otherwise
+        """
+        return self._occupant is not None
+
     def __str__(self) -> str:
         """Return string representation of the tile."""
-        return f"Tile({self.x}, {self.y}, {self.tile_type})"
+        return f"Tile({self.x}, {self.y})"
 
     def __repr__(self) -> str:
         """Return detailed representation of the tile."""

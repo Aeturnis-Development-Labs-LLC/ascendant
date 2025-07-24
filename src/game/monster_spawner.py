@@ -7,7 +7,7 @@ Part of Phase 4.1 Monster Implementation
 import random
 from typing import Dict, List, Optional, Tuple, TypedDict
 
-from src.enums import TileType
+from src.enums import MonsterType, TileType
 from src.models.floor import Floor
 from src.models.monster import AIBehavior, Monster
 
@@ -162,7 +162,7 @@ class MonsterSpawner:
                 hp_max=stats["hp"],
                 attack=stats["attack"],
                 defense=stats["defense"],
-                monster_type=monster_type,
+                monster_type=MonsterType(monster_type),  # Convert string to enum
                 ai_behavior=stats["ai_behavior"],
             )
             monsters.append(monster)

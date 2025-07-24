@@ -28,9 +28,13 @@ class CombatResult:
 class CombatSystem:
     """Handles combat mechanics and calculations."""
 
-    def __init__(self) -> None:
-        """Initialize combat system."""
-        self.combat_log: Optional["CombatLog"] = None
+    def __init__(self, combat_log: Optional["CombatLog"] = None) -> None:
+        """Initialize combat system.
+
+        Args:
+            combat_log: Optional combat log to use for recording events
+        """
+        self.combat_log = combat_log
 
     def calculate_damage(self, attack: int, defense: int) -> int:
         """Calculate base damage using ATK - DEF formula.
@@ -118,4 +122,20 @@ class CombatSystem:
             if target_died:
                 self.combat_log.add_message(f"{target.name} is defeated!")
 
+        return result
+
+    def resolve_attack(self, attacker, target):
+        """Alias for attack() method to match expected interface.
+
+        Args:
+            attacker: Entity performing the attack
+            target: Entity being attacked
+
+        Returns:
+            Object with damage_dealt attribute
+        """
+        result = self.attack(attacker, target)
+        if result:
+            # Add damage_dealt attribute for compatibility
+            setattr(result, "damage_dealt", result.damage)  # noqa: B010
         return result

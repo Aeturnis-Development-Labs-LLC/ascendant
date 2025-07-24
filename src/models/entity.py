@@ -33,3 +33,11 @@ class Entity(ABC):
     def update(self, delta_time: float) -> None:
         """Update entity state."""
         pass
+
+    def __str__(self) -> str:
+        """Return string representation of entity."""
+        return f"Entity at ({self.x}, {self.y})"
+
+    def __repr__(self) -> str:
+        """Developer representation of entity."""
+        return f"Entity(x={self.x}, y={self.y}, type={self.entity_type})"

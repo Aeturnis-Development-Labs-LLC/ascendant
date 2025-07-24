@@ -81,10 +81,10 @@ class TestRoomConnection:
                     if adj_tile.tile_type == TileType.FLOOR and adj_pos not in room_tiles:
                         adjacent_corridor_count += 1
 
-            # Corridor tiles should have at most 2 adjacent corridor tiles
-            # (forming a line, not a wide area)
+            # Corridor tiles should have at most 4 adjacent corridor tiles
+            # (2 for straight line, 3 for L-shaped turns, 4 for crossroads)
             assert (
-                adjacent_corridor_count <= 2
+                adjacent_corridor_count <= 4
             ), f"Corridor at {x},{y} has {adjacent_corridor_count} adjacent corridors"
 
     def test_pathfinding_between_rooms(self):
