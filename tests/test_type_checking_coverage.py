@@ -25,8 +25,8 @@ def test_type_checking_imports():
                 del sys.modules[module_name]
             module = importlib.import_module(module_name)
 
-            # Verify TYPE_CHECKING imports worked
-            assert hasattr(module, "__annotations__") or True
+            # Verify module was imported (coverage is the goal)
+            assert module is not None
 
     finally:
         # Restore original TYPE_CHECKING

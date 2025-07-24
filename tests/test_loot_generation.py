@@ -1,7 +1,5 @@
 """Tests for loot generation to improve coverage."""
 
-import pytest
-
 from src.game.loot_system import LootDrop, LootSystem
 
 
@@ -116,9 +114,9 @@ class TestLootGeneration:
                 all_drops.extend(drops)
 
         # Check we have various types
-        item_types = set(drop.item_type for drop in all_drops)
+        item_types = {drop.item_type for drop in all_drops}
         assert "currency" in item_types
 
         # Check some items exist
-        item_names = set(drop.item_name for drop in all_drops)
+        item_names = {drop.item_name for drop in all_drops}
         assert "Gold" in item_names
