@@ -2,11 +2,10 @@
 
 import pytest
 
-from src.enums import ActionType, EntityType, TileType
+from src.enums import TileType
 from src.game.loot_system import LootSystem
 from src.game.stamina_system import get_action_cost, regenerate_stamina
 from src.models.character import Character
-from src.models.entity import Entity
 from src.models.tile import Tile
 
 

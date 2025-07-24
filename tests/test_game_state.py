@@ -98,10 +98,6 @@ class TestGameStateManager:
         manager = GameStateManager()
         manager.new_game()
 
-        # Get initial position
-        start_x = manager.state.character.x
-        start_y = manager.state.character.y
-
         # Try to move (may or may not succeed depending on floor layout)
         manager.move_character(0, -1)  # Try to move north
 

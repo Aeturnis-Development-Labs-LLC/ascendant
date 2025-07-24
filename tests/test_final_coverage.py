@@ -14,8 +14,6 @@ from src.enums import (
 )
 from src.game.death_handler import DeathHandler
 from src.game.trap_handler import TrapHandler
-from src.models.ability import Ability
-from src.models.character import Character
 from src.models.floor import Floor
 from src.models.monster import AIBehavior, Monster
 

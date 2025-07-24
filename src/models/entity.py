@@ -35,7 +35,7 @@ class Entity(ABC):
         pass
 
     def __str__(self) -> str:
-        """String representation of entity."""
+        """Return string representation of entity."""
         return f"Entity at ({self.x}, {self.y})"
 
     def __repr__(self) -> str:

@@ -255,7 +255,7 @@ class Character:
         return dx <= 1 and dy <= 1 and (dx + dy) > 0
 
     def __str__(self) -> str:
-        """String representation of character."""
+        """Return string representation of character."""
         return f"Character({self.x}, {self.y})"
 
     def __repr__(self) -> str:

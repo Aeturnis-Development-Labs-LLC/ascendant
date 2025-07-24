@@ -2,7 +2,6 @@
 
 import pytest
 
-from src.enums import EntityType, TileType
 from src.models.character import Character
 from src.models.floor import Floor
 from src.models.monster import AIBehavior, Monster, MonsterType

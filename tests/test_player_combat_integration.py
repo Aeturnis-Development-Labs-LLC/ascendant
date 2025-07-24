@@ -64,12 +64,17 @@ class TestPlayerCombatIntegration:
 
     def test_ability_combat_flow(self) -> None:
         """Test combat using abilities."""
+        # Set crit chance to 0 for deterministic test
+        self.character.crit_chance = 0.0
+        
         # Use Power Strike (2x damage)
         result = self.character.attack_target(self.monster, "Power Strike")
 
         assert result is True
         assert self.character.stamina == 80  # 100 - 20
-        assert self.monster.hp == 2  # 20 - ((10 * 2) - 2) = 20 - 18 = 2
+        # Power Strike: 10 * 2 = 20 attack, 20 - 2 defense = 18 damage
+        # Monster has 20 HP, so 20 - 18 = 2 HP remaining
+        assert self.monster.hp == 2
         assert self.character.ability_cooldowns["Power Strike"] == 3
 
         # Try to use again (should fail due to cooldown)
