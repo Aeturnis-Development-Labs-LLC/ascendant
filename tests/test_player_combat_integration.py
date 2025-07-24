@@ -66,7 +66,7 @@ class TestPlayerCombatIntegration:
         """Test combat using abilities."""
         # Set crit chance to 0 for deterministic test
         self.character.crit_chance = 0.0
-        
+
         # Use Power Strike (2x damage)
         result = self.character.attack_target(self.monster, "Power Strike")
 
