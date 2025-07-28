@@ -20,4 +20,4 @@ flake8-comprehensions==3.14.0
 flake8-simplify==0.20.0
 
 # Game dependencies
-PyQt6==6.6.1
+PyQt6==6.9.1
